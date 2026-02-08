@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Space Duel</title>
+
+<style>
+html,body{
+  margin:0;
+  background:black;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+canvas{
+  display:block;
+}
+
+#shoot{
+  position:fixed;
+  bottom:env(safe-area-inset-bottom,20px);
+  right:env(safe-area-inset-right,20px);
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  background:red;
+  color:white;
+  font-size:24px;
+  border:none;
+  opacity:0.85;
+}
+
+#status{
+  position:fixed;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+  color:white;
+  font-family:sans-serif;
+}
+</style>
+</head>
+<body>
+
+<div id="status">Conectando…</div>
+<canvas id="c"></canvas>
+<button id="shoot">🔥</button>
+
+<script>
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+const shoot = document.getElementById("shoot");
+const status = document.getElementById("status");
+
+function resize(){
+  const aspect = 800 / 600;
+  let w = innerWidth;
+  let h = innerHeight;
+
+  if(w / h > aspect){
+    w = h * aspect;
+  }else{
+    h = w / aspect;
+  }
+
+  canvas.style.width  = w + "px";
+  canvas.style.height = h + "px";
+  canvas.width  = 800;
+  canvas.height = 600;
+}
+resize();
+addEventListener("resize", resize);
+
+// WS LOCAL
+const ws = new WebSocket("ws://localhost:8080");
+
+let myId = null;
+let state = { players:[], projectiles:[] };
+let fireOnce = false;
+const keys = {};
+
+// SONIDOS
+const sndShoot = new Audio("shoot.wav");
+const sndBoom  = new Audio("boom.wav");
+sndShoot.volume = 0.4;
+sndBoom.volume  = 0.5;
+
+// FONDO (STRIPES)
+const stripes = Array.from({length:80},()=>({
+  x: Math.random()*800,
+  y: Math.random()*600,
+  v: 1 + Math.random()*2
+}));
+
+ws.onopen = ()=>{
+  status.textContent = "Esperando rival…";
+  ws.send(JSON.stringify({ type:"play" }));
+};
+
+ws.onmessage = e=>{
+  const msg = JSON.parse(e.data);
+
+  if(msg.type === "welcome") myId = msg.id;
+  if(msg.type === "waiting") status.textContent = "Esperando rival…";
+  if(msg.type === "state"){
+    status.textContent = "";
+    state = msg;
+  }
+  if(msg.type === "gameover"){
+    sndBoom.play();
+    alert(msg.loser === myId ? "PERDISTE" : "GANASTE");
+    location.reload();
+  }
+};
+
+ws.onclose = ()=>{
+  alert("Conexión perdida");
+  location.reload();
+};
+
+// TECLADO
+onkeydown = e=>{
+  keys[e.key] = true;
+  if(e.code === "Space"){
+    fireOnce = true;
+    sndShoot.currentTime = 0;
+    sndShoot.play();
+  }
+};
+onkeyup = e=> keys[e.key] = false;
+
+// MÓVIL MOVIMIENTO
+canvas.addEventListener("touchstart", e=>{
+  const x = e.touches[0].clientX;
+  keys["ArrowLeft"]  = x < innerWidth/2;
+  keys["ArrowRight"] = x > innerWidth/2;
+});
+
+canvas.addEventListener("touchend", ()=>{
+  keys["ArrowLeft"] = keys["ArrowRight"] = false;
+});
+
+// DISPARO MÓVIL
+shoot.onclick = ()=>{
+  fireOnce = true;
+  sndShoot.currentTime = 0;
+  sndShoot.play();
+};
+
+// INPUT
+setInterval(()=>{
+  ws.send(JSON.stringify({
+    type:"input",
+    left:  keys["ArrowLeft"] || keys["a"],
+    right: keys["ArrowRight"]|| keys["d"],
+    fire:  fireOnce
+  }));
+  fireOnce = false;
+}, 50);
+
+// RENDER
+function draw(){
+  ctx.fillStyle = "black";
+  ctx.fillRect(0,0,800,600);
+
+  ctx.strokeStyle = "#222";
+  stripes.forEach(s=>{
+    ctx.beginPath();
+    ctx.moveTo(s.x, s.y);
+    ctx.lineTo(s.x, s.y + 10);
+    ctx.stroke();
+
+    s.y += s.v;
+    if(s.y > 600){
+      s.y = -10;
+      s.x = Math.random()*800;
+    }
+  });
+
+  for(const p of state.players){
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.fillStyle = p.id === myId ? "cyan" : "orange";
+    ctx.beginPath();
+    ctx.moveTo(0,-20);
+    ctx.lineTo(15,20);
+    ctx.lineTo(-15,20);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  ctx.fillStyle = "red";
+  for(const b of state.projectiles){
+    ctx.fillRect(b.x-3, b.y-8, 6, 16);
+  }
+
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>
