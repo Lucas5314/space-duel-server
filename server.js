@@ -1,15 +1,27 @@
 const WebSocket = require("ws");
 const crypto = require("crypto");
+const http = require("http");
 
 // ===== PUERTO (RENDER / LOCAL) =====
 const PORT = process.env.PORT || 8080;
-const wss = new WebSocket.Server({ port: PORT });
-console.log("WS en puerto", PORT);
+
+// --- Crear servidor HTTP obligatorio para Render ---
+const server = http.createServer((req, res) => {
+  res.writeHead(200);
+  res.end("Space Duel Server Running");
+});
+
+// --- Montar WebSocket sobre servidor HTTP ---
+const wss = new WebSocket.Server({ server });
+
+server.listen(PORT, () => {
+  console.log("Servidor HTTP + WS en puerto", PORT);
+});
 
 // ===== MATCHMAKING =====
-const queue = [];          // jugadores esperando
-const rooms = {};          // salas activas
-const players = {};        // playerId -> ws
+const queue = [];
+const rooms = {};
+const players = {};
 
 // ===== UTILS =====
 function send(ws, data){
@@ -54,6 +66,7 @@ function createRoom(p1, p2){
 
 function startRoom(room){
   room.loop = setInterval(()=>{
+
     // mover balas
     room.bullets.forEach(b => b.y += b.vy);
     room.bullets = room.bullets.filter(b => b.y > -30 && b.y < 630);
@@ -149,11 +162,9 @@ wss.on("connection", ws=>{
   });
 
   ws.on("close", ()=>{
-    // quitar de la cola si estaba esperando
     const i = queue.findIndex(p => p.id === playerId);
     if(i !== -1) queue.splice(i, 1);
 
-    // cerrar sala si estaba jugando
     if(ws.roomId){
       closeRoom(ws.roomId);
     }

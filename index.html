@@ -74,7 +74,9 @@ resize();
 addEventListener("resize", resize);
 
 // WS LOCAL
-const ws = new WebSocket("ws://localhost:8080");
+const ws = new WebSocket("wss://space-duel-server.onrender.com");
+
+
 
 let myId = null;
 let state = { players:[], projectiles:[] };
