@@ -5,7 +5,11 @@ const crypto = require("crypto");
 const PORT = process.env.PORT || 8080;
 
 // 🔹 HTTP server obligatorio para Render
-const server = http.createServer();
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { "Content-Type": "text/plain" });
+  res.end("Space Duel Server Running");
+});
+
 const wss = new WebSocket.Server({ server });
 
 server.listen(PORT, () => {
