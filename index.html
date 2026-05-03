@@ -16,20 +16,21 @@ html,body{
 
 canvas{
   display:block;
+  touch-action:none;
 }
 
 #shoot{
   position:fixed;
-  bottom:env(safe-area-inset-bottom,20px);
-  right:env(safe-area-inset-right,20px);
-  width:80px;
-  height:80px;
+  bottom:20px;
+  right:20px;
+  width:90px;
+  height:90px;
   border-radius:50%;
   background:red;
   color:white;
-  font-size:24px;
+  font-size:28px;
   border:none;
-  opacity:0.85;
+  z-index:99999;
 }
 
 #status{
@@ -42,6 +43,7 @@ canvas{
 }
 </style>
 </head>
+
 <body>
 
 <div id="status">Conectando…</div>
@@ -49,159 +51,221 @@ canvas{
 <button id="shoot">🔥</button>
 
 <script>
+console.log("CLIENT OK");
+
+// ================= ADMOB =================
+const { AdMob } = window.Capacitor.Plugins;
+
+async function initAds(){
+  try{
+    await AdMob.initialize();
+    console.log("AdMob OK");
+  }catch(e){
+    console.log("AdMob error", e);
+  }
+}
+
+initAds();
+
+async function showAd(){
+  try{
+    await AdMob.prepareInterstitial({
+      adId: 'ca-app-pub-3940256099942544/1033173712' // TEST
+    });
+
+    await AdMob.showInterstitial();
+  }catch(e){
+    console.log("Ad error", e);
+  }
+}
+
+// contador de partidas
+let partidas = 0;
+
+// ================= CANVAS =================
 const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
-const shoot = document.getElementById("shoot");
+const shootBtn = document.getElementById("shoot");
 const status = document.getElementById("status");
 
 function resize(){
-  const aspect = 800 / 600;
+  const aspect = 800/600;
   let w = innerWidth;
   let h = innerHeight;
 
-  if(w / h > aspect){
-    w = h * aspect;
-  }else{
-    h = w / aspect;
-  }
+  if(w/h > aspect) w = h * aspect;
+  else h = w / aspect;
 
-  canvas.style.width  = w + "px";
-  canvas.style.height = h + "px";
-  canvas.width  = 800;
+  canvas.style.width = w+"px";
+  canvas.style.height = h+"px";
+  canvas.width = 800;
   canvas.height = 600;
 }
 resize();
 addEventListener("resize", resize);
 
-// WS LOCAL
-const ws = new WebSocket("wss://space-duel-server.onrender.com");
-
-
+// ================= WS =================
+const ws = new WebSocket("wss://space-duel-server-1.onrender.com");
 
 let myId = null;
-let state = { players:[], projectiles:[] };
-let fireOnce = false;
+let ready = false;
+
+let state = { players:{}, bullets:[] };
 const keys = {};
 
-// SONIDOS
-const sndShoot = new Audio("shoot.wav");
-const sndBoom  = new Audio("boom.wav");
-sndShoot.volume = 0.4;
-sndBoom.volume  = 0.5;
+// ================= AUDIO =================
+const sndShoot = new Audio("audio/disparo.wav");
+const sndImpact = new Audio("audio/impacto.wav");
 
-// FONDO (STRIPES)
-const stripes = Array.from({length:80},()=>({
-  x: Math.random()*800,
-  y: Math.random()*600,
-  v: 1 + Math.random()*2
-}));
+document.addEventListener("pointerdown", ()=>{
+  sndShoot.play().then(()=>sndShoot.pause()).catch(()=>{});
+}, { once:true });
 
+// ================= WS =================
 ws.onopen = ()=>{
+  console.log("WS OPEN");
   status.textContent = "Esperando rival…";
+
   ws.send(JSON.stringify({ type:"play" }));
 };
 
-ws.onmessage = e=>{
+ws.onmessage = async e=>{
   const msg = JSON.parse(e.data);
 
-  if(msg.type === "welcome") myId = msg.id;
-  if(msg.type === "waiting") status.textContent = "Esperando rival…";
-  if(msg.type === "state"){
-    status.textContent = "";
-    state = msg;
+  if(msg.type === "welcome"){
+    myId = msg.id;
+    console.log("ID:", myId);
   }
+
+  if(msg.type === "state"){
+    state.players = msg.players || {};
+    state.bullets = msg.bullets || [];
+
+    ready = true;
+    status.textContent = "";
+  }
+
+  if(msg.type === "hit"){
+    sndImpact.currentTime = 0;
+    sndImpact.play().catch(()=>{});
+  }
+
   if(msg.type === "gameover"){
-    sndBoom.play();
-    alert(msg.loser === myId ? "PERDISTE" : "GANASTE");
+    partidas++;
+
+    alert(msg.winner === myId ? "GANASTE" : "PERDISTE");
+
+    if(partidas % 4 === 0){
+      await showAd();
+    }
+
     location.reload();
   }
 };
 
-ws.onclose = ()=>{
-  alert("Conexión perdida");
-  location.reload();
-};
+// ================= INPUT =================
+window.addEventListener("keydown", e=>{
+  keys[e.code] = true;
 
-// TECLADO
-onkeydown = e=>{
-  keys[e.key] = true;
-  if(e.code === "Space"){
-    fireOnce = true;
-    sndShoot.currentTime = 0;
-    sndShoot.play();
+  if(e.code === "Space") shoot();
+});
+
+window.addEventListener("keyup", e=>{
+  keys[e.code] = false;
+});
+
+// ================= TOUCH =================
+let touch = false;
+
+canvas.addEventListener("pointerdown", e=>{
+  touch = true;
+  handle(e);
+});
+
+canvas.addEventListener("pointermove", e=>{
+  if(touch) handle(e);
+});
+
+canvas.addEventListener("pointerup", ()=>{
+  touch = false;
+  keys["ArrowLeft"] = false;
+  keys["ArrowRight"] = false;
+});
+
+function handle(e){
+  const rect = canvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left) * (800 / rect.width);
+
+  keys["ArrowLeft"] = x < 350;
+  keys["ArrowRight"] = x > 450;
+}
+
+// ================= SHOOT =================
+function shoot(){
+  console.log("SHOOT");
+
+  if(ws.readyState !== WebSocket.OPEN){
+    console.log("WS CLOSED");
+    return;
   }
-};
-onkeyup = e=> keys[e.key] = false;
 
-// MÓVIL MOVIMIENTO
-canvas.addEventListener("touchstart", e=>{
-  const x = e.touches[0].clientX;
-  keys["ArrowLeft"]  = x < innerWidth/2;
-  keys["ArrowRight"] = x > innerWidth/2;
-});
+  ws.send(JSON.stringify({ type:"shoot" }));
 
-canvas.addEventListener("touchend", ()=>{
-  keys["ArrowLeft"] = keys["ArrowRight"] = false;
-});
-
-// DISPARO MÓVIL
-shoot.onclick = ()=>{
-  fireOnce = true;
   sndShoot.currentTime = 0;
-  sndShoot.play();
-};
+  sndShoot.play().catch(()=>{});
+}
 
-// INPUT
+["click","pointerdown","touchstart"].forEach(ev=>{
+  shootBtn.addEventListener(ev, e=>{
+    e.preventDefault();
+    shoot();
+  }, { passive:false });
+});
+
+// ================= LOOP =================
 setInterval(()=>{
+  if(ws.readyState !== WebSocket.OPEN) return;
+
   ws.send(JSON.stringify({
     type:"input",
-    left:  keys["ArrowLeft"] || keys["a"],
-    right: keys["ArrowRight"]|| keys["d"],
-    fire:  fireOnce
+    left: keys["ArrowLeft"] || keys["KeyA"],
+    right: keys["ArrowRight"] || keys["KeyD"]
   }));
-  fireOnce = false;
-}, 50);
+},50);
 
-// RENDER
+// ================= RENDER =================
 function draw(){
-  ctx.fillStyle = "black";
+  ctx.fillStyle="black";
   ctx.fillRect(0,0,800,600);
 
-  ctx.strokeStyle = "#222";
-  stripes.forEach(s=>{
-    ctx.beginPath();
-    ctx.moveTo(s.x, s.y);
-    ctx.lineTo(s.x, s.y + 10);
-    ctx.stroke();
-
-    s.y += s.v;
-    if(s.y > 600){
-      s.y = -10;
-      s.x = Math.random()*800;
-    }
-  });
-
-  for(const p of state.players){
+  for(const p of Object.values(state.players)){
     ctx.save();
-    ctx.translate(p.x, p.y);
+    ctx.translate(p.x,p.y);
+
     ctx.fillStyle = p.id === myId ? "cyan" : "orange";
+
     ctx.beginPath();
     ctx.moveTo(0,-20);
     ctx.lineTo(15,20);
     ctx.lineTo(-15,20);
     ctx.closePath();
     ctx.fill();
+
     ctx.restore();
+
+    ctx.fillStyle="white";
+    ctx.fillText(p.hp ?? 3, p.x-5, p.y-25);
   }
 
-  ctx.fillStyle = "red";
-  for(const b of state.projectiles){
-    ctx.fillRect(b.x-3, b.y-8, 6, 16);
+  ctx.fillStyle="red";
+  for(const b of state.bullets){
+    ctx.fillRect(b.x-4,b.y-10,8,20);
   }
 
   requestAnimationFrame(draw);
 }
 draw();
 </script>
+
 </body>
 </html>
