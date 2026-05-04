@@ -51,38 +51,6 @@ canvas{
 <button id="shoot">🔥</button>
 
 <script>
-console.log("CLIENT OK");
-
-// ================= ADMOB =================
-const { AdMob } = window.Capacitor.Plugins;
-
-async function initAds(){
-  try{
-    await AdMob.initialize();
-    console.log("AdMob OK");
-  }catch(e){
-    console.log("AdMob error", e);
-  }
-}
-
-initAds();
-
-async function showAd(){
-  try{
-    await AdMob.prepareInterstitial({
-      adId: 'ca-app-pub-3940256099942544/1033173712' // TEST
-    });
-
-    await AdMob.showInterstitial();
-  }catch(e){
-    console.log("Ad error", e);
-  }
-}
-
-// contador de partidas
-let partidas = 0;
-
-// ================= CANVAS =================
 const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
 const shootBtn = document.getElementById("shoot");
@@ -108,57 +76,35 @@ addEventListener("resize", resize);
 const ws = new WebSocket("wss://space-duel-server-1.onrender.com");
 
 let myId = null;
-let ready = false;
-
 let state = { players:{}, bullets:[] };
 const keys = {};
 
-// ================= AUDIO =================
-const sndShoot = new Audio("audio/disparo.wav");
-const sndImpact = new Audio("audio/impacto.wav");
-
-document.addEventListener("pointerdown", ()=>{
-  sndShoot.play().then(()=>sndShoot.pause()).catch(()=>{});
-}, { once:true });
-
 // ================= WS =================
 ws.onopen = ()=>{
-  console.log("WS OPEN");
   status.textContent = "Esperando rival…";
-
   ws.send(JSON.stringify({ type:"play" }));
 };
 
-ws.onmessage = async e=>{
-  const msg = JSON.parse(e.data);
+ws.onmessage = e=>{
+  let msg;
+  try{
+    msg = JSON.parse(e.data);
+  }catch{
+    return;
+  }
 
   if(msg.type === "welcome"){
     myId = msg.id;
-    console.log("ID:", myId);
   }
 
   if(msg.type === "state"){
     state.players = msg.players || {};
-    state.bullets = msg.bullets || [];
-
-    ready = true;
+    state.bullets = msg.projectiles || [];
     status.textContent = "";
   }
 
-  if(msg.type === "hit"){
-    sndImpact.currentTime = 0;
-    sndImpact.play().catch(()=>{});
-  }
-
   if(msg.type === "gameover"){
-    partidas++;
-
-    alert(msg.winner === myId ? "GANASTE" : "PERDISTE");
-
-    if(partidas % 4 === 0){
-      await showAd();
-    }
-
+    alert(msg.loser === myId ? "PERDISTE" : "GANASTE");
     location.reload();
   }
 };
@@ -166,7 +112,6 @@ ws.onmessage = async e=>{
 // ================= INPUT =================
 window.addEventListener("keydown", e=>{
   keys[e.code] = true;
-
   if(e.code === "Space") shoot();
 });
 
@@ -202,17 +147,12 @@ function handle(e){
 
 // ================= SHOOT =================
 function shoot(){
-  console.log("SHOOT");
+  if(ws.readyState !== WebSocket.OPEN) return;
 
-  if(ws.readyState !== WebSocket.OPEN){
-    console.log("WS CLOSED");
-    return;
-  }
-
-  ws.send(JSON.stringify({ type:"shoot" }));
-
-  sndShoot.currentTime = 0;
-  sndShoot.play().catch(()=>{});
+  ws.send(JSON.stringify({ 
+    type:"input",
+    fire: true
+  }));
 }
 
 ["click","pointerdown","touchstart"].forEach(ev=>{
