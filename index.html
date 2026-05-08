@@ -40,6 +40,7 @@ canvas{
   transform:translateX(-50%);
   color:white;
   font-family:sans-serif;
+  z-index:9999;
 }
 </style>
 </head>
@@ -56,90 +57,144 @@ const ctx = canvas.getContext("2d");
 const shootBtn = document.getElementById("shoot");
 const status = document.getElementById("status");
 
+// ================= CANVAS =================
 function resize(){
-  const aspect = 800/600;
+  const aspect = 800 / 600;
+
   let w = innerWidth;
   let h = innerHeight;
 
-  if(w/h > aspect) w = h * aspect;
-  else h = w / aspect;
+  if(w / h > aspect){
+    w = h * aspect;
+  }else{
+    h = w / aspect;
+  }
 
-  canvas.style.width = w+"px";
-  canvas.style.height = h+"px";
+  canvas.style.width = w + "px";
+  canvas.style.height = h + "px";
+
   canvas.width = 800;
   canvas.height = 600;
 }
+
 resize();
-addEventListener("resize", resize);
+window.addEventListener("resize", resize);
 
 // ================= WS =================
 const ws = new WebSocket("wss://space-duel-server-1.onrender.com");
 
 let myId = null;
-let state = { players:{}, bullets:[] };
-const keys = {};
 
-// ================= WS =================
-ws.onopen = ()=>{
-  status.textContent = "Esperando rival…";
-  ws.send(JSON.stringify({ type:"play" }));
+let state = {
+  players: [],
+  bullets: []
 };
 
-ws.onmessage = e=>{
+const keys = {};
+
+// ================= CONNECTION =================
+ws.onopen = () => {
+  console.log("WS CONNECTED");
+
+  status.textContent = "Esperando rival…";
+
+  ws.send(JSON.stringify({
+    type:"play"
+  }));
+};
+
+ws.onerror = err => {
+  console.log("WS ERROR", err);
+  status.textContent = "Error conexión";
+};
+
+ws.onclose = () => {
+  console.log("WS CLOSED");
+};
+
+ws.onmessage = e => {
+
   let msg;
+
   try{
     msg = JSON.parse(e.data);
-  }catch{
+  }catch(err){
+    console.log("JSON ERROR");
     return;
   }
 
+  console.log("MSG", msg);
+
+  // ===== WELCOME =====
   if(msg.type === "welcome"){
     myId = msg.id;
   }
 
+  // ===== GAME STATE =====
   if(msg.type === "state"){
-    state.players = msg.players || {};
+
+    state.players = msg.players || [];
     state.bullets = msg.projectiles || [];
+
     status.textContent = "";
   }
 
+  // ===== GAME OVER =====
   if(msg.type === "gameover"){
-    alert(msg.loser === myId ? "PERDISTE" : "GANASTE");
+
+    if(msg.loser === myId){
+      alert("PERDISTE");
+    }else{
+      alert("GANASTE");
+    }
+
     location.reload();
   }
 };
 
-// ================= INPUT =================
-window.addEventListener("keydown", e=>{
+// ================= KEYBOARD =================
+window.addEventListener("keydown", e => {
+
   keys[e.code] = true;
-  if(e.code === "Space") shoot();
+
+  if(e.code === "Space"){
+    shoot();
+  }
 });
 
-window.addEventListener("keyup", e=>{
+window.addEventListener("keyup", e => {
   keys[e.code] = false;
 });
 
 // ================= TOUCH =================
 let touch = false;
 
-canvas.addEventListener("pointerdown", e=>{
+canvas.addEventListener("pointerdown", e => {
   touch = true;
-  handle(e);
+  handleTouch(e);
 });
 
-canvas.addEventListener("pointermove", e=>{
-  if(touch) handle(e);
+canvas.addEventListener("pointermove", e => {
+  if(touch){
+    handleTouch(e);
+  }
 });
 
-canvas.addEventListener("pointerup", ()=>{
+canvas.addEventListener("pointerup", () => {
+
   touch = false;
+
   keys["ArrowLeft"] = false;
   keys["ArrowRight"] = false;
 });
 
-function handle(e){
+function handleTouch(e){
+
   const rect = canvas.getBoundingClientRect();
-  const x = (e.clientX - rect.left) * (800 / rect.width);
+
+  const x =
+    (e.clientX - rect.left) *
+    (800 / rect.width);
 
   keys["ArrowLeft"] = x < 350;
   keys["ArrowRight"] = x > 450;
@@ -147,43 +202,72 @@ function handle(e){
 
 // ================= SHOOT =================
 function shoot(){
-  if(ws.readyState !== WebSocket.OPEN) return;
 
-  ws.send(JSON.stringify({ 
-    type:"input",
-    fire: true
-  }));
-}
-
-["click","pointerdown","touchstart"].forEach(ev=>{
-  shootBtn.addEventListener(ev, e=>{
-    e.preventDefault();
-    shoot();
-  }, { passive:false });
-});
-
-// ================= LOOP =================
-setInterval(()=>{
-  if(ws.readyState !== WebSocket.OPEN) return;
+  if(ws.readyState !== WebSocket.OPEN){
+    return;
+  }
 
   ws.send(JSON.stringify({
     type:"input",
-    left: keys["ArrowLeft"] || keys["KeyA"],
-    right: keys["ArrowRight"] || keys["KeyD"]
+    fire:true
   }));
-},50);
+}
+
+["click","pointerdown","touchstart"].forEach(ev => {
+
+  shootBtn.addEventListener(ev, e => {
+
+    e.preventDefault();
+
+    shoot();
+
+  }, { passive:false });
+
+});
+
+// ================= INPUT LOOP =================
+setInterval(() => {
+
+  if(ws.readyState !== WebSocket.OPEN){
+    return;
+  }
+
+  ws.send(JSON.stringify({
+
+    type:"input",
+
+    left:
+      keys["ArrowLeft"] ||
+      keys["KeyA"],
+
+    right:
+      keys["ArrowRight"] ||
+      keys["KeyD"]
+
+  }));
+
+}, 50);
 
 // ================= RENDER =================
 function draw(){
-  ctx.fillStyle="black";
+
+  // background
+  ctx.fillStyle = "black";
   ctx.fillRect(0,0,800,600);
 
-  for(const p of Object.values(state.players)){
+  // players
+  for(const p of state.players){
+
     ctx.save();
-    ctx.translate(p.x,p.y);
 
-    ctx.fillStyle = p.id === myId ? "cyan" : "orange";
+    ctx.translate(p.x, p.y);
 
+    ctx.fillStyle =
+      p.id === myId
+      ? "cyan"
+      : "orange";
+
+    // ship
     ctx.beginPath();
     ctx.moveTo(0,-20);
     ctx.lineTo(15,20);
@@ -193,17 +277,32 @@ function draw(){
 
     ctx.restore();
 
-    ctx.fillStyle="white";
-    ctx.fillText(p.hp ?? 3, p.x-5, p.y-25);
+    // hp
+    ctx.fillStyle = "white";
+    ctx.font = "18px sans-serif";
+    ctx.fillText(
+      p.hp ?? 3,
+      p.x - 5,
+      p.y - 28
+    );
   }
 
-  ctx.fillStyle="red";
+  // bullets
+  ctx.fillStyle = "red";
+
   for(const b of state.bullets){
-    ctx.fillRect(b.x-4,b.y-10,8,20);
+
+    ctx.fillRect(
+      b.x - 4,
+      b.y - 10,
+      8,
+      20
+    );
   }
 
   requestAnimationFrame(draw);
 }
+
 draw();
 </script>
 
