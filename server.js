@@ -1,4 +1,3 @@
-```javascript id="e4k9xz"
 const http = require("http");
 const WebSocket = require("ws");
 const crypto = require("crypto");
@@ -305,4 +304,4 @@ wss.on("connection", ws => {
     delete players[playerId];
   });
 });
-```
+
