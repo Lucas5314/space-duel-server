@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -41,14 +42,71 @@ canvas{
   color:white;
   font-family:sans-serif;
   z-index:9999;
+  text-align:center;
+}
+
+.spinner{
+  width:40px;
+  height:40px;
+  border:4px solid rgba(255,255,255,0.2);
+  border-top:4px solid white;
+  border-radius:50%;
+  margin:12px auto;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+  from{
+    transform:rotate(0deg);
+  }
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+#result{
+  position:fixed;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  background:rgba(0,0,0,0.85);
+  color:white;
+  font-family:sans-serif;
+  font-size:42px;
+  z-index:999999;
+}
+
+#result button{
+  margin-top:20px;
+  padding:14px 28px;
+  font-size:22px;
+  border:none;
+  border-radius:12px;
+  background:red;
+  color:white;
 }
 </style>
 </head>
 
 <body>
 
-<div id="status">Conectando…</div>
+<div id="status">
+  <div class="spinner"></div>
+  Conectando...
+</div>
+
+<div id="result">
+  <div id="resultText"></div>
+
+  <button onclick="location.reload()">
+    Jugar otra vez
+  </button>
+</div>
+
 <canvas id="c"></canvas>
+
 <button id="shoot">🔥</button>
 
 <script>
@@ -56,9 +114,44 @@ const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
 const shootBtn = document.getElementById("shoot");
 const status = document.getElementById("status");
+const result = document.getElementById("result");
+const resultText = document.getElementById("resultText");
+
+// ================= AUDIO =================
+const audioCtx = new (
+  window.AudioContext ||
+  window.webkitAudioContext
+)();
+
+function beep(freq, duration){
+
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.frequency.value = freq;
+  osc.type = "square";
+
+  osc.start();
+
+  gain.gain.setValueAtTime(
+    0.1,
+    audioCtx.currentTime
+  );
+
+  gain.gain.exponentialRampToValueAtTime(
+    0.0001,
+    audioCtx.currentTime + duration
+  );
+
+  osc.stop(audioCtx.currentTime + duration);
+}
 
 // ================= CANVAS =================
 function resize(){
+
   const aspect = 800 / 600;
 
   let w = innerWidth;
@@ -78,10 +171,42 @@ function resize(){
 }
 
 resize();
+
 window.addEventListener("resize", resize);
 
 // ================= WS =================
-const ws = new WebSocket("wss://space-duel-server-1.onrender.com");
+const ws = new WebSocket(
+  "wss://space-duel-server-1.onrender.com"
+);
+
+// 🔥 fallback si Render tarda
+setTimeout(() => {
+
+  if(ws.readyState !== WebSocket.OPEN){
+
+    status.innerHTML = `
+      <div class="spinner"></div>
+
+      Servidor despertando...<br>
+      Esto puede tardar unos segundos<br><br>
+
+      <button
+        onclick="location.reload()"
+        style="
+          padding:12px 20px;
+          font-size:18px;
+          border:none;
+          border-radius:10px;
+          background:red;
+          color:white;
+        "
+      >
+        Reintentar
+      </button>
+    `;
+  }
+
+}, 6000);
 
 let myId = null;
 
@@ -92,20 +217,70 @@ let state = {
 
 const keys = {};
 
+let dots = 0;
+let lastHp = 4;
+
+setInterval(() => {
+
+  if(
+    status.textContent.includes("Conectando") ||
+    status.textContent.includes("Esperando")
+  ){
+
+    dots = (dots + 1) % 4;
+
+    const txt =
+      ws.readyState === WebSocket.OPEN
+      ? "Esperando rival"
+      : "Conectando";
+
+    status.innerHTML = `
+      <div class="spinner"></div>
+      ${txt}${".".repeat(dots)}
+    `;
+  }
+
+}, 500);
+
 // ================= CONNECTION =================
 ws.onopen = () => {
+
   console.log("WS CONNECTED");
 
-  status.textContent = "Esperando rival…";
+  status.innerHTML = `
+    <div class="spinner"></div>
+    Esperando rival...
+  `;
 
   ws.send(JSON.stringify({
     type:"play"
   }));
 };
 
+// 🔥 ERROR CONNECTION
 ws.onerror = err => {
+
   console.log("WS ERROR", err);
-  status.textContent = "Error conexión";
+
+  status.innerHTML = `
+    <div class="spinner"></div>
+
+    Error de conexión<br><br>
+
+    <button
+      onclick="location.reload()"
+      style="
+        padding:12px 20px;
+        font-size:18px;
+        border:none;
+        border-radius:10px;
+        background:red;
+        color:white;
+      "
+    >
+      Reintentar
+    </button>
+  `;
 };
 
 ws.onclose = () => {
@@ -136,19 +311,43 @@ ws.onmessage = e => {
     state.players = msg.players || [];
     state.bullets = msg.projectiles || [];
 
+    const me = state.players.find(
+      p => p.id === myId
+    );
+
+    if(me){
+
+      if(me.hp < lastHp){
+        beep(120, 0.2);
+      }
+
+      lastHp = me.hp;
+    }
+
     status.textContent = "";
   }
 
   // ===== GAME OVER =====
   if(msg.type === "gameover"){
 
-    if(msg.loser === myId){
-      alert("PERDISTE");
-    }else{
-      alert("GANASTE");
-    }
+    result.style.display = "flex";
 
-    location.reload();
+    if(msg.loser === myId){
+
+      beep(90, 0.6);
+
+      resultText.innerHTML = `
+        💀 PERDISTE
+      `;
+
+    }else{
+
+      beep(1000, 0.5);
+
+      resultText.innerHTML = `
+        🏆 GANASTE
+      `;
+    }
   }
 };
 
@@ -170,11 +369,14 @@ window.addEventListener("keyup", e => {
 let touch = false;
 
 canvas.addEventListener("pointerdown", e => {
+
   touch = true;
+
   handleTouch(e);
 });
 
 canvas.addEventListener("pointermove", e => {
+
   if(touch){
     handleTouch(e);
   }
@@ -206,6 +408,8 @@ function shoot(){
   if(ws.readyState !== WebSocket.OPEN){
     return;
   }
+
+  beep(700, 0.08);
 
   ws.send(JSON.stringify({
     type:"input",
@@ -255,6 +459,16 @@ function draw(){
   ctx.fillStyle = "black";
   ctx.fillRect(0,0,800,600);
 
+  // estrellas animadas
+  for(let i=0;i<40;i++){
+
+    const x = (i * 97 + Date.now()/20) % 800;
+    const y = (i * 53) % 600;
+
+    ctx.fillStyle = "white";
+    ctx.fillRect(x,y,2,2);
+  }
+
   // players
   for(const p of state.players){
 
@@ -280,8 +494,9 @@ function draw(){
     // hp
     ctx.fillStyle = "white";
     ctx.font = "18px sans-serif";
+
     ctx.fillText(
-      p.hp ?? 3,
+      p.hp ?? 4,
       p.x - 5,
       p.y - 28
     );
@@ -308,3 +523,4 @@ draw();
 
 </body>
 </html>
+```

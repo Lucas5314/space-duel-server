@@ -1,12 +1,17 @@
+```javascript id="e4k9xz"
 const http = require("http");
 const WebSocket = require("ws");
 const crypto = require("crypto");
 
 const PORT = process.env.PORT || 8080;
 
-// 🔹 HTTP server obligatorio para Render
+// ===== HTTP SERVER =====
 const server = http.createServer((req, res) => {
-  res.writeHead(200, { "Content-Type": "text/plain" });
+
+  res.writeHead(200, {
+    "Content-Type": "text/plain"
+  });
+
   res.end("Space Duel Server Running");
 });
 
@@ -16,37 +21,64 @@ server.listen(PORT, () => {
   console.log("HTTP + WS escuchando en puerto", PORT);
 });
 
-// ===== MATCHMAKING =====
+// ===== DATA =====
 const queue = [];
 const rooms = {};
 const players = {};
 
 // ===== UTILS =====
 function send(ws, data) {
+
   if (ws.readyState === WebSocket.OPEN) {
+
     ws.send(JSON.stringify(data));
   }
 }
 
 function broadcastRoom(room, data) {
+
   const msg = JSON.stringify(data);
+
   Object.values(room.players).forEach(p => {
+
     if (p.ws.readyState === WebSocket.OPEN) {
+
       p.ws.send(msg);
     }
+
   });
 }
 
-// ===== ROOM LOGIC =====
+// ===== CREATE ROOM =====
 function createRoom(p1, p2) {
+
   const roomId = crypto.randomUUID();
 
   const room = {
+
     id: roomId,
+
     players: {
-      [p1.id]: { id: p1.id, ws: p1.ws, x: 400, y: 520, hp: 3, cd: 0 },
-      [p2.id]: { id: p2.id, ws: p2.ws, x: 400, y: 80, hp: 3, cd: 0 }
+
+      [p1.id]: {
+        id: p1.id,
+        ws: p1.ws,
+        x: 400,
+        y: 520,
+        hp: 4,
+        cd: 0
+      },
+
+      [p2.id]: {
+        id: p2.id,
+        ws: p2.ws,
+        x: 400,
+        y: 80,
+        hp: 4,
+        cd: 0
+      }
     },
+
     bullets: [],
     loop: null
   };
@@ -56,102 +88,221 @@ function createRoom(p1, p2) {
   p1.ws.roomId = roomId;
   p2.ws.roomId = roomId;
 
-  send(p1.ws, { type: "welcome", id: p1.id });
-  send(p2.ws, { type: "welcome", id: p2.id });
+  send(p1.ws, {
+    type: "welcome",
+    id: p1.id
+  });
+
+  send(p2.ws, {
+    type: "welcome",
+    id: p2.id
+  });
 
   startRoom(room);
 }
 
+// ===== GAME LOOP =====
 function startRoom(room) {
-  room.loop = setInterval(() => {
-    room.bullets.forEach(b => b.y += b.vy);
-    room.bullets = room.bullets.filter(b => b.y > -30 && b.y < 630);
 
+  room.loop = setInterval(() => {
+
+    // mover balas
+    room.bullets.forEach(b => {
+      b.y += b.vy;
+    });
+
+    // eliminar balas fuera
+    room.bullets =
+      room.bullets.filter(
+        b => b.y > -30 && b.y < 630
+      );
+
+    // colisiones
     for (const b of room.bullets) {
+
       for (const p of Object.values(room.players)) {
+
         if (
           p.id !== b.owner &&
           Math.abs(p.x - b.x) < 22 &&
           Math.abs(p.y - b.y) < 22
         ) {
+
           p.hp--;
+
           b.dead = true;
 
+          // ===== GAME OVER =====
           if (p.hp <= 0) {
-            broadcastRoom(room, { type: "gameover", loser: p.id });
-            return closeRoom(room.id);
+
+            // enviar gameover
+            broadcastRoom(room, {
+              type: "gameover",
+              loser: p.id
+            });
+
+            // detener loop
+            clearInterval(room.loop);
+
+            // esperar antes de cerrar
+            setTimeout(() => {
+
+              closeRoom(room.id);
+
+            }, 5000);
+
+            return;
           }
         }
       }
     }
 
-    room.bullets = room.bullets.filter(b => !b.dead);
+    // eliminar balas destruidas
+    room.bullets =
+      room.bullets.filter(b => !b.dead);
 
+    // enviar estado
     broadcastRoom(room, {
+
       type: "state",
-      players: Object.values(room.players),
-      projectiles: room.bullets
+
+      players:
+        Object.values(room.players),
+
+      projectiles:
+        room.bullets
     });
 
   }, 1000 / 60);
 }
 
+// ===== CLOSE ROOM =====
 function closeRoom(roomId) {
+
   const room = rooms[roomId];
+
   if (!room) return;
 
   clearInterval(room.loop);
-  Object.values(room.players).forEach(p => p.ws.roomId = null);
+
+  Object.values(room.players).forEach(p => {
+    p.ws.roomId = null;
+  });
+
   delete rooms[roomId];
 }
 
 // ===== CONNECTIONS =====
 wss.on("connection", ws => {
+
   const playerId = crypto.randomUUID();
+
   players[playerId] = ws;
 
   ws.playerId = playerId;
   ws.roomId = null;
 
   ws.on("message", msg => {
-    const data = JSON.parse(msg);
 
+    let data;
+
+    try{
+      data = JSON.parse(msg);
+    }catch{
+      return;
+    }
+
+    // ===== PLAY =====
     if (data.type === "play") {
-      queue.push({ id: playerId, ws });
-      send(ws, { type: "waiting" });
+
+      queue.push({
+        id: playerId,
+        ws
+      });
+
+      send(ws, {
+        type: "waiting"
+      });
 
       if (queue.length >= 2) {
-        createRoom(queue.shift(), queue.shift());
+
+        createRoom(
+          queue.shift(),
+          queue.shift()
+        );
       }
     }
 
+    // ===== INPUT =====
     if (data.type === "input") {
+
       const room = rooms[ws.roomId];
+
       if (!room) return;
 
       const p = room.players[playerId];
+
       if (!p) return;
 
-      if (data.left) p.x -= 44;
-      if (data.right) p.x += 44;
-      p.x = Math.max(30, Math.min(770, p.x));
+      // movimiento
+      if (data.left) {
+        p.x -= 44;
+      }
 
-      if (data.fire && Date.now() > p.cd) {
+      if (data.right) {
+        p.x += 44;
+      }
+
+      p.x =
+        Math.max(
+          30,
+          Math.min(770, p.x)
+        );
+
+      // disparo
+      if (
+        data.fire &&
+        Date.now() > p.cd
+      ) {
+
         room.bullets.push({
+
           owner: p.id,
+
           x: p.x,
+
           y: p.y,
-          vy: p.y > 300 ? -80 : 80
+
+          vy:
+            p.y > 300
+            ? -80
+            : 80
         });
+
         p.cd = Date.now() + 180;
       }
     }
   });
 
+  // ===== CLOSE =====
   ws.on("close", () => {
-    const i = queue.findIndex(p => p.id === playerId);
-    if (i !== -1) queue.splice(i, 1);
-    if (ws.roomId) closeRoom(ws.roomId);
+
+    const i =
+      queue.findIndex(
+        p => p.id === playerId
+      );
+
+    if (i !== -1) {
+
+      queue.splice(i, 1);
+    }
+
+    if (ws.roomId) {
+
+      closeRoom(ws.roomId);
+    }
+
     delete players[playerId];
   });
 });
+```
