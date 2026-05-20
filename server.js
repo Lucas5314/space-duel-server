@@ -7,6 +7,7 @@ const server = http.createServer((req, res) => {
 });
 
 const wss = new WebSocket.Server({ server });
+
 server.listen(process.env.PORT || 8080);
 
 const queue = new Map();
@@ -53,6 +54,7 @@ function createRoom(a, b, isBot = false) {
     ended: false,
     bullets: [],
     players: {
+
       [a.id]: {
         id: a.id,
         ws: a.ws,
@@ -108,7 +110,7 @@ function loop(room) {
 
         if (p.id === b.owner) continue;
 
-        // COLISION
+        // colisión
         if (
           Math.abs(p.x - b.x) < 20 &&
           Math.abs(p.y - b.y) < 25
@@ -129,7 +131,7 @@ function loop(room) {
         }
       }
 
-      // remover si sale pantalla
+      // eliminar si sale de pantalla
       if (b.y < -50 || b.y > 650) {
         b.dead = true;
       }
@@ -147,13 +149,13 @@ function loop(room) {
 
       if (!target) continue;
 
-      // mover
+      // movimiento bot
       if (target.x < p.x) p.x -= 3;
       if (target.x > p.x) p.x += 3;
 
       p.x = Math.max(20, Math.min(780, p.x));
 
-      // disparar
+      // disparo bot
       if (
         Date.now() > p.cd &&
         Math.random() < 0.08
@@ -162,8 +164,8 @@ function loop(room) {
         room.bullets.push({
           owner: p.id,
           x: p.x,
-          y: p.y + 20,
-          vy: 7
+          y: p.y + 25,
+          vy: 8
         });
 
         p.cd = Date.now() + 450;
@@ -258,6 +260,8 @@ wss.on("connection", ws => {
     // ================= PLAY =================
     if (data.type === "play") {
 
+      console.log("PLAYER ENTERED QUEUE:", id);
+
       queue.set(id, {
         ws,
         joinedAt: Date.now()
@@ -272,15 +276,23 @@ wss.on("connection", ws => {
       // ================= BOT AUTO =================
       setTimeout(() => {
 
+        console.log("BOT TIMER FIRED:", id);
+
         const waiting = queue.get(id);
 
         // ya no está esperando
-        if (!waiting) return;
+        if (!waiting) {
+          console.log("NOT WAITING");
+          return;
+        }
 
         // ya tiene room
-        if (ws.roomId) return;
+        if (ws.roomId) {
+          console.log("ALREADY IN ROOM");
+          return;
+        }
 
-        console.log("STARTING BOT MATCH");
+        console.log("CREATING BOT ROOM");
 
         queue.delete(id);
 
@@ -313,11 +325,14 @@ wss.on("connection", ws => {
       // disparar
       if (data.fire && Date.now() > p.cd) {
 
+        // si está arriba dispara hacia abajo
+        const goingDown = p.y < 300;
+
         room.bullets.push({
           owner: id,
           x: p.x,
-          y: p.y - 20,
-          vy: -8
+          y: goingDown ? p.y + 25 : p.y - 25,
+          vy: goingDown ? 8 : -8
         });
 
         p.cd = Date.now() + 160;
