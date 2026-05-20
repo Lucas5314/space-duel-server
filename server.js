@@ -2,306 +2,347 @@ const http = require("http");
 const WebSocket = require("ws");
 const crypto = require("crypto");
 
-const PORT = process.env.PORT || 8080;
-
-// ===== HTTP SERVER =====
 const server = http.createServer((req, res) => {
-
-  res.writeHead(200, {
-    "Content-Type": "text/plain"
-  });
-
-  res.end("Space Duel Server Running");
+  res.end("OK");
 });
 
 const wss = new WebSocket.Server({ server });
+server.listen(process.env.PORT || 8080);
 
-server.listen(PORT, () => {
-  console.log("HTTP + WS escuchando en puerto", PORT);
-});
-
-// ===== DATA =====
-const queue = [];
+const queue = new Map();
 const rooms = {};
-const players = {};
 
-// ===== UTILS =====
+// ================= SEND =================
 function send(ws, data) {
-
-  if (ws.readyState === WebSocket.OPEN) {
-
+  if (ws && ws.readyState === WebSocket.OPEN) {
     ws.send(JSON.stringify(data));
   }
 }
 
-function broadcastRoom(room, data) {
-
-  const msg = JSON.stringify(data);
-
-  Object.values(room.players).forEach(p => {
-
-    if (p.ws.readyState === WebSocket.OPEN) {
-
-      p.ws.send(msg);
-    }
-
-  });
+// ================= BOT =================
+function bot() {
+  return {
+    id: "BOT_" + crypto.randomUUID(),
+    ws: null,
+    x: 400,
+    y: 80,
+    hp: 4,
+    cd: 0,
+    bot: true
+  };
 }
 
-// ===== CREATE ROOM =====
-function createRoom(p1, p2) {
+// ================= ROOM =================
+function createRoom(a, b, isBot = false) {
 
   const roomId = crypto.randomUUID();
 
+  const p2 = isBot
+    ? bot()
+    : {
+        id: b.id,
+        ws: b.ws,
+        x: 400,
+        y: 80,
+        hp: 4,
+        cd: 0
+      };
+
   const room = {
-
     id: roomId,
-
+    ended: false,
+    bullets: [],
     players: {
-
-      [p1.id]: {
-        id: p1.id,
-        ws: p1.ws,
+      [a.id]: {
+        id: a.id,
+        ws: a.ws,
         x: 400,
         y: 520,
         hp: 4,
         cd: 0
       },
 
-      [p2.id]: {
-        id: p2.id,
-        ws: p2.ws,
-        x: 400,
-        y: 80,
-        hp: 4,
-        cd: 0
-      }
-    },
-
-    bullets: [],
-    loop: null
+      [p2.id]: p2
+    }
   };
 
   rooms[roomId] = room;
 
-  p1.ws.roomId = roomId;
-  p2.ws.roomId = roomId;
+  a.ws.roomId = roomId;
 
-  send(p1.ws, {
+  if (!isBot && b.ws) {
+    b.ws.roomId = roomId;
+  }
+
+  send(a.ws, {
     type: "welcome",
-    id: p1.id
+    id: a.id
   });
 
-  send(p2.ws, {
-    type: "welcome",
-    id: p2.id
-  });
+  if (!isBot && b.ws) {
+    send(b.ws, {
+      type: "welcome",
+      id: b.id
+    });
+  }
 
-  startRoom(room);
+  loop(room);
 }
 
-// ===== GAME LOOP =====
-function startRoom(room) {
+// ================= LOOP =================
+function loop(room) {
 
   room.loop = setInterval(() => {
 
-    // mover balas
-    room.bullets.forEach(b => {
-      b.y += b.vy;
-    });
+    if (room.ended) {
+      clearInterval(room.loop);
+      return;
+    }
 
-    // eliminar balas fuera
-    room.bullets =
-      room.bullets.filter(
-        b => b.y > -30 && b.y < 630
-      );
-
-    // colisiones
+    // ================= BULLETS =================
     for (const b of room.bullets) {
+
+      b.y += b.vy;
 
       for (const p of Object.values(room.players)) {
 
+        if (p.id === b.owner) continue;
+
+        // COLISION
         if (
-          p.id !== b.owner &&
-          Math.abs(p.x - b.x) < 22 &&
-          Math.abs(p.y - b.y) < 22
+          Math.abs(p.x - b.x) < 20 &&
+          Math.abs(p.y - b.y) < 25
         ) {
 
           p.hp--;
-
           b.dead = true;
 
-          // ===== GAME OVER =====
-          if (p.hp <= 0) {
+          console.log("HIT:", p.id, "HP:", p.hp);
 
-            // enviar gameover
-            broadcastRoom(room, {
-              type: "gameover",
-              loser: p.id
-            });
+          if (p.hp <= 0 && !room.ended) {
 
-            // detener loop
-            clearInterval(room.loop);
+            console.log("GAME OVER");
 
-            // esperar antes de cerrar
-            setTimeout(() => {
-
-              closeRoom(room.id);
-
-            }, 5000);
-
+            end(room, p.id);
             return;
           }
         }
       }
+
+      // remover si sale pantalla
+      if (b.y < -50 || b.y > 650) {
+        b.dead = true;
+      }
     }
 
-    // eliminar balas destruidas
-    room.bullets =
-      room.bullets.filter(b => !b.dead);
+    room.bullets = room.bullets.filter(b => !b.dead);
 
-    // enviar estado
-    broadcastRoom(room, {
+    // ================= BOT AI =================
+    for (const p of Object.values(room.players)) {
 
-      type: "state",
+      if (!p.bot) continue;
 
-      players:
-        Object.values(room.players),
+      const target = Object.values(room.players)
+        .find(x => !x.bot);
 
-      projectiles:
-        room.bullets
-    });
+      if (!target) continue;
+
+      // mover
+      if (target.x < p.x) p.x -= 3;
+      if (target.x > p.x) p.x += 3;
+
+      p.x = Math.max(20, Math.min(780, p.x));
+
+      // disparar
+      if (
+        Date.now() > p.cd &&
+        Math.random() < 0.08
+      ) {
+
+        room.bullets.push({
+          owner: p.id,
+          x: p.x,
+          y: p.y + 20,
+          vy: 7
+        });
+
+        p.cd = Date.now() + 450;
+      }
+    }
+
+    sendState(room);
 
   }, 1000 / 60);
 }
 
-// ===== CLOSE ROOM =====
-function closeRoom(roomId) {
+// ================= STATE =================
+function sendState(room) {
 
-  const room = rooms[roomId];
+  const data = {
+    type: "state",
+    players: Object.values(room.players),
+    projectiles: room.bullets
+  };
 
-  if (!room) return;
+  for (const p of Object.values(room.players)) {
+    send(p.ws, data);
+  }
+}
+
+// ================= GAME OVER =================
+function end(room, loser) {
+
+  if (room.ended) return;
+
+  room.ended = true;
+
+  const winner = Object.keys(room.players)
+    .find(x => x !== loser);
+
+  const msg = {
+    type: "gameover",
+    loser,
+    winner
+  };
+
+  console.log(msg);
+
+  for (const p of Object.values(room.players)) {
+    send(p.ws, msg);
+  }
 
   clearInterval(room.loop);
 
-  Object.values(room.players).forEach(p => {
-    p.ws.roomId = null;
-  });
-
-  delete rooms[roomId];
+  delete rooms[room.id];
 }
 
-// ===== CONNECTIONS =====
+// ================= MATCH =================
+function match() {
+
+  const entries = Array.from(queue.entries());
+
+  if (entries.length < 2) return;
+
+  const [id1, a] = entries[0];
+  const [id2, b] = entries[1];
+
+  queue.delete(id1);
+  queue.delete(id2);
+
+  createRoom(
+    { id: id1, ws: a.ws },
+    { id: id2, ws: b.ws },
+    false
+  );
+}
+
+// ================= WS =================
 wss.on("connection", ws => {
 
-  const playerId = crypto.randomUUID();
+  const id = crypto.randomUUID();
 
-  players[playerId] = ws;
+  ws.id = id;
 
-  ws.playerId = playerId;
-  ws.roomId = null;
+  console.log("CONNECTED:", id);
 
   ws.on("message", msg => {
 
     let data;
 
-    try{
+    try {
       data = JSON.parse(msg);
-    }catch{
+    } catch {
       return;
     }
 
-    // ===== PLAY =====
+    // ================= PLAY =================
     if (data.type === "play") {
 
-      queue.push({
-        id: playerId,
-        ws
+      queue.set(id, {
+        ws,
+        joinedAt: Date.now()
       });
 
       send(ws, {
         type: "waiting"
       });
 
-      if (queue.length >= 2) {
+      match();
+
+      // ================= BOT AUTO =================
+      setTimeout(() => {
+
+        const waiting = queue.get(id);
+
+        // ya no está esperando
+        if (!waiting) return;
+
+        // ya tiene room
+        if (ws.roomId) return;
+
+        console.log("STARTING BOT MATCH");
+
+        queue.delete(id);
 
         createRoom(
-          queue.shift(),
-          queue.shift()
+          { id, ws },
+          { id: "BOT" },
+          true
         );
-      }
+
+      }, 3000);
     }
 
-    // ===== INPUT =====
+    // ================= INPUT =================
     if (data.type === "input") {
 
       const room = rooms[ws.roomId];
 
-      if (!room) return;
+      if (!room || room.ended) return;
 
-      const p = room.players[playerId];
+      const p = room.players[id];
 
       if (!p) return;
 
-      // movimiento
-      if (data.left) {
-        p.x -= 44;
-      }
+      // mover
+      if (data.left) p.x -= 12;
+      if (data.right) p.x += 12;
 
-      if (data.right) {
-        p.x += 44;
-      }
+      p.x = Math.max(20, Math.min(780, p.x));
 
-      p.x =
-        Math.max(
-          30,
-          Math.min(770, p.x)
-        );
-
-      // disparo
-      if (
-        data.fire &&
-        Date.now() > p.cd
-      ) {
+      // disparar
+      if (data.fire && Date.now() > p.cd) {
 
         room.bullets.push({
-
-          owner: p.id,
-
+          owner: id,
           x: p.x,
-
-          y: p.y,
-
-          vy:
-            p.y > 300
-            ? -80
-            : 80
+          y: p.y - 20,
+          vy: -8
         });
 
-        p.cd = Date.now() + 180;
+        p.cd = Date.now() + 160;
       }
     }
   });
 
-  // ===== CLOSE =====
+  // ================= CLOSE =================
   ws.on("close", () => {
 
-    const i =
-      queue.findIndex(
-        p => p.id === playerId
-      );
+    console.log("DISCONNECTED:", id);
 
-    if (i !== -1) {
+    queue.delete(id);
 
-      queue.splice(i, 1);
+    const room = rooms[ws.roomId];
+
+    if (room && !room.ended) {
+
+      room.ended = true;
+
+      clearInterval(room.loop);
+
+      delete rooms[room.id];
     }
-
-    if (ws.roomId) {
-
-      closeRoom(ws.roomId);
-    }
-
-    delete players[playerId];
   });
 });
 
+console.log("SERVER LISTO");

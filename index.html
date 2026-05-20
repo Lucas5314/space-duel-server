@@ -55,12 +55,8 @@ canvas{
 }
 
 @keyframes spin{
-  from{
-    transform:rotate(0deg);
-  }
-  to{
-    transform:rotate(360deg);
-  }
+  from{transform:rotate(0deg);}
+  to{transform:rotate(360deg);}
 }
 
 #result{
@@ -98,14 +94,10 @@ canvas{
 
 <div id="result">
   <div id="resultText"></div>
-
-  <button onclick="location.reload()">
-    Jugar otra vez
-  </button>
+  <button onclick="location.reload()">Jugar otra vez</button>
 </div>
 
 <canvas id="c"></canvas>
-
 <button id="shoot">🔥</button>
 
 <script>
@@ -117,13 +109,9 @@ const result = document.getElementById("result");
 const resultText = document.getElementById("resultText");
 
 // ================= AUDIO =================
-const audioCtx = new (
-  window.AudioContext ||
-  window.webkitAudioContext
-)();
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function beep(freq, duration){
-
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
 
@@ -135,11 +123,7 @@ function beep(freq, duration){
 
   osc.start();
 
-  gain.gain.setValueAtTime(
-    0.1,
-    audioCtx.currentTime
-  );
-
+  gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
   gain.gain.exponentialRampToValueAtTime(
     0.0001,
     audioCtx.currentTime + duration
@@ -150,7 +134,6 @@ function beep(freq, duration){
 
 // ================= CANVAS =================
 function resize(){
-
   const aspect = 800 / 600;
 
   let w = innerWidth;
@@ -170,42 +153,10 @@ function resize(){
 }
 
 resize();
-
 window.addEventListener("resize", resize);
 
 // ================= WS =================
-const ws = new WebSocket(
-  "wss://space-duel-server-1.onrender.com"
-);
-
-// 🔥 fallback si Render tarda
-setTimeout(() => {
-
-  if(ws.readyState !== WebSocket.OPEN){
-
-    status.innerHTML = `
-      <div class="spinner"></div>
-
-      Servidor despertando...<br>
-      Esto puede tardar unos segundos<br><br>
-
-      <button
-        onclick="location.reload()"
-        style="
-          padding:12px 20px;
-          font-size:18px;
-          border:none;
-          border-radius:10px;
-          background:red;
-          color:white;
-        "
-      >
-        Reintentar
-      </button>
-    `;
-  }
-
-}, 6000);
+const ws = new WebSocket("wss://space-duel-server-1.onrender.com");
 
 let myId = null;
 
@@ -216,20 +167,14 @@ let state = {
 
 const keys = {};
 
+// ================= STATUS ANIMATION =================
 let dots = 0;
-let lastHp = 4;
 
 setInterval(() => {
-
-  if(
-    status.textContent.includes("Conectando") ||
-    status.textContent.includes("Esperando")
-  ){
-
+  if(status.textContent.includes("Conectando") || status.textContent.includes("Esperando")){
     dots = (dots + 1) % 4;
 
-    const txt =
-      ws.readyState === WebSocket.OPEN
+    const txt = ws.readyState === WebSocket.OPEN
       ? "Esperando rival"
       : "Conectando";
 
@@ -238,126 +183,65 @@ setInterval(() => {
       ${txt}${".".repeat(dots)}
     `;
   }
-
 }, 500);
 
-// ================= CONNECTION =================
+// ================= WS EVENTS =================
 ws.onopen = () => {
+  status.innerHTML = `<div class="spinner"></div>Esperando rival...`;
 
-  console.log("WS CONNECTED");
-
-  status.innerHTML = `
-    <div class="spinner"></div>
-    Esperando rival...
-  `;
-
-  ws.send(JSON.stringify({
-    type:"play"
-  }));
+  ws.send(JSON.stringify({ type:"play" }));
 };
 
-// 🔥 ERROR CONNECTION
-ws.onerror = err => {
-
-  console.log("WS ERROR", err);
-
+ws.onerror = () => {
   status.innerHTML = `
     <div class="spinner"></div>
-
     Error de conexión<br><br>
-
-    <button
-      onclick="location.reload()"
-      style="
-        padding:12px 20px;
-        font-size:18px;
-        border:none;
-        border-radius:10px;
-        background:red;
-        color:white;
-      "
-    >
-      Reintentar
-    </button>
+    <button onclick="location.reload()">Reintentar</button>
   `;
-};
-
-ws.onclose = () => {
-  console.log("WS CLOSED");
 };
 
 ws.onmessage = e => {
 
   let msg;
+  try { msg = JSON.parse(e.data); }
+  catch { return; }
 
-  try{
-    msg = JSON.parse(e.data);
-  }catch(err){
-    console.log("JSON ERROR");
-    return;
-  }
-
-  console.log("MSG", msg);
-
-  // ===== WELCOME =====
   if(msg.type === "welcome"){
     myId = msg.id;
   }
 
-  // ===== GAME STATE =====
   if(msg.type === "state"){
-
     state.players = msg.players || [];
     state.bullets = msg.projectiles || [];
-
-    const me = state.players.find(
-      p => p.id === myId
-    );
-
-    if(me){
-
-      if(me.hp < lastHp){
-        beep(120, 0.2);
-      }
-
-      lastHp = me.hp;
-    }
 
     status.textContent = "";
   }
 
-  // ===== GAME OVER =====
   if(msg.type === "gameover"){
 
     result.style.display = "flex";
 
-    if(msg.loser === myId){
+    const me = String(myId);
+    const loser = String(msg.loser);
+    const winner = msg.winner ? String(msg.winner) : null;
 
+    if(me === loser){
       beep(90, 0.6);
-
-      resultText.innerHTML = `
-        💀 PERDISTE
-      `;
-
-    }else{
-
+      resultText.textContent = "💀 PERDISTE";
+    } else {
       beep(1000, 0.5);
-
-      resultText.innerHTML = `
-        🏆 GANASTE
-      `;
+      resultText.textContent = "🏆 GANASTE";
     }
+
+    result.style.opacity = "1";
+    result.style.visibility = "visible";
   }
 };
 
-// ================= KEYBOARD =================
+// ================= INPUT =================
 window.addEventListener("keydown", e => {
-
   keys[e.code] = true;
-
-  if(e.code === "Space"){
-    shoot();
-  }
+  if(e.code === "Space") shoot();
 });
 
 window.addEventListener("keyup", e => {
@@ -368,34 +252,25 @@ window.addEventListener("keyup", e => {
 let touch = false;
 
 canvas.addEventListener("pointerdown", e => {
-
   touch = true;
-
   handleTouch(e);
 });
 
 canvas.addEventListener("pointermove", e => {
-
-  if(touch){
-    handleTouch(e);
-  }
+  if(touch) handleTouch(e);
 });
 
 canvas.addEventListener("pointerup", () => {
-
   touch = false;
-
   keys["ArrowLeft"] = false;
   keys["ArrowRight"] = false;
 });
 
 function handleTouch(e){
-
   const rect = canvas.getBoundingClientRect();
 
   const x =
-    (e.clientX - rect.left) *
-    (800 / rect.width);
+    (e.clientX - rect.left) * (800 / rect.width);
 
   keys["ArrowLeft"] = x < 350;
   keys["ArrowRight"] = x > 450;
@@ -403,10 +278,7 @@ function handleTouch(e){
 
 // ================= SHOOT =================
 function shoot(){
-
-  if(ws.readyState !== WebSocket.OPEN){
-    return;
-  }
+  if(ws.readyState !== WebSocket.OPEN) return;
 
   beep(700, 0.08);
 
@@ -417,36 +289,21 @@ function shoot(){
 }
 
 ["click","pointerdown","touchstart"].forEach(ev => {
-
   shootBtn.addEventListener(ev, e => {
-
     e.preventDefault();
-
     shoot();
-
   }, { passive:false });
-
 });
 
 // ================= INPUT LOOP =================
 setInterval(() => {
 
-  if(ws.readyState !== WebSocket.OPEN){
-    return;
-  }
+  if(ws.readyState !== WebSocket.OPEN) return;
 
   ws.send(JSON.stringify({
-
     type:"input",
-
-    left:
-      keys["ArrowLeft"] ||
-      keys["KeyA"],
-
-    right:
-      keys["ArrowRight"] ||
-      keys["KeyD"]
-
+    left: keys["ArrowLeft"] || keys["KeyA"],
+    right: keys["ArrowRight"] || keys["KeyD"]
   }));
 
 }, 50);
@@ -454,13 +311,11 @@ setInterval(() => {
 // ================= RENDER =================
 function draw(){
 
-  // background
   ctx.fillStyle = "black";
   ctx.fillRect(0,0,800,600);
 
-  // estrellas animadas
+  // estrellas
   for(let i=0;i<40;i++){
-
     const x = (i * 97 + Date.now()/20) % 800;
     const y = (i * 53) % 600;
 
@@ -472,15 +327,10 @@ function draw(){
   for(const p of state.players){
 
     ctx.save();
-
     ctx.translate(p.x, p.y);
 
-    ctx.fillStyle =
-      p.id === myId
-      ? "cyan"
-      : "orange";
+    ctx.fillStyle = p.id === myId ? "cyan" : "orange";
 
-    // ship
     ctx.beginPath();
     ctx.moveTo(0,-20);
     ctx.lineTo(15,20);
@@ -490,7 +340,6 @@ function draw(){
 
     ctx.restore();
 
-    // hp
     ctx.fillStyle = "white";
     ctx.font = "18px sans-serif";
 
@@ -505,13 +354,7 @@ function draw(){
   ctx.fillStyle = "red";
 
   for(const b of state.bullets){
-
-    ctx.fillRect(
-      b.x - 4,
-      b.y - 10,
-      8,
-      20
-    );
+    ctx.fillRect(b.x - 4, b.y - 10, 8, 20);
   }
 
   requestAnimationFrame(draw);
@@ -522,4 +365,3 @@ draw();
 
 </body>
 </html>
-
