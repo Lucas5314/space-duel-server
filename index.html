@@ -2,21 +2,26 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Space Duel</title>
+<title>Space Tip</title>
 
 <style>
 html,body{
   margin:0;
-  background:black;
   overflow:hidden;
+  background:#050816;
   display:flex;
   justify-content:center;
   align-items:center;
+  font-family:sans-serif;
 }
 
 canvas{
   display:block;
   touch-action:none;
+  background:
+    radial-gradient(circle at top,#13203f,#050816 70%);
+  border:2px solid #2f4f88;
+  box-shadow:0 0 30px rgba(0,150,255,0.3);
 }
 
 #shoot{
@@ -26,31 +31,46 @@ canvas{
   width:90px;
   height:90px;
   border-radius:50%;
-  background:red;
+  background:#ff3b3b;
   color:white;
-  font-size:28px;
+  font-size:30px;
   border:none;
   z-index:99999;
 }
 
 #status{
   position:fixed;
-  top:10px;
+  top:12px;
   left:50%;
   transform:translateX(-50%);
   color:white;
-  font-family:sans-serif;
   z-index:9999;
   text-align:center;
+  background:rgba(0,0,0,0.45);
+  padding:12px 20px;
+  border-radius:16px;
+  backdrop-filter:blur(6px);
+  min-width:260px;
+}
+
+#title{
+  font-size:28px;
+  font-weight:bold;
+  color:#7fd3ff;
+  margin-bottom:8px;
+}
+
+#statusText{
+  font-size:18px;
 }
 
 .spinner{
-  width:40px;
-  height:40px;
+  width:42px;
+  height:42px;
   border:4px solid rgba(255,255,255,0.2);
-  border-top:4px solid white;
+  border-top:4px solid #7fd3ff;
   border-radius:50%;
-  margin:12px auto;
+  margin:10px auto;
   animation:spin 1s linear infinite;
 }
 
@@ -66,9 +86,8 @@ canvas{
   justify-content:center;
   align-items:center;
   flex-direction:column;
-  background:rgba(0,0,0,0.85);
+  background:rgba(0,0,0,0.88);
   color:white;
-  font-family:sans-serif;
   font-size:42px;
   z-index:999999;
 }
@@ -79,7 +98,7 @@ canvas{
   font-size:22px;
   border:none;
   border-radius:12px;
-  background:red;
+  background:#2d8cff;
   color:white;
 }
 </style>
@@ -88,32 +107,54 @@ canvas{
 <body>
 
 <div id="status">
+
+  <div id="title">
+    🚀 SPACE TIP
+  </div>
+
   <div class="spinner"></div>
-  Conectando...
+
+  <div id="statusText">
+    Conectando...
+  </div>
+
 </div>
 
 <div id="result">
   <div id="resultText"></div>
-  <button onclick="location.reload()">Jugar otra vez</button>
+  <button onclick="location.reload()">
+    Jugar otra vez
+  </button>
 </div>
 
 <canvas id="c"></canvas>
+
 <button id="shoot">🔥</button>
 
 <script>
 const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
+
 const shootBtn = document.getElementById("shoot");
-const status = document.getElementById("status");
+
 const result = document.getElementById("result");
 const resultText = document.getElementById("resultText");
 
-// ================= AUDIO =================
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const statusText =
+document.getElementById("statusText");
 
-function beep(freq, duration){
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
+// ================= AUDIO =================
+const audioCtx =
+new (window.AudioContext ||
+window.webkitAudioContext)();
+
+function beep(freq,duration){
+
+  const osc =
+  audioCtx.createOscillator();
+
+  const gain =
+  audioCtx.createGain();
 
   osc.connect(gain);
   gain.connect(audioCtx.destination);
@@ -123,7 +164,11 @@ function beep(freq, duration){
 
   osc.start();
 
-  gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+  gain.gain.setValueAtTime(
+    0.08,
+    audioCtx.currentTime
+  );
+
   gain.gain.exponentialRampToValueAtTime(
     0.0001,
     audioCtx.currentTime + duration
@@ -134,6 +179,7 @@ function beep(freq, duration){
 
 // ================= CANVAS =================
 function resize(){
+
   const aspect = 800 / 600;
 
   let w = innerWidth;
@@ -153,10 +199,16 @@ function resize(){
 }
 
 resize();
-window.addEventListener("resize", resize);
+
+window.addEventListener(
+  "resize",
+  resize
+);
 
 // ================= WS =================
-const ws = new WebSocket("wss://space-duel-server-1.onrender.com");
+const ws = new WebSocket(
+  "wss://space-duel-server-1.onrender.com"
+);
 
 let myId = null;
 
@@ -167,110 +219,152 @@ let state = {
 
 const keys = {};
 
-// ================= STATUS ANIMATION =================
+// ================= STATUS =================
 let dots = 0;
 
 setInterval(() => {
-  if(status.textContent.includes("Conectando") || status.textContent.includes("Esperando")){
+
+  if(
+    statusText.textContent.includes("Conectando") ||
+    statusText.textContent.includes("Buscando")
+  ){
+
     dots = (dots + 1) % 4;
 
-    const txt = ws.readyState === WebSocket.OPEN
-      ? "Esperando rival"
+    const txt =
+      ws.readyState === WebSocket.OPEN
+      ? "Buscando rival o BOT"
       : "Conectando";
 
-    status.innerHTML = `
-      <div class="spinner"></div>
-      ${txt}${".".repeat(dots)}
-    `;
+    statusText.textContent =
+      txt + ".".repeat(dots);
   }
-}, 500);
 
-// ================= WS EVENTS =================
+},500);
+
+// ================= WS =================
 ws.onopen = () => {
-  status.innerHTML = `<div class="spinner"></div>Esperando rival...`;
 
-  ws.send(JSON.stringify({ type:"play" }));
+  statusText.textContent =
+    "Buscando rival o BOT...";
+
+  ws.send(JSON.stringify({
+    type:"play"
+  }));
 };
 
 ws.onerror = () => {
-  status.innerHTML = `
-    <div class="spinner"></div>
-    Error de conexión<br><br>
-    <button onclick="location.reload()">Reintentar</button>
+
+  statusText.innerHTML = `
+    Error de conexión.<br>
+    El servidor puede estar iniciando.
   `;
 };
 
 ws.onmessage = e => {
 
   let msg;
-  try { msg = JSON.parse(e.data); }
-  catch { return; }
+
+  try{
+    msg = JSON.parse(e.data);
+  }catch{
+    return;
+  }
 
   if(msg.type === "welcome"){
     myId = msg.id;
   }
 
   if(msg.type === "state"){
-    state.players = msg.players || [];
-    state.bullets = msg.projectiles || [];
 
-    status.textContent = "";
+    state.players =
+      msg.players || [];
+
+    state.bullets =
+      msg.projectiles || [];
+
+    statusText.textContent =
+      "Partida en curso";
   }
 
   if(msg.type === "gameover"){
 
     result.style.display = "flex";
 
-    const me = String(myId);
-    const loser = String(msg.loser);
-    const winner = msg.winner ? String(msg.winner) : null;
+    if(String(msg.loser) === String(myId)){
 
-    if(me === loser){
-      beep(90, 0.6);
-      resultText.textContent = "💀 PERDISTE";
-    } else {
-      beep(1000, 0.5);
-      resultText.textContent = "🏆 GANASTE";
+      beep(90,0.6);
+
+      resultText.textContent =
+        "💀 PERDISTE";
+
+    }else{
+
+      beep(1000,0.5);
+
+      resultText.textContent =
+        "🏆 GANASTE";
     }
-
-    result.style.opacity = "1";
-    result.style.visibility = "visible";
   }
 };
 
 // ================= INPUT =================
-window.addEventListener("keydown", e => {
-  keys[e.code] = true;
-  if(e.code === "Space") shoot();
-});
+window.addEventListener(
+  "keydown",
+  e => {
 
-window.addEventListener("keyup", e => {
-  keys[e.code] = false;
-});
+    keys[e.code] = true;
+
+    if(e.code === "Space"){
+      shoot();
+    }
+  }
+);
+
+window.addEventListener(
+  "keyup",
+  e => {
+    keys[e.code] = false;
+  }
+);
 
 // ================= TOUCH =================
 let touch = false;
 
-canvas.addEventListener("pointerdown", e => {
-  touch = true;
-  handleTouch(e);
-});
+canvas.addEventListener(
+  "pointerdown",
+  e => {
+    touch = true;
+    handleTouch(e);
+  }
+);
 
-canvas.addEventListener("pointermove", e => {
-  if(touch) handleTouch(e);
-});
+canvas.addEventListener(
+  "pointermove",
+  e => {
+    if(touch) handleTouch(e);
+  }
+);
 
-canvas.addEventListener("pointerup", () => {
-  touch = false;
-  keys["ArrowLeft"] = false;
-  keys["ArrowRight"] = false;
-});
+canvas.addEventListener(
+  "pointerup",
+  () => {
+
+    touch = false;
+
+    keys["ArrowLeft"] = false;
+    keys["ArrowRight"] = false;
+  }
+);
 
 function handleTouch(e){
-  const rect = canvas.getBoundingClientRect();
+
+  const rect =
+    canvas.getBoundingClientRect();
 
   const x =
-    (e.clientX - rect.left) * (800 / rect.width);
+    (e.clientX - rect.left) *
+    (800 / rect.width);
 
   keys["ArrowLeft"] = x < 350;
   keys["ArrowRight"] = x > 450;
@@ -278,9 +372,12 @@ function handleTouch(e){
 
 // ================= SHOOT =================
 function shoot(){
-  if(ws.readyState !== WebSocket.OPEN) return;
 
-  beep(700, 0.08);
+  if(ws.readyState !== WebSocket.OPEN){
+    return;
+  }
+
+  beep(700,0.08);
 
   ws.send(JSON.stringify({
     type:"input",
@@ -288,38 +385,63 @@ function shoot(){
   }));
 }
 
-["click","pointerdown","touchstart"].forEach(ev => {
-  shootBtn.addEventListener(ev, e => {
-    e.preventDefault();
-    shoot();
-  }, { passive:false });
+["click","pointerdown","touchstart"]
+.forEach(ev => {
+
+  shootBtn.addEventListener(
+    ev,
+    e => {
+
+      e.preventDefault();
+
+      shoot();
+
+    },
+    { passive:false }
+  );
+
 });
 
 // ================= INPUT LOOP =================
 setInterval(() => {
 
-  if(ws.readyState !== WebSocket.OPEN) return;
+  if(ws.readyState !== WebSocket.OPEN){
+    return;
+  }
 
   ws.send(JSON.stringify({
+
     type:"input",
-    left: keys["ArrowLeft"] || keys["KeyA"],
-    right: keys["ArrowRight"] || keys["KeyD"]
+
+    left:
+      keys["ArrowLeft"] ||
+      keys["KeyA"],
+
+    right:
+      keys["ArrowRight"] ||
+      keys["KeyD"]
+
   }));
 
-}, 50);
+},50);
 
 // ================= RENDER =================
 function draw(){
 
-  ctx.fillStyle = "black";
-  ctx.fillRect(0,0,800,600);
+  ctx.clearRect(0,0,800,600);
 
   // estrellas
-  for(let i=0;i<40;i++){
-    const x = (i * 97 + Date.now()/20) % 800;
-    const y = (i * 53) % 600;
+  for(let i=0;i<70;i++){
 
-    ctx.fillStyle = "white";
+    const x =
+      (i*97 + Date.now()/18) % 800;
+
+    const y =
+      (i*53) % 600;
+
+    ctx.fillStyle =
+      "rgba(255,255,255,0.8)";
+
     ctx.fillRect(x,y,2,2);
   }
 
@@ -327,20 +449,27 @@ function draw(){
   for(const p of state.players){
 
     ctx.save();
-    ctx.translate(p.x, p.y);
 
-    ctx.fillStyle = p.id === myId ? "cyan" : "orange";
+    ctx.translate(p.x,p.y);
+
+    ctx.fillStyle =
+      p.id === myId
+      ? "#56c8ff"
+      : "#ff9f43";
 
     ctx.beginPath();
+
     ctx.moveTo(0,-20);
     ctx.lineTo(15,20);
     ctx.lineTo(-15,20);
+
     ctx.closePath();
     ctx.fill();
 
     ctx.restore();
 
     ctx.fillStyle = "white";
+
     ctx.font = "18px sans-serif";
 
     ctx.fillText(
@@ -351,10 +480,16 @@ function draw(){
   }
 
   // bullets
-  ctx.fillStyle = "red";
+  ctx.fillStyle = "#ff4040";
 
   for(const b of state.bullets){
-    ctx.fillRect(b.x - 4, b.y - 10, 8, 20);
+
+    ctx.fillRect(
+      b.x - 4,
+      b.y - 10,
+      8,
+      20
+    );
   }
 
   requestAnimationFrame(draw);
