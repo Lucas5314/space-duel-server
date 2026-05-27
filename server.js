@@ -1,79 +1,84 @@
+const express = require("express");
 const http = require("http");
 const WebSocket = require("ws");
 const crypto = require("crypto");
 
-const server = http.createServer((req, res) => {
-  res.end("OK");
-});
+// ================= EXPRESS =================
+const app = express();
 
+// sirve index.html, assets, imágenes, css, js, etc
+app.use(express.static(__dirname));
+
+const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-server.listen(process.env.PORT || 8080);
+server.listen(process.env.PORT || 8080, () => {
+  console.log("SERVER LISTO");
+});
 
-const queue = new Map();
+// ================= DATA =================
 const rooms = {};
+const queue = new Map();
 
 // ================= SEND =================
 function send(ws, data) {
-  if (ws && ws.readyState === WebSocket.OPEN) {
+  if (ws?.readyState === 1) {
     ws.send(JSON.stringify(data));
   }
-}
-
-// ================= BOT =================
-function bot() {
-  return {
-    id: "BOT_" + crypto.randomUUID(),
-    ws: null,
-    x: 400,
-    y: 80,
-    hp: 4,
-    cd: 0,
-    bot: true
-  };
 }
 
 // ================= ROOM =================
 function createRoom(a, b, isBot = false) {
 
-  const roomId = crypto.randomUUID();
+  const id = crypto.randomUUID();
 
   const p2 = isBot
-    ? bot()
+    ? {
+        id: "BOT",
+        ws: null,
+        x: 400,
+        y: 80,
+        hp: 4,
+        vx: 0,
+        targetX: 400,
+        bot: true
+      }
     : {
         id: b.id,
         ws: b.ws,
         x: 400,
         y: 80,
         hp: 4,
-        cd: 0
+        vx: 0,
+        targetX: 400
       };
 
   const room = {
-    id: roomId,
-    ended: false,
-    bullets: [],
+    id,
     players: {
-
       [a.id]: {
         id: a.id,
         ws: a.ws,
         x: 400,
         y: 520,
         hp: 4,
-        cd: 0
+        vx: 0,
+        targetX: 400
       },
 
       [p2.id]: p2
-    }
+    },
+
+    bullets: [],
+    ended: false
   };
 
-  rooms[roomId] = room;
+  rooms[id] = room;
 
-  a.ws.roomId = roomId;
+  a.ws.roomId = id;
 
-  if (!isBot && b.ws) {
-    b.ws.roomId = roomId;
+  if (b.ws) {
+    b.ws.roomId = id;
   }
 
   send(a.ws, {
@@ -81,7 +86,7 @@ function createRoom(a, b, isBot = false) {
     id: a.id
   });
 
-  if (!isBot && b.ws) {
+  if (b.ws) {
     send(b.ws, {
       type: "welcome",
       id: b.id
@@ -91,14 +96,32 @@ function createRoom(a, b, isBot = false) {
   loop(room);
 }
 
-// ================= LOOP =================
+// ================= GAME LOOP =================
 function loop(room) {
 
   room.loop = setInterval(() => {
 
-    if (room.ended) {
-      clearInterval(room.loop);
-      return;
+    if (room.ended) return;
+
+    // ================= MOVEMENT =================
+    for (const p of Object.values(room.players)) {
+
+      // BOT FOLLOW
+      if (p.bot) {
+        const target = Object.values(room.players).find(x => !x.bot);
+
+        if (target) {
+          p.targetX = target.x;
+        }
+      }
+
+      // smooth movement
+      if (p.targetX != null) {
+        p.x += (p.targetX - p.x) * 0.25;
+      }
+
+      // límites
+      p.x = Math.max(20, Math.min(780, p.x));
     }
 
     // ================= BULLETS =================
@@ -119,19 +142,13 @@ function loop(room) {
           p.hp--;
           b.dead = true;
 
-          console.log("HIT:", p.id, "HP:", p.hp);
-
-          if (p.hp <= 0 && !room.ended) {
-
-            console.log("GAME OVER");
-
+          if (p.hp <= 0) {
             end(room, p.id);
             return;
           }
         }
       }
 
-      // eliminar si sale de pantalla
       if (b.y < -50 || b.y > 650) {
         b.dead = true;
       }
@@ -139,45 +156,12 @@ function loop(room) {
 
     room.bullets = room.bullets.filter(b => !b.dead);
 
-    // ================= BOT AI =================
-    for (const p of Object.values(room.players)) {
-
-      if (!p.bot) continue;
-
-      const target = Object.values(room.players)
-        .find(x => !x.bot);
-
-      if (!target) continue;
-
-      // movimiento bot
-      if (target.x < p.x) p.x -= 3;
-      if (target.x > p.x) p.x += 3;
-
-      p.x = Math.max(20, Math.min(780, p.x));
-
-      // disparo bot
-      if (
-        Date.now() > p.cd &&
-        Math.random() < 0.08
-      ) {
-
-        room.bullets.push({
-          owner: p.id,
-          x: p.x,
-          y: p.y + 25,
-          vy: 8
-        });
-
-        p.cd = Date.now() + 450;
-      }
-    }
-
     sendState(room);
 
   }, 1000 / 60);
 }
 
-// ================= STATE =================
+// ================= SEND STATE =================
 function sendState(room) {
 
   const data = {
@@ -191,42 +175,89 @@ function sendState(room) {
   }
 }
 
-// ================= GAME OVER =================
-function end(room, loser) {
+// ================= CONNECTION =================
+wss.on("connection", ws => {
 
-  if (room.ended) return;
+  const id = crypto.randomUUID();
 
-  room.ended = true;
+  ws.id = id;
 
-  const winner = Object.keys(room.players)
-    .find(x => x !== loser);
+  ws.on("message", msg => {
 
-  const msg = {
-    type: "gameover",
-    loser,
-    winner
-  };
+    const data = JSON.parse(msg);
 
-  console.log(msg);
+    // ================= INPUT =================
+    if (data.type === "input") {
 
-  for (const p of Object.values(room.players)) {
-    send(p.ws, msg);
-  }
+      const room = rooms[ws.roomId];
 
-  clearInterval(room.loop);
+      if (!room) return;
 
-  delete rooms[room.id];
-}
+      const p = room.players[id];
 
-// ================= MATCH =================
+      if (!p) return;
+
+      // teclado
+      if (data.left) {
+        p.targetX = p.x - 120;
+      }
+
+      if (data.right) {
+        p.targetX = p.x + 120;
+      }
+
+      // touch / mouse
+      if (data.targetX != null) {
+        p.targetX = data.targetX;
+      }
+
+      // disparo
+      if (data.fire && Date.now() > (p.cd || 0)) {
+
+        room.bullets.push({
+          owner: id,
+          x: p.x,
+          y: p.y - 20,
+          vy: -8
+        });
+
+        p.cd = Date.now() + 160;
+      }
+    }
+
+    // ================= PLAY =================
+    if (data.type === "play") {
+
+      queue.set(id, { ws });
+
+      match();
+    }
+  });
+
+  // ================= DISCONNECT =================
+  ws.on("close", () => {
+
+    queue.delete(id);
+
+    const room = rooms[ws.roomId];
+
+    if (!room) return;
+
+    if (!room.ended) {
+      end(room, id);
+    }
+  });
+});
+
+// ================= MATCHMAKING =================
 function match() {
 
-  const entries = Array.from(queue.entries());
+  const arr = [...queue.entries()];
 
-  if (entries.length < 2) return;
+  if (arr.length < 2) return;
 
-  const [id1, a] = entries[0];
-  const [id2, b] = entries[1];
+  const [id1, a] = arr[0];
+  const [id2, b] = arr[1];
 
   queue.delete(id1);
   queue.delete(id2);
@@ -238,126 +269,25 @@ function match() {
   );
 }
 
-// ================= WS =================
-wss.on("connection", ws => {
+// ================= END GAME =================
+function end(room, loser) {
 
-  const id = crypto.randomUUID();
+  room.ended = true;
 
-  ws.id = id;
+  const winner = Object.keys(room.players).find(
+    x => x !== loser
+  );
 
-  console.log("CONNECTED:", id);
+  for (const p of Object.values(room.players)) {
 
-  ws.on("message", msg => {
+    send(p.ws, {
+      type: "gameover",
+      loser,
+      winner
+    });
+  }
 
-    let data;
+  clearInterval(room.loop);
 
-    try {
-      data = JSON.parse(msg);
-    } catch {
-      return;
-    }
-
-    // ================= PLAY =================
-    if (data.type === "play") {
-
-      console.log("PLAYER ENTERED QUEUE:", id);
-
-      queue.set(id, {
-        ws,
-        joinedAt: Date.now()
-      });
-
-      send(ws, {
-        type: "waiting"
-      });
-
-      match();
-
-      // ================= BOT AUTO =================
-      setTimeout(() => {
-
-        console.log("BOT TIMER FIRED:", id);
-
-        const waiting = queue.get(id);
-
-        // ya no está esperando
-        if (!waiting) {
-          console.log("NOT WAITING");
-          return;
-        }
-
-        // ya tiene room
-        if (ws.roomId) {
-          console.log("ALREADY IN ROOM");
-          return;
-        }
-
-        console.log("CREATING BOT ROOM");
-
-        queue.delete(id);
-
-        createRoom(
-          { id, ws },
-          { id: "BOT" },
-          true
-        );
-
-      }, 3000);
-    }
-
-    // ================= INPUT =================
-    if (data.type === "input") {
-
-      const room = rooms[ws.roomId];
-
-      if (!room || room.ended) return;
-
-      const p = room.players[id];
-
-      if (!p) return;
-
-      // mover
-      if (data.left) p.x -= 12;
-      if (data.right) p.x += 12;
-
-      p.x = Math.max(20, Math.min(780, p.x));
-
-      // disparar
-      if (data.fire && Date.now() > p.cd) {
-
-        // si está arriba dispara hacia abajo
-        const goingDown = p.y < 300;
-
-        room.bullets.push({
-          owner: id,
-          x: p.x,
-          y: goingDown ? p.y + 25 : p.y - 25,
-          vy: goingDown ? 8 : -8
-        });
-
-        p.cd = Date.now() + 160;
-      }
-    }
-  });
-
-  // ================= CLOSE =================
-  ws.on("close", () => {
-
-    console.log("DISCONNECTED:", id);
-
-    queue.delete(id);
-
-    const room = rooms[ws.roomId];
-
-    if (room && !room.ended) {
-
-      room.ended = true;
-
-      clearInterval(room.loop);
-
-      delete rooms[room.id];
-    }
-  });
-});
-
-console.log("SERVER LISTO");
+  delete rooms[room.id];
+}
