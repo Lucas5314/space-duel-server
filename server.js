@@ -7,6 +7,10 @@ const app = express();
 
 app.use(express.static(__dirname));
 
+app.get('/app-ads.txt', (req, res) => {
+  res.sendFile(__dirname + '/app-ads.txt');
+});
+
 const server = http.createServer(app);
 
 const wss = new WebSocket.Server({ server });
