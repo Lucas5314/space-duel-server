@@ -1,302 +1,510 @@
+```js
+// ================= SERVER.JS =================
+
 const express = require("express");
 const http = require("http");
 const WebSocket = require("ws");
 const crypto = require("crypto");
 
 const app = express();
+
 app.use(express.static(__dirname));
 
 const server = http.createServer(app);
+
 const wss = new WebSocket.Server({ server });
 
 server.listen(process.env.PORT || 8080, () => {
-  console.log("SERVER LISTO");
+
+  console.log("SERVER READY");
 });
 
-// ================= DATA =================
-const rooms = {};
-const queue = new Map();
+// ================= CONFIG =================
 
-// ================= SEND =================
-function send(ws, data){
-  if(ws && ws.readyState === 1){
-    ws.send(JSON.stringify(data));
-  }
+const FPS = 1000 / 60;
+
+const WORLD_WIDTH = 900;
+
+const PLAYER_TOP_Y = 120;
+const PLAYER_BOTTOM_Y = 700;
+
+const PLAYER_SPEED = 8;
+
+const BULLET_SPEED = 14;
+
+const FIRE_COOLDOWN = 250;
+
+// ================= DATA =================
+
+const waiting = [];
+
+const rooms = {};
+
+// ================= PLAYER =================
+
+function createPlayer(id, side, isBot = false){
+
+  return {
+
+    id,
+    side,
+    isBot,
+
+    x: WORLD_WIDTH / 2,
+
+    hp:4,
+
+    left:false,
+    right:false,
+
+    targetX:null,
+
+    fire:false,
+
+    lastShot:0
+  };
 }
 
-// ================= CREATE ROOM =================
-function createRoom(a, b, isBot = false){
+// ================= ROOM =================
 
-  const id = crypto.randomUUID();
+function createRoom(a,b){
 
-  const p1 = {
-    id: a.id,
-    ws: a.ws,
-    x: 400,
-    y: 520,
-    hp: 4,
-    targetX: 400,
-    vx: 0
-  };
-
-  const p2 = isBot ? {
-    id: "BOT",
-    ws: null,
-    x: 400,
-    y: 80,
-    hp: 4,
-    targetX: 400,
-    vx: 0,
-    bot: true
-  } : {
-    id: b.id,
-    ws: b.ws,
-    x: 400,
-    y: 80,
-    hp: 4,
-    targetX: 400,
-    vx: 0
-  };
+  const roomId =
+  crypto.randomUUID();
 
   const room = {
-    id,
-    players: {
-      [p1.id]: p1,
-      [p2.id]: p2
-    },
-    bullets: [],
-    ended: false
+
+    id:roomId,
+
+    started:false,
+
+    players:[
+
+      createPlayer(
+        a.id,
+        "bottom",
+        a.isBot
+      ),
+
+      createPlayer(
+        b.id,
+        "top",
+        b.isBot
+      )
+    ],
+
+    projectiles:[],
+
+    sockets:{
+
+      [a.id]:a,
+      [b.id]:b
+    }
   };
 
-  rooms[id] = room;
+  rooms[roomId] = room;
 
-  a.ws.roomId = id;
-  if(b.ws) b.ws.roomId = id;
+  a.room = roomId;
+  b.room = roomId;
 
-  send(a.ws, { type:"welcome", id: a.id });
-  if(b.ws) send(b.ws, { type:"welcome", id: b.id });
-
-  sendState(room);
-  loop(room);
+  startCountdown(room);
 }
 
-// ================= LOOP =================
-function loop(room){
+// ================= SEND =================
 
-  room.loop = setInterval(() => {
+function sendRoom(room,data){
 
-    if(room.ended) return;
+  Object.values(room.sockets)
+  .forEach(ws=>{
 
-    for(const p of Object.values(room.players)){
+    if(ws.readyState === 1){
 
-      // BOT AI
-      if(p.bot){
-        const target = Object.values(room.players).find(x => !x.bot);
-        if(target){
-          p.targetX = target.x;
-
-          if(Math.random() < 0.03){
-            room.bullets.push({
-              owner: p.id,
-              x: p.x,
-              y: p.y + 20,
-              vy: 8
-            });
-          }
-        }
-      }
-
-      if(p.targetX != null){
-        p.x += (p.targetX - p.x) * 0.25;
-      }
-
-      p.x = Math.max(20, Math.min(780, p.x));
-    }
-
-    // BULLETS
-    for(const b of room.bullets){
-      b.y += b.vy;
-
-      for(const p of Object.values(room.players)){
-        if(p.id === b.owner) continue;
-
-        if(Math.abs(p.x - b.x) < 20 && Math.abs(p.y - b.y) < 25){
-          p.hp--;
-          b.dead = true;
-
-          if(p.hp <= 0){
-            end(room, p.id);
-            return;
-          }
-        }
-      }
-
-      if(b.y < -50 || b.y > 650){
-        b.dead = true;
-      }
-    }
-
-    room.bullets = room.bullets.filter(b => !b.dead);
-
-    sendState(room);
-
-  }, 1000 / 60);
-}
-
-// ================= STATE =================
-function sendState(room){
-
-  const data = {
-    type:"state",
-    players: Object.values(room.players),
-    projectiles: room.bullets
-  };
-
-  for(const p of Object.values(room.players)){
-    send(p.ws, data);
-  }
-}
-
-// ================= MATCHMAKING =================
-function match(){
-
-  const arr = [...queue.entries()];
-
-  // PVP PRIORIDAD
-  if(arr.length >= 2){
-
-    const [id1, a] = arr[0];
-    const [id2, b] = arr[1];
-
-    queue.delete(id1);
-    queue.delete(id2);
-
-    a.ws.inGame = true;
-    b.ws.inGame = true;
-
-    createRoom(
-      { id:id1, ws:a.ws },
-      { id:id2, ws:b.ws },
-      false
-    );
-
-    console.log("PVP MATCH");
-  }
-}
-
-// BOT FALLBACK (SEPARADO)
-setInterval(() => {
-
-  const arr = [...queue.entries()];
-
-  if(arr.length === 1){
-
-    const [id, player] = arr[0];
-
-    if(player.waitingBot) return;
-
-    player.waitingBot = true;
-
-    console.log("WAITING PLAYER...");
-
-    setTimeout(() => {
-
-      if(!queue.has(id)) return;
-
-      queue.delete(id);
-
-      player.ws.inGame = true;
-
-      console.log("BOT MATCH");
-
-      createRoom(
-        { id, ws: player.ws },
-        { id: "BOT", ws: null },
-        true
+      ws.send(
+        JSON.stringify(data)
       );
+    }
+  });
+}
 
-    }, 8000);
+// ================= COUNTDOWN =================
 
+function startCountdown(room){
+
+  const values = [
+    "3",
+    "2",
+    "1",
+    "FIGHT"
+  ];
+
+  values.forEach((v,i)=>{
+
+    setTimeout(()=>{
+
+      sendRoom(room,{
+
+        type:"countdown",
+
+        value:v
+      });
+
+      if(v === "FIGHT"){
+
+        room.started = true;
+      }
+
+    },i*1000);
+  });
+}
+
+// ================= MATCH =================
+
+function matchPlayers(){
+
+  while(waiting.length >= 2){
+
+    const a = waiting.shift();
+    const b = waiting.shift();
+
+    createRoom(a,b);
   }
+}
 
-}, 2000);
+// ================= BOT =================
+
+function createBotSocket(){
+
+  return {
+
+    id:
+    "BOT_" +
+    crypto.randomUUID(),
+
+    isBot:true,
+
+    readyState:1,
+
+    send(){},
+    close(){}
+  };
+}
 
 // ================= CONNECTION =================
-wss.on("connection", ws => {
 
-  const id = crypto.randomUUID();
-  ws.id = id;
+wss.on("connection",ws=>{
 
-  ws.on("message", msg => {
+  ws.id =
+  crypto.randomUUID();
 
-    let data;
-    try {
-      data = JSON.parse(msg);
-    } catch {
+  ws.send(JSON.stringify({
+
+    type:"welcome",
+
+    id:ws.id
+  }));
+
+  ws.on("message",raw=>{
+
+    let msg;
+
+    try{
+
+      msg =
+      JSON.parse(raw);
+
+    }catch{
+
       return;
     }
 
-    const room = rooms[ws.roomId];
+    // PLAY
+    if(msg.type === "play"){
 
-    // INPUT
-    if(data.type === "input" && room){
+      waiting.push(ws);
 
-      const p = room.players[id];
-      if(!p) return;
+      matchPlayers();
 
-      if(data.left) p.targetX = p.x - 120;
-      if(data.right) p.targetX = p.x + 120;
+      // BOT AFTER 10s
+      setTimeout(()=>{
 
-      if(data.targetX != null){
-        p.targetX = data.targetX;
-      }
+        if(waiting.includes(ws)){
 
-      if(data.fire){
-        room.bullets.push({
-          owner:id,
-          x:p.x,
-          y:p.y - 20,
-          vy:-8
-        });
-      }
+          waiting.splice(
+            waiting.indexOf(ws),
+            1
+          );
+
+          const bot =
+          createBotSocket();
+
+          createRoom(ws,bot);
+        }
+
+      },10000);
     }
 
-    // PLAY
-    if(data.type === "play"){
+    // INPUT
+    if(msg.type === "input"){
 
-      queue.set(id, { ws });
-      match();
+      if(!ws.room) return;
+
+      const room =
+      rooms[ws.room];
+
+      if(!room) return;
+
+      const player =
+      room.players.find(
+        p=>p.id === ws.id
+      );
+
+      if(!player) return;
+
+      player.left =
+      !!msg.left;
+
+      player.right =
+      !!msg.right;
+
+      if(msg.targetX != null){
+
+        player.targetX =
+        msg.targetX;
+      }
+
+      if(msg.fire){
+
+        player.fire = true;
+      }
     }
   });
 
-  ws.on("close", () => {
+  // CLOSE
+  ws.on("close",()=>{
 
-    queue.delete(id);
+    const i =
+    waiting.indexOf(ws);
 
-    const room = rooms[ws.roomId];
-    if(!room) return;
+    if(i !== -1){
 
-    end(room, id);
+      waiting.splice(i,1);
+    }
+
+    if(ws.room){
+
+      const room =
+      rooms[ws.room];
+
+      if(room){
+
+        sendRoom(room,{
+
+          type:"gameover",
+
+          loser:ws.id
+        });
+
+        delete rooms[ws.room];
+      }
+    }
   });
 });
 
-// ================= END =================
-function end(room, loser){
+// ================= LOOP =================
 
-  room.ended = true;
+setInterval(()=>{
 
-  const winner = Object.keys(room.players)
-    .find(x => x !== loser);
+  for(const roomId in rooms){
 
-  for(const p of Object.values(room.players)){
+    const room =
+    rooms[roomId];
 
-    send(p.ws, {
-      type:"gameover",
-      loser,
-      winner
+    if(!room.started)
+    continue;
+
+    // ================= BOT AI =================
+
+    for(const p of room.players){
+
+      if(!p.isBot)
+      continue;
+
+      const enemy =
+      room.players.find(
+        x=>x.id !== p.id
+      );
+
+      p.targetX =
+      enemy.x;
+
+      if(Math.random() < 0.03){
+
+        p.fire = true;
+      }
+    }
+
+    // ================= PLAYERS =================
+
+    for(const p of room.players){
+
+      if(p.left)
+      p.x -= PLAYER_SPEED;
+
+      if(p.right)
+      p.x += PLAYER_SPEED;
+
+      if(p.targetX != null){
+
+        p.x +=
+        (p.targetX - p.x)
+        * 0.18;
+      }
+
+      p.x = Math.max(
+        60,
+        Math.min(
+          WORLD_WIDTH - 60,
+          p.x
+        )
+      );
+
+      // FIRE
+      if(
+
+        p.fire &&
+
+        Date.now()
+        - p.lastShot
+        > FIRE_COOLDOWN
+
+      ){
+
+        p.lastShot =
+        Date.now();
+
+        const isBottom =
+        p.side === "bottom";
+
+        room.projectiles.push({
+
+          owner:p.id,
+
+          x:p.x,
+
+          y:
+          isBottom
+          ? PLAYER_BOTTOM_Y
+          : PLAYER_TOP_Y,
+
+          vy:
+          isBottom
+          ? -BULLET_SPEED
+          : BULLET_SPEED
+        });
+      }
+
+      p.fire = false;
+    }
+
+    // ================= BULLETS =================
+
+    for(
+
+      let i =
+      room.projectiles.length-1;
+
+      i>=0;
+
+      i--
+
+    ){
+
+      const b =
+      room.projectiles[i];
+
+      b.y += b.vy;
+
+      // REMOVE
+      if(
+
+        b.y < -100 ||
+
+        b.y > 1000
+
+      ){
+
+        room.projectiles.splice(i,1);
+
+        continue;
+      }
+
+      // HIT
+      for(const p of room.players){
+
+        if(p.id === b.owner)
+        continue;
+
+        const targetY =
+
+          p.side === "bottom"
+
+          ? PLAYER_BOTTOM_Y
+
+          : PLAYER_TOP_Y;
+
+        const hit =
+
+          Math.abs(
+            b.x - p.x
+          ) < 55 &&
+
+          Math.abs(
+            b.y - targetY
+          ) < 55;
+
+        if(hit){
+
+          p.hp--;
+
+          sendRoom(room,{
+
+            type:"hit",
+
+            x:b.x,
+            y:b.y
+          });
+
+          room.projectiles.splice(i,1);
+
+          // DEAD
+          if(p.hp <= 0){
+
+            sendRoom(room,{
+
+              type:"gameover",
+
+              loser:p.id
+            });
+
+            delete rooms[roomId];
+          }
+
+          break;
+        }
+      }
+    }
+
+    // ================= STATE =================
+
+    sendRoom(room,{
+
+      type:"state",
+
+      players:room.players,
+
+      projectiles:room.projectiles
     });
   }
 
-  clearInterval(room.loop);
-  delete rooms[room.id];
-}
+},FPS);
+```
