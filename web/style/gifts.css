@@ -1,0 +1,383 @@
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+
+    margin: 0;
+    min-height: 100vh;
+
+    font-family: Arial, sans-serif;
+
+    background:
+    radial-gradient(circle at top, #4634a8, #11152f);
+
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+
+
+.container {
+
+    width: 90%;
+    max-width: 500px;
+
+    text-align: center;
+
+}
+
+
+
+header h1 {
+
+    font-size: 32px;
+    margin-bottom: 10px;
+
+}
+
+
+header p {
+
+    font-size: 18px;
+    opacity: 0.9;
+
+}
+
+
+
+.gift-box {
+
+    margin-top: 30px;
+
+    background: rgba(255,255,255,0.12);
+
+    border-radius: 25px;
+
+    padding: 30px;
+
+    box-shadow:
+    0 0 30px rgba(0,0,0,0.4);
+
+}
+
+
+
+.gift-icon {
+
+    font-size: 70px;
+
+    animation: floating 2s infinite ease-in-out;
+
+}
+
+
+
+@keyframes floating {
+
+    0% {
+
+        transform: translateY(0);
+
+    }
+
+
+    50% {
+
+        transform: translateY(-10px);
+
+    }
+
+
+    100% {
+
+        transform: translateY(0);
+
+    }
+
+}
+
+
+
+.skin-card {
+
+
+    margin: 25px auto;
+
+    padding: 20px;
+
+    background: rgba(0,0,0,0.25);
+
+    border-radius: 20px;
+
+    width: 250px;
+
+
+}
+
+
+
+.skin-card img {
+
+
+    width: 170px;
+
+    height: 170px;
+
+    object-fit: contain;
+
+
+}
+
+
+
+.skin-card h3 {
+
+    font-size: 24px;
+
+    margin: 10px 0;
+
+}
+
+
+
+.skin-card p {
+
+    opacity: 0.8;
+
+}
+
+
+
+#claimBtn {
+
+
+    border: none;
+
+    padding: 15px 35px;
+
+    border-radius: 30px;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+
+    background: #ffcf33;
+
+    color: #3b2600;
+
+
+    transition: 0.2s;
+
+
+}
+
+
+
+#claimBtn:hover {
+
+
+    transform: scale(1.08);
+
+
+}
+
+
+
+#claimBtn.claimed {
+
+
+    background: #55e06f;
+
+    color: white;
+
+}
+
+
+
+.back-btn {
+
+
+    margin-top: 25px;
+
+
+    border: none;
+
+    background: transparent;
+
+    color: white;
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+
+}
+/* Caja abriéndose */
+
+.gift-icon.open {
+
+
+    animation:
+
+    openGift 1.5s forwards;
+
+
+}
+
+
+
+@keyframes openGift {
+
+
+    0%{
+
+        transform: scale(1);
+
+    }
+
+
+    50%{
+
+        transform: scale(1.4) rotate(10deg);
+
+    }
+
+
+    100%{
+
+
+        transform: scale(0);
+
+        opacity:0;
+
+    }
+
+
+}
+
+
+
+
+
+/* Skin aparece */
+
+.skin-card {
+
+
+    opacity:0;
+
+    transform:scale(0.5);
+
+
+    transition:0.6s;
+
+
+}
+
+
+
+.skin-card.show {
+
+
+    opacity:1;
+
+    transform:scale(1);
+
+
+    animation:
+
+    glow 1s infinite alternate;
+
+
+}
+
+
+
+@keyframes glow {
+
+
+    from{
+
+        box-shadow:
+
+        0 0 10px #ffffff;
+
+    }
+
+
+    to{
+
+        box-shadow:
+
+        0 0 35px #ffcf33;
+
+    }
+
+
+}
+
+
+
+
+
+/* Partículas */
+
+.particle {
+
+
+    position:absolute;
+
+    font-size:25px;
+
+    animation:
+
+    particleMove 2s forwards;
+
+
+}
+
+
+
+@keyframes particleMove {
+
+
+    0%{
+
+        transform:
+
+        translateY(0)
+
+        scale(1);
+
+        opacity:1;
+
+    }
+
+
+
+    100%{
+
+
+        transform:
+
+        translateY(-150px)
+
+        scale(0);
+
+
+        opacity:0;
+
+
+    }
+
+
+}

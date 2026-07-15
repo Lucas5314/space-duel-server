@@ -1,0 +1,222 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+
+body{
+
+    width:100vw;
+    height:100vh;
+
+    overflow:hidden;
+
+    font-family:Arial, sans-serif;
+
+}
+
+
+
+#versusScreen{
+
+    width:100%;
+    height:100%;
+
+    display:flex;
+
+    position:relative;
+
+}
+
+
+
+/* MITAD ROJA */
+
+.side{
+
+    width:50%;
+    height:100%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+}
+
+
+
+.redSide{
+
+    background:
+    linear-gradient(
+        135deg,
+        #ff3030,
+        #7a0000
+    );
+
+    transform:translateX(-100%);
+
+    animation:redEnter .7s forwards;
+
+}
+
+
+
+/* MITAD VERDE */
+
+
+.greenSide{
+
+    background:
+    linear-gradient(
+        135deg,
+        #00ff88,
+        #006633
+    );
+
+    transform:translateX(100%);
+
+    animation:greenEnter .7s forwards;
+
+}
+
+
+
+/* NOMBRES */
+
+
+.playerInfo h1{
+
+    color:white;
+
+    font-size:50px;
+
+    text-shadow:
+    0 0 15px black;
+
+    animation:nameAppear .5s .8s forwards;
+
+    opacity:0;
+
+}
+
+
+
+
+/* VS */
+
+
+.vs{
+
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    transform:
+    translate(-50%,-50%)
+    scale(0);
+
+
+    z-index:5;
+
+}
+
+
+.vs span{
+
+    font-size:120px;
+
+    font-weight:bold;
+
+    color:white;
+
+
+    text-shadow:
+    0 0 20px black;
+
+}
+
+
+
+.vs{
+
+    animation:showVS .5s 1s forwards;
+
+}
+
+
+
+
+
+/* ANIMACIONES */
+
+
+@keyframes redEnter{
+
+    to{
+
+        transform:translateX(0);
+
+    }
+
+}
+
+
+
+@keyframes greenEnter{
+
+    to{
+
+        transform:translateX(0);
+
+    }
+
+}
+
+
+
+@keyframes showVS{
+
+
+    0%{
+
+        transform:
+        translate(-50%,-50%)
+        scale(0);
+
+    }
+
+
+    70%{
+
+        transform:
+        translate(-50%,-50%)
+        scale(1.3);
+
+    }
+
+
+    100%{
+
+        transform:
+        translate(-50%,-50%)
+        scale(1);
+
+    }
+
+}
+
+
+
+@keyframes nameAppear{
+
+
+    to{
+
+        opacity:1;
+
+    }
+
+}

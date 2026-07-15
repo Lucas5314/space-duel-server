@@ -1,0 +1,269 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+
+    width:100%;
+    height:100%;
+
+    overflow:hidden;
+
+    font-family:Arial,Helvetica,sans-serif;
+
+    background:#040915;
+
+}
+
+/* Fondo espacial */
+
+#background{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+    radial-gradient(circle at top,#203870,#08101d 45%,#040915 80%);
+
+}
+
+/* Estrellas */
+
+#background::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background-image:
+    radial-gradient(white 1px,transparent 1px);
+
+    background-size:45px 45px;
+
+    opacity:.30;
+
+    animation:stars 45s linear infinite;
+
+}
+
+@keyframes stars{
+
+    from{
+
+        transform:translateY(0);
+
+    }
+
+    to{
+
+        transform:translateY(45px);
+
+    }
+
+}
+
+/* Panel */
+
+.container{
+
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:90%;
+    max-width:430px;
+
+    padding:35px;
+
+    border-radius:28px;
+
+    background:rgba(15,24,45,.78);
+
+    backdrop-filter:blur(14px);
+
+    border:2px solid rgba(0,255,255,.35);
+
+    box-shadow:
+    0 0 45px rgba(0,255,255,.18);
+
+    text-align:center;
+
+}
+
+/* Titulos */
+
+h1{
+
+    color:white;
+
+    font-size:42px;
+
+    letter-spacing:2px;
+
+    text-shadow:0 0 18px cyan;
+
+}
+
+h2{
+
+    color:#95dfff;
+
+    margin-top:8px;
+
+    font-size:20px;
+
+    font-weight:normal;
+
+}
+
+/* Nave */
+
+#ship{
+
+    width:170px;
+
+    margin:30px auto;
+
+    display:block;
+
+    filter:
+    drop-shadow(0 0 25px cyan);
+
+    animation:float 2.8s ease-in-out infinite;
+
+}
+
+@keyframes float{
+
+    0%,100%{
+
+        transform:translateY(0px);
+
+    }
+
+    50%{
+
+        transform:translateY(-12px);
+
+    }
+
+}
+
+/* Inputs */
+
+.group{
+
+    text-align:left;
+
+    margin-top:20px;
+
+}
+
+.group label{
+
+    color:white;
+
+    display:block;
+
+    margin-bottom:8px;
+
+    font-size:15px;
+
+}
+
+.group input,
+.group select{
+
+    width:100%;
+
+    height:54px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:15px;
+
+    padding:0 18px;
+
+    font-size:17px;
+
+    background:#162342;
+
+    color:white;
+
+    transition:.25s;
+
+}
+
+.group input:focus,
+.group select:focus{
+
+    box-shadow:0 0 20px cyan;
+
+}
+
+/* Botón */
+
+button{
+
+    margin-top:35px;
+
+    width:100%;
+
+    height:60px;
+
+    border:none;
+
+    border-radius:18px;
+
+    cursor:pointer;
+
+    font-size:21px;
+
+    font-weight:bold;
+
+    color:white;
+
+    background:linear-gradient(90deg,#00a8ff,#00ff9d);
+
+    transition:.25s;
+
+}
+
+button:hover{
+
+    transform:scale(1.04);
+
+    box-shadow:0 0 25px cyan;
+
+}
+
+button:active{
+
+    transform:scale(.97);
+
+}
+
+/* Responsive */
+
+@media(max-height:720px){
+
+    #ship{
+
+        width:130px;
+
+        margin:20px auto;
+
+    }
+
+}

@@ -1,0 +1,671 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+
+body{
+
+    min-height:100vh;
+
+    background:
+    radial-gradient(circle at top,#253b85,#050816 55%);
+
+    color:white;
+
+    font-family:Arial,Helvetica,sans-serif;
+
+    overflow-x:hidden;
+
+}
+
+
+
+/* Fondo de estrellas */
+
+#stars{
+
+    position:fixed;
+
+    inset:0;
+
+
+    background:
+    radial-gradient(circle,#ffffff 1px,transparent 1px);
+
+
+    background-size:45px 45px;
+
+
+    opacity:.18;
+
+
+    animation:moveStars 35s linear infinite;
+
+
+    z-index:-1;
+
+}
+
+
+
+@keyframes moveStars{
+
+    from{
+
+        transform:translateY(0);
+
+    }
+
+
+    to{
+
+        transform:translateY(45px);
+
+    }
+
+}
+
+
+
+
+
+/* HEADER */
+
+
+header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+
+    padding:25px;
+
+}
+
+
+
+h1{
+
+    flex:1;
+
+    text-align:center;
+
+
+    font-size:42px;
+
+
+    text-shadow:
+
+    0 0 15px cyan,
+
+    0 0 35px blue;
+
+}
+
+
+
+
+
+#back{
+
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #1f75ff,
+    #00c6ff
+    );
+
+
+    color:white;
+
+
+    border:none;
+
+
+    padding:12px 22px;
+
+
+    border-radius:15px;
+
+
+    cursor:pointer;
+
+
+    font-size:16px;
+
+
+    font-weight:bold;
+
+
+    box-shadow:
+
+    0 0 20px rgba(0,200,255,.5);
+
+
+    transition:.3s;
+
+}
+
+
+
+#back:hover{
+
+    transform:scale(1.08);
+
+}
+
+
+
+
+
+
+
+/* TABLERO DE NAVES */
+
+
+#skinsContainer{
+
+
+    width:95%;
+
+
+    max-width:1300px;
+
+
+    margin:auto;
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    repeat(5,1fr);
+
+
+
+    gap:3px;
+
+
+    padding:20px;
+
+
+}
+
+
+
+
+
+
+
+/* CELDAS */
+
+
+.card{
+
+
+    min-height:260px;
+
+
+    padding:20px;
+
+
+    text-align:center;
+
+
+    position:relative;
+
+
+    overflow:hidden;
+
+
+    border:2px solid rgba(255,255,255,.15);
+
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+
+    transition:.35s;
+
+
+    animation:
+
+    appear .6s ease backwards;
+
+}
+
+
+
+
+/* COLORES DEL TABLERO */
+
+
+.card:nth-child(4n+1){
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #102d56,
+    #174d91
+    );
+
+}
+
+
+
+.card:nth-child(4n+2){
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #35145e,
+    #7020a0
+    );
+
+}
+
+
+
+.card:nth-child(4n+3){
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #064d46,
+    #009688
+    );
+
+}
+
+
+
+.card:nth-child(4n+4){
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #592000,
+    #b95d00
+    );
+
+}
+
+
+
+
+
+
+
+/* BRILLO */
+
+.card::before{
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    width:120%;
+
+
+    height:120%;
+
+
+    background:
+
+    radial-gradient(
+    circle,
+    rgba(255,255,255,.05),
+    transparent 60%
+    );
+
+
+
+    top:-70%;
+
+
+    left:-20%;
+
+
+    transition:.5s;
+
+
+}
+
+
+
+.card:hover::before{
+
+
+    top:-20%;
+
+
+}
+
+
+
+
+
+
+.card:hover{
+
+
+    transform:
+
+    translateY(-12px)
+
+    scale(1.03);
+
+
+    z-index:5;
+
+
+    box-shadow:
+
+
+    0 0 25px cyan,
+
+    0 0 50px rgba(0,200,255,.5);
+
+
+}
+
+
+
+
+
+
+
+/* NAVES */
+
+
+.card img{
+
+
+    width:110px;
+
+
+    height:110px;
+
+
+    object-fit:contain;
+
+
+
+    margin:15px 0;
+
+
+
+    filter:
+
+    drop-shadow(0 0 20px cyan);
+
+
+
+    transition:.4s;
+
+
+}
+
+
+
+
+.card:hover img{
+
+
+    transform:
+
+    scale(1.15)
+
+    rotate(-6deg);
+
+
+
+    filter:
+
+    drop-shadow(0 0 35px white);
+
+
+}
+
+
+
+
+
+
+.card h2{
+
+
+    font-size:22px;
+
+
+    margin-bottom:15px;
+
+
+    text-shadow:
+
+    0 0 10px black;
+
+
+}
+
+
+
+
+
+
+
+
+/* BOTON */
+
+
+.card button{
+
+
+    width:90%;
+
+
+    height:45px;
+
+
+    border:none;
+
+
+    border-radius:15px;
+
+
+    cursor:pointer;
+
+
+
+    background:
+
+    linear-gradient(
+    90deg,
+    #00eaff,
+    #006cff
+    );
+
+
+
+    color:white;
+
+
+
+    font-size:16px;
+
+
+    font-weight:bold;
+
+
+
+    box-shadow:
+
+    0 0 20px rgba(0,230,255,.6);
+
+
+
+    transition:.3s;
+
+
+}
+
+
+
+.card button:hover{
+
+
+    transform:
+
+    scale(1.08);
+
+
+
+    box-shadow:
+
+    0 0 35px cyan;
+
+
+}
+
+
+
+
+
+
+
+
+/* ANIMACION */
+
+.card:nth-child(1){animation-delay:.1s;}
+.card:nth-child(2){animation-delay:.2s;}
+.card:nth-child(3){animation-delay:.3s;}
+.card:nth-child(4){animation-delay:.4s;}
+.card:nth-child(5){animation-delay:.5s;}
+.card:nth-child(6){animation-delay:.6s;}
+.card:nth-child(7){animation-delay:.7s;}
+.card:nth-child(8){animation-delay:.8s;}
+.card:nth-child(9){animation-delay:.9s;}
+.card:nth-child(10){animation-delay:1s;}
+
+
+@keyframes appear{
+
+
+    from{
+
+        opacity:0;
+
+        transform:
+
+        translateY(40px);
+
+    }
+
+
+    to{
+
+        opacity:1;
+
+        transform:
+
+        translateY(0);
+
+    }
+
+}
+
+
+
+
+
+
+
+/* MOVIL */
+
+
+@media(max-width:900px){
+
+
+    #skinsContainer{
+
+        grid-template-columns:
+
+        repeat(3,1fr);
+
+    }
+
+
+}
+
+
+
+@media(max-width:600px){
+
+
+    h1{
+
+        font-size:30px;
+
+    }
+
+
+
+    #skinsContainer{
+
+
+        grid-template-columns:
+
+        repeat(2,1fr);
+
+        padding:10px;
+
+    }
+
+
+
+    .card{
+
+
+        min-height:220px;
+
+
+    }
+
+
+
+    .card img{
+
+
+        width:85px;
+
+        height:85px;
+
+    }
+
+
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Crear Piloto</title>
+
+<link rel="stylesheet" href="style/createplayer.css">
+
+</head>
+
+<body>
+
+<div id="background"></div>
+
+<div class="container">
+
+    <h1>SPACE TIP</h1>
+
+    <h2>CREA TU PILOTO</h2>
+
+    <img
+        src="assets/ships/naveee1.png"
+        id="ship"
+    >
+
+    <div class="group">
+
+        <label>Nombre</label>
+
+        <input
+            id="name"
+            type="text"
+            maxlength="16"
+            placeholder="Escribe tu nombre"
+        >
+
+    </div>
+
+    <div class="group">
+
+        <label>País</label>
+
+        <select id="country">
+
+            <option value="Paraguay">🇵🇾 Paraguay</option>
+            <option value="Brasil">🇧🇷 Brasil</option>
+            <option value="Argentina">🇦🇷 Argentina</option>
+            <option value="Uruguay">🇺🇾 Uruguay</option>
+            <option value="Chile">🇨🇱 Chile</option>
+            <option value="Bolivia">🇧🇴 Bolivia</option>
+            <option value="Perú">🇵🇪 Perú</option>
+            <option value="Colombia">🇨🇴 Colombia</option>
+            <option value="México">🇲🇽 México</option>
+            <option value="España">🇪🇸 España</option>
+            <option value="Estados Unidos">🇺🇸 Estados Unidos</option>
+
+        </select>
+
+    </div>
+
+    <button id="continueBtn">
+
+        CONTINUAR
+
+    </button>
+
+</div>
+
+<script src="js/createplayer.js"></script>
+
+</body>
+
+</html>

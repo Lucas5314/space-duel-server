@@ -1,11 +1,86 @@
 const express = require("express");
+const db = require("./database/db");
 const http = require("http");
 const WebSocket = require("ws");
 const crypto = require("crypto");
 
 const app = express();
 
-app.use(express.static(__dirname));
+app.use(express.json());
+ 
+// ===========================
+// CREAR JUGADOR
+// ===========================
+
+app.post("/create-player", async (req,res)=>{
+console.log("CREANDO JUGADOR:", req.body);
+
+    const {
+        username,
+        country
+    } = req.body;
+
+
+    try{
+
+
+        const result = await db.query(
+
+            `
+            INSERT INTO players
+            (
+                username,
+                country
+            )
+
+            VALUES
+            (
+                $1,
+                $2
+            )
+
+            RETURNING *
+            `,
+
+            [
+                username,
+                country
+            ]
+
+        );
+
+
+        res.json({
+
+            success:true,
+
+            player:result.rows[0]
+
+        });
+
+
+
+    }catch(error){
+
+
+        console.log(error);
+
+
+        res.json({
+
+            success:false,
+
+            error:"Ese nombre ya existe"
+
+        });
+
+
+    }
+
+
+});
+
+app.use(express.static(__dirname + "/web"));
 
 app.get('/app-ads.txt', (req, res) => {
   res.sendFile(__dirname + '/app-ads.txt');
@@ -39,7 +114,11 @@ const FIRE_COOLDOWN = 250;
 
 const waiting = [];
 
-const rooms = {};
+const {
+    rooms,
+    createRoom,
+    removeRoom
+} = require("./rooms");
 
 // ================= PLAYER =================
 
@@ -53,7 +132,7 @@ function createPlayer(id, side, isBot = false){
 
     x: WORLD_WIDTH / 2,
 
-    hp:4,
+    hp:40,
 
     left:false,
     right:false,
@@ -65,53 +144,6 @@ function createPlayer(id, side, isBot = false){
     lastShot:0
   };
 }
-
-// ================= ROOM =================
-
-function createRoom(a,b){
-
-  const roomId =
-  crypto.randomUUID();
-
-  const room = {
-
-    id:roomId,
-
-    started:false,
-
-    players:[
-
-      createPlayer(
-        a.id,
-        "bottom",
-        a.isBot
-      ),
-
-      createPlayer(
-        b.id,
-        "top",
-        b.isBot
-      )
-    ],
-
-    projectiles:[],
-
-    sockets:{
-
-      [a.id]:a,
-      [b.id]:b
-    }
-  };
-
-  rooms[roomId] = room;
-
-  a.room = roomId;
-  b.room = roomId;
-
-  startCountdown(room);
-}
-
-// ================= SEND =================
 
 function sendRoom(room,data){
 
@@ -503,7 +535,10 @@ setInterval(()=>{
 
       players:room.players,
 
-      projectiles:room.projectiles
+      projectiles:room.projectiles,
+
+      portal:room.portal
+
     });
   }
 

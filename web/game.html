@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>SPACE TIP</title>
+
+<style>
+html,body{
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  width:100%;
+  height:100%;
+  background:#050816;
+  font-family:sans-serif;
+  touch-action:none;
+}
+
+canvas{
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100vh;
+  display:block;
+  background: radial-gradient(circle at top,#13203f,#050816 70%);
+}
+
+#status{
+  position:fixed;
+  top:12px;
+  left:50%;
+  transform:translateX(-50%);
+  color:white;
+  background:rgba(0,0,0,0.45);
+  padding:10px 18px;
+  border-radius:16px;
+  z-index:999;
+  text-align:center;
+}
+
+#countdown{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:120px;
+  color:white;
+  z-index:9998;
+  pointer-events:none;
+  opacity:0;
+  transition:0.25s;
+  text-shadow:0 0 20px cyan,0 0 40px cyan;
+}
+
+#result{
+  position:fixed;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  background:rgba(0,0,0,0.92);
+  color:white;
+  z-index:9999;
+  font-size:46px;
+}
+
+#shoot{
+  position:fixed;
+  bottom:30px;
+  right:30px;
+  width:95px;
+  height:95px;
+  border-radius:50%;
+  border:none;
+  background:#ff3b3b;
+  color:white;
+  font-size:34px;
+  z-index:999;
+}
+</style>
+</head>
+
+<body>
+
+<div id="status">
+🚀 SPACE TIP
+<div id="statusText">Buscando rival...</div>
+</div>
+
+<div id="countdown"></div>
+
+<div id="result">
+  <div id="resultText"></div>
+  <button onclick="location.reload()">Jugar otra vez</button>
+</div>
+
+<canvas id="c"></canvas>
+<button id="shoot">🔥</button>
+
+<script src="js/game.js"></script>
+
+<script>
+
+// ================= ADMOB (CAPACITOR 8 FIX REAL) =================
+
+let matchCount = 0;
+let AdMobReady = false;
+
+async function initAdMob(){
+
+  console.log("=== INIT ADMOB ===");
+
+  try{
+
+    if(!window.Capacitor?.Plugins){
+
+      console.log("Capacitor Plugins NO encontrados");
+      return;
+
+    }
+
+    console.log("Capacitor encontrado");
+
+    const { AdMob } = window.Capacitor.Plugins;
+
+    console.log("Inicializando AdMob...");
+
+    await AdMob.initialize({
+      requestTrackingAuthorization: true,
+      initializeForTesting: false
+    });
+
+    AdMobReady = true;
+
+    console.log("AdMob listo");
+
+  }catch(e){
+
+    console.log("Error inicializando AdMob:", e);
+
+  }
+
+}
+
+document.addEventListener("DOMContentLoaded", initAdMob);
+
+async function showInterstitialAd(){
+
+  console.log("=== showInterstitialAd() ===");
+
+  if(!AdMobReady){
+
+    console.log("AdMobReady = FALSE");
+    return;
+
+  }
+
+  console.log("AdMobReady = TRUE");
+
+  try{
+
+    const { AdMob } = window.Capacitor.Plugins;
+
+    console.log("Preparando anuncio...");
+
+    await AdMob.prepareInterstitial({
+
+      adId: "ca-app-pub-9974496135349488/6520313527"
+
+    });
+
+    console.log("Anuncio preparado");
+
+    console.log("Mostrando anuncio...");
+
+    await AdMob.showInterstitial();
+
+    console.log("Anuncio mostrado");
+
+  }catch(e){
+
+    console.log("ERROR mostrando anuncio:", e);
+
+  }
+
+}
+
+// ================= CONFIG =================
+
+const WORLD_WIDTH = 900;
+const WORLD_HEIGHT = 820;
+
+// ================= CANVAS =================
+
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+
+function resize(){
+  const dpr = window.devicePixelRatio || 1;
+
+  canvas.width = innerWidth * dpr;
+  canvas.height = innerHeight * dpr;
+
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+
+resize();
+addEventListener("resize", resize);
+
+// ================= UI =================
+
+const countdown = document.getElementById("countdown");
+const result = document.getElementById("result");
+const resultText = document.getElementById("resultText");
+const statusText = document.getElementById("statusText");
+
+// ================= ASSETS =================
+
+const ship = new Image();
+ship.src = "https://space-duel-server-1.onrender.com/assets/bg/naveee1.png";
+
+const portalImage = new Image();
+
+portalImage.src =
+"assets/portal.gif";
+
+const shootSound = new Audio(
+"https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"
+);
+shootSound.volume = 0.25;
+
+// ================= STATE =================
+
+let myId = null;
+
+const state = {
+  players:[],
+  projectiles:[],
+  portal:null
+};
+
+const particles = [];
+
+// ================= WS =================
+console.log("Creando WebSocket...");
+const ws = new WebSocket("wss://space-duel-server-1.onrender.com");
+
+ws.onopen = ()=>{
+
+  console.log("WebSocket conectado");
+
+  ws.send(JSON.stringify({type:"play"}));
+
+};
+ws.onmessage = e=>{
+
+  const msg = JSON.parse(e.data);
+
+  console.log("Mensaje recibido:", msg.type);
+
+  if(msg.type==="welcome") myId = msg.id;
+
+  if(msg.type==="countdown"){
+    countdown.style.opacity = 1;
+    countdown.textContent = msg.value;
+    statusText.textContent = "Partida iniciando...";
+
+    if(msg.value==="FIGHT"){
+      setTimeout(()=>countdown.style.opacity=0,700);
+    }
+  }
+
+  if(msg.type==="state"){
+      state.players = msg.players;
+
+      state.projectiles = msg.projectiles;
+
+      state.portal = msg.portal;
+  }
+
+  if(msg.type==="hit"){
+    createExplosion(msg.x,msg.y);
+  }
+
+  if(msg.type==="gameover"){
+
+    console.log("GAME OVER");
+
+    stopBattleMusic();
+
+    matchCount++;
+
+    console.log("Partidas jugadas:", matchCount);
+
+    if(matchCount % 1 === 0){
+
+        console.log("Intentando mostrar anuncio...");
+
+        showInterstitialAd();
+
+    }else{
+
+        console.log("Todavía no corresponde anuncio");
+
+    }
+
+    // Guardamos el resultado para la pantalla personalizada
+
+    if(msg.loser === myId){
+
+        localStorage.setItem("matchResult","lose");
+
+    }else{
+
+        localStorage.setItem("matchResult","win");
+
+    }
+
+    // Ir a la pantalla de resultados
+
+    location.href = "result.html";
+
+}
+
+};
+// ================= INPUT =================
+
+let keys={};
+
+addEventListener("keydown",e=>keys[e.code]=true);
+addEventListener("keyup",e=>keys[e.code]=false);
+
+setInterval(()=>{
+  if(ws.readyState!==1) return;
+
+  ws.send(JSON.stringify({
+    type:"input",
+    left:keys["ArrowLeft"]||keys["KeyA"],
+    right:keys["ArrowRight"]||keys["KeyD"]
+  }));
+},50);
+
+// ================= SHOOT =================
+
+document.getElementById("shoot").onclick=()=>{
+
+  shootSound.currentTime=0;
+  shootSound.play();
+
+  ws.send(JSON.stringify({
+    type:"input",
+    fire:true
+  }));
+};
+
+// ================= FX =================
+
+function createExplosion(x,y){
+  for(let i=0;i<20;i++){
+    particles.push({
+      x,
+      y,
+      vx:(Math.random()-0.5)*8,
+      vy:(Math.random()-0.5)*8,
+      life:40
+    });
+  }
+}
+
+// ================= DRAW =================
+
+function draw(){
+
+  ctx.clearRect(0,0,innerWidth,innerHeight);
+  // =================
+// PORTAL
+// =================
+
+if(state.portal && state.portal.active){
+
+    const px =
+    (state.portal.x / WORLD_WIDTH) * innerWidth;
+
+    const py =
+    (state.portal.y / WORLD_HEIGHT) * innerHeight;
+
+
+    ctx.save();
+
+    ctx.shadowBlur = 30;
+    ctx.shadowColor = "cyan";
+
+
+    ctx.drawImage(
+        portalImage,
+        px - 60,
+        py - 60,
+        120,
+        120
+    );
+
+
+    ctx.restore();
+
+}
+
+  // estrellas
+  for(let i=0;i<120;i++){
+    const x=(i*97+Date.now()*0.08)%innerWidth;
+    const y=(i*53+Date.now()*0.04)%innerHeight;
+    ctx.fillStyle="white";
+    ctx.fillRect(x,y,2,2);
+  }
+
+  const shipSize=Math.min(innerWidth*0.16,110);
+
+  // players
+  for(const p of state.players){
+
+    const isMe=p.id===myId;
+
+    const x=(p.x/WORLD_WIDTH)*innerWidth;
+    const y=isMe?innerHeight-130:130;
+
+    ctx.save();
+    ctx.shadowBlur=20;
+    ctx.shadowColor=isMe?"cyan":"orange";
+
+    ctx.drawImage(ship,x-shipSize/2,y-shipSize/2,shipSize,shipSize);
+
+    ctx.restore();
+
+    ctx.fillStyle="lime";
+    ctx.fillRect(x-shipSize/2,y-shipSize/2-16,p.hp*(shipSize/4),8);
+  }
+
+  // bullets
+  for(const b of state.projectiles){
+
+    const x=(b.x/WORLD_WIDTH)*innerWidth;
+    const y=(b.y/WORLD_HEIGHT)*innerHeight;
+
+    ctx.fillStyle="red";
+    ctx.shadowBlur=20;
+    ctx.shadowColor="red";
+
+    ctx.fillRect(x-4,y-16,8,32);
+  }
+
+  // particles
+  for(let i=particles.length-1;i>=0;i--){
+
+    const p=particles[i];
+
+    p.x+=p.vx;
+    p.y+=p.vy;
+    p.life--;
+
+    ctx.fillStyle=`rgba(255,150,0,${p.life/40})`;
+
+    ctx.fillRect(
+      (p.x/WORLD_WIDTH)*innerWidth,
+      (p.y/WORLD_HEIGHT)*innerHeight,
+      4,4
+    );
+
+    if(p.life<=0) particles.splice(i,1);
+  }
+
+  requestAnimationFrame(draw);
+}
+
+draw();
+
+</script>
+
+</body>
+</html>
