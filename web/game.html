@@ -220,7 +220,7 @@ const statusText = document.getElementById("statusText");
 // ================= ASSETS =================
 
 const ship = new Image();
-ship.src = "https://space-duel-server-1.onrender.com/assets/bg/naveee1.png";
+ship.src = "assets/ships/naveee1.png";
 
 const portalImage = new Image();
 
@@ -274,6 +274,9 @@ ws.onmessage = e=>{
   }
 
   if(msg.type==="state"){
+      
+      console.log("STATE RECIBIDO", msg); 
+
       state.players = msg.players;
 
       state.projectiles = msg.projectiles;

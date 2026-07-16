@@ -132,7 +132,7 @@ function createPlayer(id, side, isBot = false){
 
     x: WORLD_WIDTH / 2,
 
-    hp:40,
+    hp:4,
 
     left:false,
     right:false,
@@ -355,8 +355,6 @@ setInterval(()=>{
     if(!room.started)
     continue;
 
-    console.log("SALA ACTIVA:", room.id);
-
     // ================= BOT AI =================
 
     for(const p of room.players){
@@ -537,10 +535,7 @@ setInterval(()=>{
 
       players:room.players,
 
-      projectiles:room.projectiles,
-
-      portal:room.portal
-
+      projectiles:room.projectiles
     });
   }
 
