@@ -187,10 +187,6 @@ canvas{
 <button id="shoot">🔥</button>
 <button id="invisible">👻</button>
 
-<!-- STICKERS
-<canvas id="c"></canvas>
-<button id="shoot">🔥</button>
-<button id="invisible">👻</button>
 
 <!-- STICKERS -->
 
@@ -542,12 +538,7 @@ if(state.portal && state.portal.active){
 }
 
   // estrellas
-  for(let i=0;i<120;i++){
-    const x=(i*97+Date.now()*0.08)%innerWidth;
-    const y=(i*53+Date.now()*0.04)%innerHeight;
-    ctx.fillStyle="white";
-    ctx.fillRect(x,y,2,2);
-  }
+  
 
   const shipSize=Math.min(innerWidth*0.16,110);
 
