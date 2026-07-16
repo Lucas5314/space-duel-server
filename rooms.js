@@ -36,7 +36,9 @@ function createRoom(a,b){
                 right:false,
                 fire:false,
                 lastShot:0,
-                isBot:a.isBot
+                isBot:a.isBot,
+                invisible:false,
+                invisibleUntil:0
             },
 
             {
@@ -48,7 +50,9 @@ function createRoom(a,b){
                 right:false,
                 fire:false,
                 lastShot:0,
-                isBot:b.isBot
+                isBot:b.isBot,
+                invisible:false,
+                invisibleUntil:0
             }
 
         ],

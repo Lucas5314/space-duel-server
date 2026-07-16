@@ -312,6 +312,26 @@ wss.on("connection",ws=>{
         player.fire = true;
       }
     }
+    // INVISIBILITY
+if(msg.type === "invisible"){
+
+    if(!ws.room) return;
+
+    const room = rooms[ws.room];
+
+    if(!room) return;
+
+    const player = room.players.find(
+        p => p.id === ws.id
+    );
+
+    if(!player) return;
+
+    player.invisible = true;
+
+    player.invisibleUntil = Date.now() + 5000;
+
+}
   });
 
   // CLOSE
@@ -378,70 +398,91 @@ setInterval(()=>{
 
         p.fire = true;
       }
+      
     }
 
     // ================= PLAYERS =================
 
-    for(const p of room.players){
+  // ================= PLAYERS =================
 
-      if(p.left)
-      p.x -= PLAYER_SPEED;
+for(const p of room.players){
 
-      if(p.right)
-      p.x += PLAYER_SPEED;
+  if(p.left)
+  p.x -= PLAYER_SPEED;
 
-      if(p.targetX != null){
+  if(p.right)
+  p.x += PLAYER_SPEED;
 
-        p.x +=
-        (p.targetX - p.x)
-        * 0.18;
-      }
+  if(p.targetX != null){
 
-      p.x = Math.max(
-        60,
-        Math.min(
-          WORLD_WIDTH - 60,
-          p.x
-        )
-      );
+    p.x +=
+    (p.targetX - p.x)
+    * 0.18;
+  }
 
-      // FIRE
-      if(
+  p.x = Math.max(
+    60,
+    Math.min(
+      WORLD_WIDTH - 60,
+      p.x
+    )
+  );
 
-        p.fire &&
+  // FIRE
+  if(
 
-        Date.now()
-        - p.lastShot
-        > FIRE_COOLDOWN
+    p.fire &&
 
-      ){
+    Date.now()
+    - p.lastShot
+    > FIRE_COOLDOWN
 
-        p.lastShot =
-        Date.now();
+  ){
 
-        const isBottom =
-        p.side === "bottom";
+    p.lastShot =
+    Date.now();
 
-        room.projectiles.push({
+    const isBottom =
+    p.side === "bottom";
 
-          owner:p.id,
+    room.projectiles.push({
 
-          x:p.x,
+      owner:p.id,
 
-          y:
-          isBottom
-          ? PLAYER_BOTTOM_Y
-          : PLAYER_TOP_Y,
+      x:p.x,
 
-          vy:
-          isBottom
-          ? -BULLET_SPEED
-          : BULLET_SPEED
-        });
-      }
+      y:
+      isBottom
+      ? PLAYER_BOTTOM_Y
+      : PLAYER_TOP_Y,
 
-      p.fire = false;
-    }
+      vy:
+      isBottom
+      ? -BULLET_SPEED
+      : BULLET_SPEED
+
+    });
+  }
+
+  p.fire = false;
+
+  // ================= INVISIBILITY =================
+
+  if(
+
+    p.invisible &&
+
+    Date.now() > p.invisibleUntil
+
+  ){
+
+    p.invisible = false;
+
+  }
+
+}
+
+// ================= BULLETS =================
 
     // ================= BULLETS =================
 

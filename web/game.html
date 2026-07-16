@@ -80,6 +80,80 @@ canvas{
   font-size:34px;
   z-index:999;
 }
+.sticker-panel {
+
+    position: fixed;
+
+    bottom: 20px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    display: flex;
+
+    gap: 10px;
+
+    z-index: 10;
+
+}
+
+
+
+.sticker-panel button {
+
+    width: 60px;
+
+    height: 60px;
+
+    background: rgba(0,0,0,0.4);
+
+    border: 2px solid white;
+
+    border-radius: 15px;
+
+    padding: 5px;
+
+    cursor:pointer;
+
+}
+
+
+
+.sticker-panel img {
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:contain;
+
+}
+#invisible{
+
+  position:fixed;
+
+  bottom:30px;
+
+  left:30px;
+
+  width:95px;
+
+  height:95px;
+
+  border-radius:50%;
+
+  border:none;
+
+  background:#7b3cff;
+
+  color:white;
+
+  font-size:34px;
+
+  z-index:999;
+
+}
 </style>
 </head>
 
@@ -99,6 +173,34 @@ canvas{
 
 <canvas id="c"></canvas>
 <button id="shoot">🔥</button>
+<button id="invisible">👻</button>
+
+<!-- STICKERS -->
+
+<div class="sticker-panel">
+
+
+    <button>
+        <img src="assets/stickers/fuego.jpg">
+    </button>
+
+
+    <button>
+        <img src="assets/stickers/gg.jpg">
+    </button>
+
+
+    <button>
+        <img src="assets/stickers/corona.jpg">
+    </button>
+
+
+</div>
+
+
+
+<div id="stickerEffect"></div>
+
 
 <script src="js/game.js"></script>
 
@@ -276,6 +378,9 @@ ws.onmessage = e=>{
   if(msg.type==="state"){
       
       console.log("STATE RECIBIDO", msg); 
+      for(const p of msg.players){
+    console.log(p.id, p.invisible);
+}
 
       state.players = msg.players;
 
@@ -358,6 +463,15 @@ document.getElementById("shoot").onclick=()=>{
     fire:true
   }));
 };
+document.getElementById("invisible").onclick = ()=>{
+
+  ws.send(JSON.stringify({
+
+    type:"invisible"
+
+  }));
+
+};
 
 // ================= FX =================
 
@@ -428,11 +542,26 @@ if(state.portal && state.portal.active){
     const x=(p.x/WORLD_WIDTH)*innerWidth;
     const y=isMe?innerHeight-130:130;
 
-    ctx.save();
-    ctx.shadowBlur=20;
-    ctx.shadowColor=isMe?"cyan":"orange";
+ctx.save();
 
-    ctx.drawImage(ship,x-shipSize/2,y-shipSize/2,shipSize,shipSize);
+ctx.shadowBlur = 20;
+ctx.shadowColor = isMe ? "cyan" : "orange";
+
+if(!p.invisible){
+
+    ctx.drawImage(
+
+        ship,
+
+        x - shipSize/2,
+        y - shipSize/2,
+
+        shipSize,
+        shipSize
+
+    );
+
+}
 
     ctx.restore();
 
