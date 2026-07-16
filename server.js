@@ -199,7 +199,9 @@ function matchPlayers(){
     const a = waiting.shift();
     const b = waiting.shift();
 
-    createRoom(a,b);
+    const room = createRoom(a,b);
+
+    startCountdown(room);
   }
 }
 
