@@ -181,6 +181,21 @@ canvas{
     object-fit:contain;
 
 }
+#joystick{
+
+    position:fixed;
+
+    width:180px;
+    height:180px;
+
+    display:none;
+
+    pointer-events:none;
+
+    z-index:200;
+
+    transform:translate(-50%,-50%);
+}
 </style>
 </head>
 
@@ -206,6 +221,18 @@ canvas{
 </div>
 <video id="gameBackground" loop muted playsinline>
     <source src="assets/backgrounds/mapa.mp4" type="video/mp4">
+</video>
+<video
+    id="joystick"
+    muted
+    loop
+    playsinline
+    preload="auto">
+
+    <source
+    src="assets/ui/joystick.mp4"
+    type="video/mp4">
+
 </video>
 <video id="explosionVideo" muted playsinline>
    <source src="assets/effects/explosion.webm" type="video/webm">
@@ -501,22 +528,173 @@ ws.onmessage = e=>{
 }
 };
 // ================= INPUT =================
+// ================= INPUT =================
 
-let keys={};
+const joystick =
+document.getElementById("joystick");
 
-addEventListener("keydown",e=>keys[e.code]=true);
-addEventListener("keyup",e=>keys[e.code]=false);
+let touchActive = false;
+
+let keys = {};
+
+
+// ================= TOUCH JOYSTICK =================
+
+addEventListener("touchstart",(e)=>{
+
+    e.preventDefault();
+
+    touchActive = true;
+
+    const touch = e.touches[0];
+
+
+    // mostrar joystick animado
+
+    joystick.style.display="block";
+
+
+    joystick.style.left =
+    touch.clientX + "px";
+
+
+    joystick.style.top =
+    touch.clientY + "px";
+
+
+    joystick.currentTime = 0;
+
+    joystick.play();
+
+
+
+    if(ws.readyState === 1){
+
+        ws.send(JSON.stringify({
+
+            type:"input",
+
+            targetX:
+            (touch.clientX / innerWidth)
+            * WORLD_WIDTH
+
+        }));
+
+    }
+
+
+},{passive:false});
+
+
+
+
+
+addEventListener("touchmove",(e)=>{
+
+    e.preventDefault();
+
+
+    if(!touchActive) return;
+
+
+    const touch = e.touches[0];
+
+
+
+    // mover joystick con el dedo
+
+    joystick.style.left =
+    touch.clientX + "px";
+
+
+    joystick.style.top =
+    touch.clientY + "px";
+
+
+
+    if(ws.readyState === 1){
+
+        ws.send(JSON.stringify({
+
+            type:"input",
+
+            targetX:
+            (touch.clientX / innerWidth)
+            * WORLD_WIDTH
+
+        }));
+
+    }
+
+
+},{passive:false});
+
+
+
+
+
+addEventListener("touchend",()=>{
+
+
+    touchActive = false;
+
+
+    // ocultar joystick
+
+    joystick.pause();
+
+    joystick.style.display="none";
+
+
+});
+
+
+
+
+// ================= TECLADO PC =================
+
+
+addEventListener("keydown",e=>{
+
+    keys[e.code]=true;
+
+});
+
+
+addEventListener("keyup",e=>{
+
+    keys[e.code]=false;
+
+});
+
+
+
+
+
+// enviar movimiento teclado
 
 setInterval(()=>{
-  if(ws.readyState!==1) return;
 
-  ws.send(JSON.stringify({
-    type:"input",
-    left:keys["ArrowLeft"]||keys["KeyA"],
-    right:keys["ArrowRight"]||keys["KeyD"]
-  }));
+    if(ws.readyState!==1)
+    return;
+
+
+    ws.send(JSON.stringify({
+
+        type:"input",
+
+        left:
+        keys["ArrowLeft"] ||
+        keys["KeyA"],
+
+
+        right:
+        keys["ArrowRight"] ||
+        keys["KeyD"]
+
+    }));
+
 },50);
-
 // ================= SHOOT =================
 
 document.getElementById("shoot").onclick=()=>{

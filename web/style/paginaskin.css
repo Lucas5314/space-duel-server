@@ -1,0 +1,309 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+
+    width:100%;
+    height:100%;
+
+    overflow:hidden;
+
+    background:#020617;
+
+    font-family:Arial,Helvetica,sans-serif;
+
+    color:white;
+
+}
+
+
+/* ===========================
+   ESTRELLAS
+=========================== */
+
+#stars{
+
+    position:fixed;
+    inset:0;
+
+    background:
+    radial-gradient(circle,#ffffff 1px,transparent 1px);
+
+    background-size:70px 70px;
+
+    opacity:.25;
+
+    z-index:0;
+
+}
+
+
+/* ===========================
+   CONTENEDOR
+=========================== */
+
+.skinPage{
+
+    position:relative;
+
+    z-index:2;
+
+    width:100%;
+    height:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:20px;
+
+    padding:25px;
+
+}
+
+
+/* ===========================
+   BOTÓN VOLVER
+=========================== */
+
+#backBtn{
+
+    position:absolute;
+
+    top:20px;
+    left:20px;
+
+    padding:12px 22px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#00d8ff;
+
+    color:white;
+
+    font-size:17px;
+
+    cursor:pointer;
+
+    box-shadow:0 0 20px cyan;
+
+}
+
+
+/* ===========================
+   RAREZA
+=========================== */
+
+.rarity{
+
+    padding:8px 20px;
+
+    border-radius:30px;
+
+    background:rgba(255,215,0,.18);
+
+    border:1px solid gold;
+
+    color:gold;
+
+    font-weight:bold;
+
+    font-size:18px;
+
+    box-shadow:0 0 15px gold;
+
+}
+
+
+/* ===========================
+   NAVE
+=========================== */
+
+.shipContainer{
+
+    width:280px;
+    height:280px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+
+#skinImage{
+
+    width:100%;
+
+    object-fit:contain;
+
+    filter:drop-shadow(0 0 30px cyan);
+
+}
+
+
+/* ===========================
+   NOMBRE
+=========================== */
+
+#skinName{
+
+    font-size:34px;
+
+    text-align:center;
+
+}
+
+
+/* ===========================
+   DESCRIPCIÓN
+=========================== */
+
+#skinDescription{
+
+    max-width:650px;
+
+    text-align:center;
+
+    font-size:18px;
+
+    line-height:1.6;
+
+    color:#d7d7d7;
+
+}
+
+
+/* ===========================
+   INFORMACIÓN
+=========================== */
+
+.skinInfo{
+
+    display:flex;
+
+    gap:25px;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+}
+
+
+.infoBox{
+
+    width:170px;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    background:rgba(255,255,255,.08);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    text-align:center;
+
+    backdrop-filter:blur(8px);
+
+}
+
+
+.infoBox span{
+
+    display:block;
+
+    color:#9edcff;
+
+    margin-bottom:8px;
+
+}
+
+
+.infoBox strong{
+
+    font-size:18px;
+
+}
+
+
+/* ===========================
+   BOTÓN EQUIPAR
+=========================== */
+
+#equipBtn{
+
+    padding:18px 55px;
+
+    border:none;
+
+    border-radius:20px;
+
+    background:linear-gradient(135deg,#00d8ff,#0066ff);
+
+    color:white;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:0 0 25px cyan;
+
+    transition:.25s;
+
+}
+
+
+#equipBtn:hover{
+
+    transform:scale(1.05);
+
+}
+
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:700px){
+
+    #skinImage{
+
+        width:220px;
+
+    }
+
+    #skinName{
+
+        font-size:28px;
+
+    }
+
+    #skinDescription{
+
+        font-size:16px;
+
+    }
+
+    #equipBtn{
+
+        width:90%;
+
+    }
+
+}

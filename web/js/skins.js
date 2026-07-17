@@ -162,125 +162,94 @@ const skins = [
 
 ];
 
-
-
-const container = document.getElementById("skinsContainer");
-
+const container =
+document.getElementById("skinsContainer");
 
 let equipada =
 localStorage.getItem("selectedShip") || "nave1";
 
-
-
 function render(){
-
 
     container.innerHTML="";
 
-
-
     skins.forEach(skin=>{
-
 
         const card =
         document.createElement("div");
 
-
         card.className="card";
 
+        // Abrir ficha de la skin
+        card.onclick=()=>{
 
+            location.href =
+            "paginaskin.html?id=" + skin.id;
 
-        const boton = skin.desbloqueada
+        };
 
-        ? 
+        const boton =
+
+        skin.desbloqueada
+
+        ?
+
         (skin.id===equipada ? "Equipada" : "Equipar")
 
         :
 
         "Bloqueada";
 
+        card.innerHTML=`
 
+            <h2>${skin.nombre}</h2>
 
+            <img src="${skin.imagen}">
 
-        card.innerHTML = `
+            <p>${skin.rareza}</p>
 
+            <button
+            ${skin.desbloqueada ? "" : "disabled"}
+            data-id="${skin.id}">
 
-        <h2>${skin.nombre}</h2>
+            ${boton}
 
-
-        <img src="${skin.imagen}">
-
-
-        <p>${skin.rareza}</p>
-
-
-
-        <button
-        ${skin.desbloqueada ? "" : "disabled"}
-        data-id="${skin.id}">
-
-        ${boton}
-
-        </button>
-
+            </button>
 
         `;
 
-
-
         container.appendChild(card);
 
-
-
     });
-
-
-
 
     document
     .querySelectorAll("button[data-id]")
     .forEach(btn=>{
 
+        btn.onclick=(e)=>{
 
-        btn.onclick=()=>{
-
+            // Evita abrir la ficha
+            e.stopPropagation();
 
             equipada =
             btn.dataset.id;
 
-
             localStorage.setItem(
-            "selectedShip",
-            equipada
+                "selectedShip",
+                equipada
             );
-
 
             render();
 
-
         };
-
 
     });
 
-
-
 }
-
-
-
-
 
 render();
 
-
-
-
-
 document.getElementById("back").onclick=()=>{
 
-
     location.href="profile.html";
-
 
 };
