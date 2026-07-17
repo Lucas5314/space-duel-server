@@ -38,36 +38,37 @@ const savedPlayer = JSON.parse(localStorage.getItem("player"));
 
 if(savedPlayer){
 
-    fetch("/player/" + savedPlayer.id)
+    // Mostrar datos guardados inmediatamente
+    document.getElementById("playerName").textContent =
+        savedPlayer.username;
+
+    document.querySelector(".flag").textContent =
+        savedPlayer.country;
+
+
+    fetch("https://space-duel-server.onrender.com/player/" + savedPlayer.id)
 
         .then(res => res.json())
 
         .then(player => {
 
-
             document.getElementById("playerName").textContent =
                 player.username;
-
 
             document.querySelector(".flag").textContent =
                 player.country;
 
-
             document.getElementById("wins").textContent =
                 player.wins;
-
 
             document.getElementById("losses").textContent =
                 player.losses;
 
-
             document.getElementById("games").textContent =
                 player.games;
 
-
             document.getElementById("ship").src =
                 "assets/ships/" + player.skin + ".png";
-
 
         })
 
@@ -78,8 +79,6 @@ if(savedPlayer){
         });
 
 }
-
-
 
 
 // ===========================

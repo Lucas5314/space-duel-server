@@ -167,6 +167,20 @@ canvas{
 
   z-index:-1;
 }
+#explosionVideo{
+
+    position:fixed;
+
+    width:200px;
+    height:200px;
+
+    display:none;
+
+    z-index:5;
+
+    object-fit:contain;
+
+}
 </style>
 </head>
 
@@ -190,9 +204,11 @@ canvas{
   <div id="resultText"></div>
   <button onclick="location.reload()">Jugar otra vez</button>
 </div>
-
-<video id="gameBackground" autoplay loop muted playsinline>
+<video id="gameBackground" loop muted playsinline>
     <source src="assets/backgrounds/mapa.mp4" type="video/mp4">
+</video>
+<video id="explosionVideo" muted playsinline>
+   <source src="assets/effects/explosion.webm" type="video/webm">
 </video>
 
 <canvas id="c"></canvas>
@@ -397,8 +413,17 @@ ws.onmessage = e=>{
     statusText.textContent = "Partida iniciando...";
 
     if(msg.value==="FIGHT"){
-      setTimeout(()=>countdown.style.opacity=0,700);
-    }
+
+    const bg =
+    document.getElementById("gameBackground");
+
+    bg.play();
+
+    setTimeout(()=>{
+        countdown.style.opacity=0;
+    },700);
+
+}
   }
 
   if(msg.type==="state"){
@@ -429,6 +454,7 @@ ws.onmessage = e=>{
 
     console.log("Partidas jugadas:", matchCount);
 
+
     if(matchCount % 1 === 0){
 
         console.log("Intentando mostrar anuncio...");
@@ -441,7 +467,6 @@ ws.onmessage = e=>{
 
     }
 
-    // Guardamos el resultado para la pantalla personalizada
 
     if(msg.loser === myId){
 
@@ -453,12 +478,27 @@ ws.onmessage = e=>{
 
     }
 
-    // Ir a la pantalla de resultados
 
-    location.href = "result.html";
+    // EXPLOSIÓN
+
+    const explosion =
+    document.getElementById("explosionVideo");
+
+
+    explosion.style.display="block";
+
+    explosion.currentTime=0;
+
+    explosion.play();
+
+
+    setTimeout(()=>{
+
+        location.href = "result.html";
+
+    },2000);
 
 }
-
 };
 // ================= INPUT =================
 
