@@ -64,20 +64,14 @@ console.log("CREANDO JUGADOR:", req.body);
 
     }catch(error){
 
+    console.log("ERROR REAL:", error);
 
-        console.log(error);
+    res.json({
+        success:false,
+        error:error.message
+    });
 
-
-        res.json({
-
-            success:false,
-
-            error:"Ese nombre ya existe"
-
-        });
-
-
-    }
+}
 
 
 });
