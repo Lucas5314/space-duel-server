@@ -37,7 +37,7 @@ continueBtn.onclick = async () => {
 
         // Enviar jugador al servidor
 
-        const response = await fetch("/create-player", {
+        const response = await fetch("https://space-duel-server-1.onrender.com/create-player", {
 
 
             method:"POST",
