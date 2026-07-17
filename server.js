@@ -3,10 +3,12 @@ const db = require("./database/db");
 const http = require("http");
 const WebSocket = require("ws");
 const crypto = require("crypto");
+const cors = require("cors");
 
 const app = express();
 
 app.use(express.json());
+app.use(cors());
  
 // ===========================
 // CREAR JUGADOR
