@@ -256,24 +256,33 @@ wss.on("connection",ws=>{
       matchPlayers();
 
       // BOT AFTER 10s
-      setTimeout(()=>{
+      // BOT AFTER 10s
+setTimeout(()=>{
 
-        if(waiting.includes(ws)){
+    if(waiting.includes(ws)){
 
-          waiting.splice(
+        console.log("CREANDO BOT PARA:", ws.id);
+
+        waiting.splice(
             waiting.indexOf(ws),
             1
-          );
+        );
 
-          const bot =
-          createBotSocket();
 
-          createRoom(ws,bot);
+        const bot = createBotSocket();
 
-          startCountdown(room);
-        }
 
-      },10000);
+        const room = createRoom(ws,bot);
+
+
+        console.log("SALA BOT:", room.id);
+
+
+        startCountdown(room);
+
+    }
+
+},10000);
     }
 
     // INPUT
