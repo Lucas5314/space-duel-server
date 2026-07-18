@@ -269,6 +269,8 @@ wss.on("connection",ws=>{
           createBotSocket();
 
           createRoom(ws,bot);
+
+          startCountdown(room);
         }
 
       },10000);

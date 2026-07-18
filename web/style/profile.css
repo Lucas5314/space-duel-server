@@ -36,6 +36,7 @@ body{
 }
 
 
+
 @keyframes rainbowBackground{
 
     0%{
@@ -88,19 +89,17 @@ body{
 @keyframes stars{
 
     from{
-
         transform:translateY(0);
-
     }
 
 
     to{
-
         transform:translateY(45px);
-
     }
 
 }
+
+
 
 
 
@@ -110,7 +109,7 @@ body{
 
     width:100%;
 
-    height:100%;
+    height:100vh;
 
 
     display:flex;
@@ -119,6 +118,12 @@ body{
 
 
     align-items:center;
+
+
+    justify-content:space-between;
+
+
+    padding:20px;
 
 
     position:relative;
@@ -130,15 +135,19 @@ body{
 
 
 
+
+
+
 /* PARTE SUPERIOR */
 
 .topBar{
 
     width:100%;
 
-    padding:25px 25px 0;
+    padding:10px 15px 0;
 
 }
+
 
 
 .playerInfo{
@@ -148,28 +157,33 @@ body{
 }
 
 
+
 .playerRow{
 
     display:flex;
 
     align-items:center;
 
+    justify-content:center;
+
     gap:10px;
 
 }
+
 
 
 #playerName{
 
     color:white;
 
-    font-size:34px;
+    font-size:clamp(25px,4vw,34px);
 
     letter-spacing:1px;
 
     text-shadow:0 0 15px cyan;
 
 }
+
 
 
 
@@ -183,15 +197,19 @@ body{
 
 
 
+
+
 /* ESTADISTICAS */
 
 .miniStats{
 
     display:flex;
 
-    gap:15px;
+    justify-content:center;
 
-    margin-top:18px;
+    gap:10px;
+
+    margin-top:15px;
 
     flex-wrap:wrap;
 
@@ -199,11 +217,12 @@ body{
 
 
 
+
 .stat{
 
     color:white;
 
-    font-size:20px;
+    font-size:18px;
 
     display:flex;
 
@@ -224,11 +243,16 @@ body{
 
 
 
+
 .stat strong{
 
-    font-size:22px;
+    font-size:20px;
 
 }
+
+
+
+
 
 
 
@@ -256,11 +280,17 @@ body{
 
 
 
+
 #ship{
 
-    width:360px;
 
-    max-width:90vw;
+    width:min(45vw,360px);
+
+
+    max-height:40vh;
+
+
+    object-fit:contain;
 
 
     filter:
@@ -273,6 +303,7 @@ body{
 
 
 }
+
 
 
 
@@ -296,8 +327,9 @@ body{
 
     }
 
-
 }
+
+
 
 
 
@@ -312,10 +344,11 @@ body{
     max-width:340px;
 
 
-    margin-bottom:80px;
+    margin-bottom:10px;
 
 
 }
+
 
 
 
@@ -328,6 +361,8 @@ body{
 
 
 }
+
+
 
 
 
@@ -355,6 +390,8 @@ body{
 
 
 
+
+
 .xp{
 
 
@@ -371,13 +408,16 @@ body{
     #00ff90
     );
 
-
 }
 
 
 
-/* BOTON VOLVER */
 
+
+
+
+
+/* BOTON VOLVER */
 
 .backBtn{
 
@@ -389,7 +429,6 @@ body{
 
 
     bottom:20px;
-
 
 
     width:55px;
@@ -418,7 +457,6 @@ body{
     cursor:pointer;
 
 
-
     transition:.25s;
 
 
@@ -436,32 +474,31 @@ body{
 
 
 }
-/* ==========================
-   BOTONES DEL MENU
-========================== */
 
+
+
+
+
+
+
+/* BOTONES MENU */
 
 .menuButtons{
 
 
-    position:absolute;
-
-
-    bottom:25px;
-
-
-    left:50%;
-
-
-    transform:translateX(-50%);
-
+    width:100%;
 
 
     display:flex;
 
 
-    gap:15px;
+    justify-content:center;
 
+
+    gap:12px;
+
+
+    padding-bottom:10px;
 
 
     z-index:20;
@@ -475,10 +512,10 @@ body{
 .menuButtons button{
 
 
-    width:170px;
+    width:min(28vw,170px);
 
 
-    height:55px;
+    height:min(8vh,55px);
 
 
 
@@ -502,7 +539,7 @@ body{
 
 
 
-    font-size:18px;
+    font-size:clamp(12px,2vw,18px);
 
 
 
@@ -522,7 +559,6 @@ body{
 
 
     transform:scale(1.05);
-
 
 
     border-color:cyan;
