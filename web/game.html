@@ -418,6 +418,12 @@ const portalImage = new Image();
 portalImage.src =
 "assets/portal.gif";
 
+// BALA
+
+const bulletImage = new Image();
+bulletImage.src = "assets/bullets/bullet1.png";
+
+
 const shootSound = new Audio(
 "https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"
 );
@@ -529,22 +535,42 @@ ws.onmessage = e=>{
     // EXPLOSIÓN
 
     const explosion =
-    document.getElementById("explosionVideo");
+document.getElementById("explosionVideo");
 
+const loser =
+state.players.find(
+    p => p.id === msg.loser
+);
 
-    explosion.style.display="block";
+if(loser){
 
-    explosion.currentTime=0;
+    const x =
+    (loser.x / WORLD_WIDTH) * innerWidth;
 
-    explosion.play();
+    const y =
+    (loser.id === myId)
+    ? innerHeight - 130
+    : 130;
 
+    explosion.style.left =
+    (x - 100) + "px";
 
-    setTimeout(()=>{
+    explosion.style.top =
+    (y - 100) + "px";
 
-        location.href = "result.html";
+}
 
-    },2000);
+explosion.style.display = "block";
 
+explosion.currentTime = 0;
+
+explosion.play();
+
+setTimeout(()=>{
+
+    location.href = "result.html";
+
+},2000);
 }
 };
 // ================= INPUT =================
@@ -849,19 +875,32 @@ if(!p.invisible){
     ctx.fillRect(x-shipSize/2,y-shipSize/2-16,p.hp*(shipSize/4),8);
   }
 
-  // bullets
-  for(const b of state.projectiles){
+  /// bullets
+for(const b of state.projectiles){
 
-    const x=(b.x/WORLD_WIDTH)*innerWidth;
-    const y=(b.y/WORLD_HEIGHT)*innerHeight;
+    const x = (b.x / WORLD_WIDTH) * innerWidth;
+    const y = (b.y / WORLD_HEIGHT) * innerHeight;
 
-    ctx.fillStyle="red";
-    ctx.shadowBlur=20;
-    ctx.shadowColor="red";
+    ctx.save();
 
-    ctx.fillRect(x-4,y-16,8,32);
-  }
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = "cyan";
 
+    ctx.drawImage(
+
+        bulletImage,
+
+        x - 10,
+        y - 24,
+
+        20,
+        48
+
+    );
+
+    ctx.restore();
+
+}
   // particles
   for(let i=particles.length-1;i>=0;i--){
 
