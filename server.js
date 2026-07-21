@@ -116,6 +116,11 @@ const {
     removeRoom
 } = require("./rooms");
 
+const {
+    activatePower,
+    updatePowers
+} = require("./powers");
+
 // ================= PLAYER =================
 
 function createPlayer(id, side, isBot = false){
@@ -255,7 +260,131 @@ wss.on("connection",ws=>{
 
       matchPlayers();
 
-      // BOT AFTER 10s
+      // ===========================
+// ACTIVAR PODER
+// ===========================
+// ===========================
+// ACTUALIZAR PODERES
+// ===========================
+
+function updatePowers(player){
+
+    const now = Date.now();
+
+    if(
+        player.powers.shield &&
+        now > player.powers.shieldUntil
+    ){
+        player.powers.shield = false;
+    }
+
+    if(
+        player.powers.invisible &&
+        now > player.powers.invisibleUntil
+    ){
+        player.powers.invisible = false;
+    }
+
+    if(
+        player.powers.turbo &&
+        now > player.powers.turboUntil
+    ){
+        player.powers.turbo = false;
+    }
+
+    if(
+        player.powers.tripleShot &&
+        now > player.powers.tripleShotUntil
+    ){
+        player.powers.tripleShot = false;
+    }
+
+    if(
+        player.powers.dash &&
+        now > player.powers.dashUntil
+    ){
+        player.powers.dash = false;
+    }
+
+}
+
+function activatePower(player,power){
+
+    switch(power){
+
+        // ===========================
+        // ESCUDO
+        // ===========================
+
+        case "shield":
+
+            player.powers.shield = true;
+            player.powers.shieldUntil = Date.now() + 5000;
+
+        break;
+
+
+        // ===========================
+        // INVISIBILIDAD
+        // ===========================
+
+        case "invisible":
+
+            player.powers.invisible = true;
+            player.powers.invisibleUntil = Date.now() + 5000;
+
+        break;
+
+
+        // ===========================
+        // TURBO
+        // ===========================
+
+        case "turbo":
+
+            player.powers.turbo = true;
+            player.powers.turboUntil = Date.now() + 5000;
+
+        break;
+
+
+        // ===========================
+        // TRIPLE DISPARO
+        // ===========================
+
+        case "tripleShot":
+
+            player.powers.tripleShot = true;
+            player.powers.tripleShotUntil = Date.now() + 5000;
+
+        break;
+
+
+        // ===========================
+        // CONGELAR
+        // ===========================
+
+        case "freeze":
+
+            player.powers.frozenUntil = Date.now() + 3000;
+
+        break;
+
+
+        // ===========================
+        // DASH
+        // ===========================
+
+        case "dash":
+
+            player.powers.dash = true;
+            player.powers.dashUntil = Date.now() + 300;
+
+        break;
+
+    }
+
+}
       // BOT AFTER 10s
 setTimeout(()=>{
 
@@ -319,7 +448,32 @@ setTimeout(()=>{
         player.fire = true;
       }
     }
-    // INVISIBILITY
+  
+// POWERS
+// ===========================
+
+if(msg.type === "power"){
+
+    if(!ws.room) return;
+
+    const room = rooms[ws.room];
+
+    if(!room) return;
+
+    const player = room.players.find(
+        p => p.id === ws.id
+    );
+
+    if(!player) return;
+
+    activatePower(player, msg.power);
+
+}
+
+// ===========================
+// INVISIBILIDAD (TEMPORAL)
+// ===========================
+
 if(msg.type === "invisible"){
 
     if(!ws.room) return;
@@ -339,8 +493,7 @@ if(msg.type === "invisible"){
     player.invisibleUntil = Date.now() + 5000;
 
 }
-  });
-
+});
   // CLOSE
   ws.on("close",()=>{
 
@@ -485,9 +638,12 @@ for(const p of room.players){
 
     p.invisible = false;
 
-  }
+    
 
+  }
+   updatePowers(p);
 }
+
 
 // ================= BULLETS =================
 

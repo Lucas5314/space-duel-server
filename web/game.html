@@ -494,9 +494,8 @@ ws.onmessage = e=>{
   }
 
   if(msg.type==="hit"){
-    createExplosion(msg.x,msg.y);
-  }
-
+    createHitEffect(msg.x,msg.y);
+}
   if(msg.type==="gameover"){
 
     console.log("GAME OVER");
@@ -576,110 +575,157 @@ setTimeout(()=>{
 // ================= INPUT =================
 // ================= INPUT =================
 
+
+
+// ================= TOUCH JOYSTICK =================
+// ================= TOUCH CONTROL MOVIL =================
+
 const joystick =
 document.getElementById("joystick");
-let lastTap = 0;
 
 let touchActive = false;
+let joystickActive = false;
+let lastTap = 0;
 
 let keys = {};
 
 
-// ================= TOUCH JOYSTICK =================
+// ================= TOUCH START =================
 
 addEventListener("touchstart",(e)=>{
 
+
+    // no interferir con botones
+
+    if(
+        e.target.id === "shoot" ||
+        e.target.id === "invisible"
+    ){
+        return;
+    }
+
+
     e.preventDefault();
 
-    touchActive = true;
 
     const touch = e.touches[0];
 
     const now = Date.now();
 
-if(now - lastTap < 300){
 
-    if(ws.readyState === 1){
 
-        ws.send(JSON.stringify({
+    // DOBLE TOQUE = ACTIVAR JOYSTICK DE DISPARO
 
-            type:"input",
+    if(now - lastTap < 300){
 
-            fire:true
 
-        }));
+        joystickActive = true;
+
+
+        joystick.style.display="block";
+
+
+        joystick.style.left =
+        touch.clientX+"px";
+
+
+        joystick.style.top =
+        touch.clientY+"px";
+
+
+        joystick.currentTime=0;
+
+        joystick.play();
+
+
+
+        touchActive = true;
+
 
     }
 
-}
 
-lastTap = now;
-
-    // mostrar joystick animado
-
-    joystick.style.display="block";
-
-
-    joystick.style.left =
-    touch.clientX + "px";
-
-
-    joystick.style.top =
-    touch.clientY + "px";
-
-
-    joystick.currentTime = 0;
-
-    joystick.play();
+    lastTap = now;
 
 
 
-    if(ws.readyState === 1){
+    // Si NO hay joystick:
+    // el toque normal queda para mover nave
 
-        ws.send(JSON.stringify({
 
-            type:"input",
+    if(!joystickActive){
 
-            targetX:
-            (touch.clientX / innerWidth)
-            * WORLD_WIDTH
 
-        }));
+        if(ws.readyState===1){
+
+
+            ws.send(JSON.stringify({
+
+                type:"input",
+
+                targetX:
+                (touch.clientX / innerWidth)
+                * WORLD_WIDTH
+
+            }));
+
+        }
 
     }
+
 
 
 },{passive:false});
 
 
 
+
+
+// ================= TOUCH MOVE =================
 
 
 addEventListener("touchmove",(e)=>{
 
+
     e.preventDefault();
 
 
-    if(!touchActive) return;
-
-
-    const touch = e.touches[0];
-    
+    const touch=e.touches[0];
 
 
 
-    // mover joystick con el dedo
+    // Si joystick está activo:
+    // solo dispara
 
-    joystick.style.left =
-    touch.clientX + "px";
-
-
-    joystick.style.top =
-    touch.clientY + "px";
+    if(joystickActive){
 
 
+        if(ws.readyState===1){
 
-    if(ws.readyState === 1){
+
+            ws.send(JSON.stringify({
+
+                type:"input",
+
+                fire:true
+
+            }));
+
+        }
+
+
+        return;
+
+    }
+
+
+
+    // Si no hay joystick:
+    // mover nave
+
+
+    if(ws.readyState===1){
+
 
         ws.send(JSON.stringify({
 
@@ -694,28 +740,38 @@ addEventListener("touchmove",(e)=>{
     }
 
 
+
 },{passive:false});
 
 
 
+
+
+// ================= TOUCH END =================
 
 
 addEventListener("touchend",()=>{
 
 
-    touchActive = false;
+    touchActive=false;
 
 
-    // ocultar joystick
+    if(joystickActive){
 
-    joystick.pause();
 
-    joystick.style.display="none";
+        joystickActive=false;
+
+
+        joystick.pause();
+
+
+        joystick.style.display="none";
+
+
+    }
 
 
 });
-
-
 
 
 // ================= TECLADO PC =================
@@ -786,18 +842,47 @@ document.getElementById("invisible").onclick = ()=>{
 
 // ================= FX =================
 
-function createExplosion(x,y){
-  for(let i=0;i<20;i++){
-    particles.push({
-      x,
-      y,
-      vx:(Math.random()-0.5)*8,
-      vy:(Math.random()-0.5)*8,
-      life:40
-    });
-  }
-}
+function createHitEffect(x,y){
 
+    const gif = document.createElement("img");
+
+    const effects = [
+        "assets/effects/particle1.gif",
+        "assets/effects/particle2.gif",
+        "assets/effects/particle3.gif"
+    ];
+
+    gif.src =
+    effects[Math.floor(Math.random()*effects.length)];
+
+
+    gif.style.position="fixed";
+
+    gif.style.width="90px";
+    gif.style.height="90px";
+
+    gif.style.left =
+    ((x/WORLD_WIDTH)*innerWidth - 45)+"px";
+
+    gif.style.top =
+    ((y/WORLD_HEIGHT)*innerHeight - 45)+"px";
+
+
+    gif.style.pointerEvents="none";
+
+    gif.style.zIndex="50";
+
+
+    document.body.appendChild(gif);
+
+
+    setTimeout(()=>{
+
+        gif.remove();
+
+    },600);
+
+}
 // ================= DRAW =================
 
 function draw(){
