@@ -736,7 +736,7 @@ for(const p of room.players){
     }
 
     // ================= STATE =================
-
+ console.log("ENVIANDO STATE", room.players);
     sendRoom(room,{
 
       type:"state",
