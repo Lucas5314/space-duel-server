@@ -517,7 +517,7 @@ for(const p of room.players){
     
 
   }
-   updatePowers(p);
+   
 }
 
 
