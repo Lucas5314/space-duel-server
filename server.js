@@ -465,42 +465,68 @@ for(const p of room.players){
   );
 
   // FIRE
-  if(
+if(
 
-    p.fire &&
+  p.fire &&
 
-    Date.now()
-    - p.lastShot
-    > FIRE_COOLDOWN
+  Date.now()
+  - p.lastShot
+  > FIRE_COOLDOWN
 
-  ){
+){
 
-    p.lastShot =
-    Date.now();
+  p.lastShot =
+  Date.now();
 
-    const isBottom =
-    p.side === "bottom";
 
-    room.projectiles.push({
+  const isBottom =
+  p.side === "bottom";
 
-      owner:p.id,
 
-      x:p.x,
+  const cannonOffset = 25;
 
-      y:
-      isBottom
-      ? PLAYER_BOTTOM_Y
-      : PLAYER_TOP_Y,
 
-      vy:
-      isBottom
-      ? -BULLET_SPEED
-      : BULLET_SPEED
+  room.projectiles.push({
 
-    });
-  }
+    owner:p.id,
 
-  p.fire = false;
+    x:p.x - cannonOffset,
+
+    y:
+    isBottom
+    ? PLAYER_BOTTOM_Y
+    : PLAYER_TOP_Y,
+
+    vy:
+    isBottom
+    ? -BULLET_SPEED
+    : BULLET_SPEED
+
+  });
+
+
+
+  room.projectiles.push({
+
+    owner:p.id,
+
+    x:p.x + cannonOffset,
+
+    y:
+    isBottom
+    ? PLAYER_BOTTOM_Y
+    : PLAYER_TOP_Y,
+
+    vy:
+    isBottom
+    ? -BULLET_SPEED
+    : BULLET_SPEED
+
+  });
+
+}
+
+p.fire = false;
 
   // ================= INVISIBILITY =================
 
