@@ -480,50 +480,49 @@ if(
 
 
   const isBottom =
-  p.side === "bottom";
+p.side === "bottom";
 
 
-  const cannonOffset = 25;
-
-
-  room.projectiles.push({
-
-    owner:p.id,
-
-    x:p.x - cannonOffset,
-
-    y:
-    isBottom
-    ? PLAYER_BOTTOM_Y
-    : PLAYER_TOP_Y,
-
-    vy:
-    isBottom
-    ? -BULLET_SPEED
-    : BULLET_SPEED
-
-  });
-
+const cannonOffsetX = 25;
+const cannonOffsetY = 35;
 
 
   room.projectiles.push({
 
-    owner:p.id,
+  owner:p.id,
 
-    x:p.x + cannonOffset,
+  x:p.x - cannonOffsetX,
 
-    y:
-    isBottom
-    ? PLAYER_BOTTOM_Y
-    : PLAYER_TOP_Y,
+  y:
+  isBottom
+  ? PLAYER_BOTTOM_Y - cannonOffsetY
+  : PLAYER_TOP_Y + cannonOffsetY,
 
-    vy:
-    isBottom
-    ? -BULLET_SPEED
-    : BULLET_SPEED
+  vy:
+  isBottom
+  ? -BULLET_SPEED
+  : BULLET_SPEED
 
-  });
+});
 
+
+  room.projectiles.push({
+
+  owner:p.id,
+
+  x:p.x + cannonOffsetX,
+
+  y:
+  isBottom
+  ? PLAYER_BOTTOM_Y - cannonOffsetY
+  : PLAYER_TOP_Y + cannonOffsetY,
+
+  vy:
+  isBottom
+  ? -BULLET_SPEED
+  : BULLET_SPEED
+
+});
 }
 
 p.fire = false;
