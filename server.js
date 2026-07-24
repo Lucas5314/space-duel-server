@@ -483,7 +483,7 @@ if(
 p.side === "bottom";
 
 
-const cannonOffsetX = 7;
+const cannonOffsetX = 9;
 const cannonOffsetY = 140
 ;
 
