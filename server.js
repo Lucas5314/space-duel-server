@@ -293,7 +293,7 @@ setTimeout(()=>{
     }
 
 },10000);
-    }
+    
 
     // INPUT
 if(msg.type === "input"){
