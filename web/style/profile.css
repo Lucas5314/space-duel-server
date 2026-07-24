@@ -260,21 +260,17 @@ body{
 
 .shipContainer{
 
-
     flex:1;
-
 
     width:100%;
 
+    position:relative;
 
     display:flex;
 
-
     justify-content:center;
 
-
     align-items:center;
-
 
 }
 
@@ -283,24 +279,30 @@ body{
 
 #ship{
 
+    position:absolute;
 
     width:min(45vw,360px);
 
-
-    max-height:40vh;
-
-
-    object-fit:contain;
-
+    z-index:2;
 
     filter:
-    drop-shadow(0 0 25px cyan)
-    drop-shadow(0 0 55px #00d4ff)
-    drop-shadow(0 0 90px rgba(0,255,255,.5));
-
+        drop-shadow(0 0 25px cyan)
+        drop-shadow(0 0 55px #00d4ff);
 
     animation:float 3s ease-in-out infinite;
 
+}
+#shipBase{
+
+    position:absolute;
+
+    width:220px;
+
+    z-index:1;
+
+    bottom:60px;   /* Ajusta este valor */
+
+    pointer-events:none;
 
 }
 

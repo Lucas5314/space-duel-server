@@ -37,8 +37,39 @@ function createRoom(a,b){
                 fire:false,
                 lastShot:0,
                 isBot:a.isBot,
-                invisible:false,
-                invisibleUntil:0
+                // ===========================
+// PODERES
+// ===========================
+
+powers:{
+
+    // defensa
+    shield:false,
+    shieldUntil:0,
+
+    // invisibilidad
+    invisible:false,
+    invisibleUntil:0,
+
+    // movimiento
+    turbo:false,
+    turboUntil:0,
+
+    // control enemigo
+    frozenUntil:0,
+
+    // ataque
+    tripleShot:false,
+    tripleShotUntil:0,
+
+    // portal
+    portalReady:true,
+
+    // esquivar / dash
+    dash:false,
+    dashUntil:0
+
+}
             },
 
             {
@@ -51,14 +82,45 @@ function createRoom(a,b){
                 fire:false,
                 lastShot:0,
                 isBot:b.isBot,
-                invisible:false,
-                invisibleUntil:0
+                powers:{
+                    // defensa
+                    shield:false,
+                    shieldUntil:0,
+
+                    // invisibilidad
+                    invisible:false,
+                    invisibleUntil:0,
+
+                    // movimiento
+                    turbo:false,
+                    turboUntil:0,
+
+                    // control enemigo
+                    frozenUntil:0,
+
+                    // ataque
+                    tripleShot:false,
+                    tripleShotUntil:0,
+
+                    // portal
+                    portalReady:true,
+
+                    // esquivar / dash
+                    dash:false,
+                    dashUntil:0
+                }
             }
 
         ],
 
 
         projectiles:[],
+
+        // ===========================
+// EVENTOS DEL MAPA
+// ===========================
+
+        events:[],
 
 
         // ===========================

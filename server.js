@@ -123,11 +123,12 @@ const {
 
 // ================= PLAYER =================
 
-function createPlayer(id, side, isBot = false){
+function createPlayer(id, side, isBot = false, username = null){
 
   return {
 
     id,
+    username,
     side,
     isBot,
 
@@ -254,11 +255,15 @@ wss.on("connection",ws=>{
     }
 
     // PLAY
-    if(msg.type === "play"){
+if(msg.type === "play"){
 
-      waiting.push(ws);
+  ws.username = msg.username;
 
-      matchPlayers();
+  waiting.push(ws);
+
+  matchPlayers();
+
+}
 
       // ==========================
       // BOT AFTER 10s
@@ -291,7 +296,7 @@ setTimeout(()=>{
     }
 
     // INPUT
-    if(msg.type === "input"){
+if(msg.type === "input"){
 
       if(!ws.room) return;
 
@@ -399,11 +404,11 @@ if(msg.type === "invisible"){
       }
     }
   });
-});
+
 
 // ================= LOOP =================
 
-setInterval(()=>{
+setInterval(async ()=>{
 
   for(const roomId in rooms){
 
@@ -412,7 +417,6 @@ setInterval(()=>{
 
     if(!room.started)
     continue;
-
     console.log("SALA ACTIVA:", room.id);
 
     // ================= BOT AI =================
@@ -620,18 +624,107 @@ p.fire = false;
           room.projectiles.splice(i,1);
 
           // DEAD
-          if(p.hp <= 0){
+          // DEAD
+if(p.hp <= 0){
 
-            sendRoom(room,{
+  const loser = p;
 
-              type:"gameover",
+  const winner = room.players.find(
+    player => player.id !== loser.id
+  );
 
-              loser:p.id
-            });
+  if(winner){
 
-            delete rooms[roomId];
-          }
+    // Ganador
+    const result = await db.query(
+      `
+      UPDATE players
+      SET
+        coins = coins + 100,
+        xp = xp + 50,
+        wins = wins + 1,
+        games = games + 1
+      WHERE username = $1
+      RETURNING xp, level
+      `,
+      [winner.username]
+    );
 
+    const player = result.rows[0];
+
+    // Subida de nivel
+    if(player){
+
+      const neededXP = player.level * 100;
+
+      if(player.xp >= neededXP){
+
+        await db.query(
+          `
+          UPDATE players
+          SET
+            level = level + 1,
+            xp = xp - $2
+          WHERE username = $1
+          `,
+          [winner.username, neededXP]
+        );
+
+      }
+
+    }
+
+  }
+
+  if(loser){
+
+    const result = await db.query(
+      `
+      UPDATE players
+      SET
+        coins = coins + 20,
+        xp = xp + 20,
+        losses = losses + 1,
+        games = games + 1
+      WHERE username = $1
+      RETURNING xp, level
+      `,
+      [loser.username]
+    );
+
+    const player = result.rows[0];
+
+    if(player){
+
+      const neededXP = player.level * 100;
+
+      if(player.xp >= neededXP){
+
+        await db.query(
+          `
+          UPDATE players
+          SET
+            level = level + 1,
+            xp = xp - $2
+          WHERE username = $1
+          `,
+          [loser.username, neededXP]
+        );
+
+      }
+
+    }
+
+  }
+
+  sendRoom(room,{
+    type:"gameover",
+    loser:loser.id,
+    winner:winner.id
+  });
+
+  delete rooms[roomId];
+}
           break;
         }
       }

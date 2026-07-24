@@ -449,7 +449,17 @@ ws.onopen = ()=>{
 
   console.log("WebSocket conectado");
 
-  ws.send(JSON.stringify({type:"play"}));
+  const player = JSON.parse(
+    localStorage.getItem("player")
+  );
+
+  ws.send(JSON.stringify({
+
+    type:"play",
+
+    username: player.username
+
+  }));
 
 };
 ws.onmessage = e=>{
