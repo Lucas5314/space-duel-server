@@ -441,9 +441,16 @@ setInterval(async ()=>{
         p.fire = true;
       }
       
-    }
+     }
 
-    }
+     }
+     
+
+
+    
+
+
+    
 
     // ================= PLAYERS =================
 
@@ -532,7 +539,7 @@ const cannonOffsetY = 140
   : BULLET_SPEED
 
 });
-}
+
 
 p.fire = false;
 
@@ -553,6 +560,9 @@ p.fire = false;
   }
    
 }
+
+}
+
 
 
 // ================= BULLETS =================
