@@ -29,6 +29,7 @@ function createRoom(a,b){
 
             {
                 id:a.id,
+                username: a.username,
                 side:"bottom",
                 hp:40,
                 x:450,
@@ -74,6 +75,7 @@ powers:{
 
             {
                 id:b.id,
+                username: b.username,
                 side:"top",
                 hp:40,
                 x:450,

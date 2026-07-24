@@ -253,6 +253,7 @@ wss.on("connection",ws=>{
 
       return;
     }
+    
 
     // PLAY
 if(msg.type === "play"){
@@ -404,6 +405,7 @@ if(msg.type === "invisible"){
       }
     }
   });
+  });
 
 
 // ================= LOOP =================
@@ -439,6 +441,8 @@ setInterval(async ()=>{
         p.fire = true;
       }
       
+    }
+
     }
 
     // ================= PLAYERS =================
@@ -720,11 +724,11 @@ if(p.hp <= 0){
   sendRoom(room,{
     type:"gameover",
     loser:loser.id,
-    winner:winner.id
+    winner:winner ? winner.id : null
   });
 
   delete rooms[roomId];
-}
+
           break;
         }
       }
@@ -747,3 +751,5 @@ if(p.hp <= 0){
 
 },FPS);
 
+
+  
