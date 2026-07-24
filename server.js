@@ -484,7 +484,7 @@ p.side === "bottom";
 
 
 const cannonOffsetX = 25;
-const cannonOffsetY = 35;
+const cannonOffsetY = 55;
 
 
   room.projectiles.push({
