@@ -441,9 +441,10 @@ setInterval(async ()=>{
         p.fire = true;
       }
       
-     }
+    }
+ 
 
-     }
+     
      
 
 
@@ -758,7 +759,7 @@ if(p.hp <= 0){
 
     });
   }
-
+}
 },FPS);
 
 
