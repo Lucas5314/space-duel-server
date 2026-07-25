@@ -648,6 +648,9 @@ if(p.hp <= 0){
     player => player.id !== loser.id
   );
 
+  console.log("GANADOR:", winner);
+console.log("PERDEDOR:", loser);
+
   if(winner){
 
     // Ganador
@@ -690,6 +693,8 @@ if(p.hp <= 0){
     }
 
   }
+  console.log("GANADOR:", winner);
+console.log("PERDEDOR:", loser);
 
   if(loser){
 
