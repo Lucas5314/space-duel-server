@@ -648,94 +648,20 @@ if(p.hp <= 0){
     player => player.id !== loser.id
   );
 
-  console.log("GANADOR:", winner);
-console.log("PERDEDOR:", loser);
 
+  console.log("GANADOR:", winner);
+  console.log("PERDEDOR:", loser);
+
+
+  // guardar recompensas sin bloquear el juego
   if(winner){
-
-    // Ganador
-    const result = await db.query(
-      `
-      UPDATE players
-      SET
-        coins = coins + 100,
-        xp = xp + 50,
-        wins = wins + 1,
-        games = games + 1
-      WHERE username = $1
-      RETURNING xp, level
-      `,
-      [winner.username]
-    );
-
-    const player = result.rows[0];
-
-    // Subida de nivel
-    if(player){
-
-      const neededXP = player.level * 100;
-
-      if(player.xp >= neededXP){
-
-        await db.query(
-          `
-          UPDATE players
-          SET
-            level = level + 1,
-            xp = xp - $2
-          WHERE username = $1
-          `,
-          [winner.username, neededXP]
-        );
-
-      }
-
-    }
-
+    giveWinnerReward(winner);
   }
-  console.log("GANADOR:", winner);
-console.log("PERDEDOR:", loser);
 
   if(loser){
-
-    const result = await db.query(
-      `
-      UPDATE players
-      SET
-        coins = coins + 20,
-        xp = xp + 20,
-        losses = losses + 1,
-        games = games + 1
-      WHERE username = $1
-      RETURNING xp, level
-      `,
-      [loser.username]
-    );
-
-    const player = result.rows[0];
-
-    if(player){
-
-      const neededXP = player.level * 100;
-
-      if(player.xp >= neededXP){
-
-        await db.query(
-          `
-          UPDATE players
-          SET
-            level = level + 1,
-            xp = xp - $2
-          WHERE username = $1
-          `,
-          [loser.username, neededXP]
-        );
-
-      }
-
-    }
-
+    giveLoserReward(loser);
   }
+
 
   sendRoom(room,{
     type:"gameover",
@@ -743,10 +669,11 @@ console.log("PERDEDOR:", loser);
     winner:winner ? winner.id : null
   });
 
+
   delete rooms[roomId];
 
-          break;
-        }
+  break;
+}
       }
     }
 
@@ -767,5 +694,41 @@ console.log("PERDEDOR:", loser);
 }
 },FPS);
 
+// ================= RECOMPENSAS =================
+
+async function giveWinnerReward(winner){
+
+  await db.query(
+    `
+    UPDATE players
+    SET
+      coins = coins + 100,
+      xp = xp + 50,
+      wins = wins + 1,
+      games = games + 1
+    WHERE username = $1
+    `,
+    [winner.username]
+  );
+
+}
+
+
+async function giveLoserReward(loser){
+
+  await db.query(
+    `
+    UPDATE players
+    SET
+      coins = coins + 20,
+      xp = xp + 20,
+      losses = losses + 1,
+      games = games + 1
+    WHERE username = $1
+    `,
+    [loser.username]
+  );
+
+}
 
   

@@ -452,6 +452,8 @@ ws.onopen = ()=>{
   const player = JSON.parse(
     localStorage.getItem("player")
   );
+  console.log("PLAYER:", player);
+console.log("USERNAME:", player?.username);
 
   ws.send(JSON.stringify({
 
