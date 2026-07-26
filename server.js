@@ -738,6 +738,7 @@ if(loser){
 // ================= RECOMPENSAS =================
 
 async function giveWinnerReward(winner){
+    console.log("DANDO PREMIO GANADOR:", winner.username);
 
   await db.query(
     `
@@ -756,6 +757,7 @@ async function giveWinnerReward(winner){
 
 
 async function giveLoserReward(loser){
+    console.log("DANDO PREMIO GANADOR:", winner.username);
 
   await db.query(
     `
