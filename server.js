@@ -406,8 +406,45 @@ if(msg.type === "invisible"){
     }
   });
   });
+  
+async function giveWinnerReward(winner){
+
+  console.log("DANDO PREMIO GANADOR:", winner.username);
+
+  await db.query(
+    `
+    UPDATE players
+    SET
+      coins = coins + 100,
+      xp = xp + 50,
+      wins = wins + 1,
+      games = games + 1
+    WHERE username = $1
+    `,
+    [winner.username]
+  );
+
+}
 
 
+async function giveLoserReward(loser){
+
+  console.log("DANDO PREMIO PERDEDOR:", loser.username);
+
+  await db.query(
+    `
+    UPDATE players
+    SET
+      coins = coins + 20,
+      xp = xp + 20,
+      losses = losses + 1,
+      games = games + 1
+    WHERE username = $1
+    `,
+    [loser.username]
+  );
+
+}
 // ================= LOOP =================
 
 setInterval(async ()=>{

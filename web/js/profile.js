@@ -1,7 +1,27 @@
 // ===========================
 // MÚSICA DE PERFIL
 // ===========================
+import { ScreenOrientation } from '@capacitor/screen-orientation';
+async function lockLandscape(){
 
+    try{
+
+        await ScreenOrientation.lock({
+            orientation:"landscape"
+        });
+
+        console.log("Perfil en horizontal");
+
+    }catch(error){
+
+        console.log("Error orientación:", error);
+
+    }
+
+}
+
+
+lockLandscape();
 const bgMusic = new Audio("assets/audio/profile.mp3");
 
 bgMusic.loop = true;

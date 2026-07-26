@@ -291,10 +291,15 @@ canvas{
 <div id="stickerEffect"></div>
 
 
+<script src="worlds.js"></script>
+
 <script src="js/game.js"></script>
 
 <script>
+let currentWorld = "space";
+console.log("Mundo actual:", currentWorld);
 
+console.log("Datos del mundo:", worlds[currentWorld]);
 // ================= ADMOB (CAPACITOR 8 FIX REAL) =================
 
 let matchCount = 0;
