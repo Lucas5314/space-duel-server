@@ -691,14 +691,17 @@ if(p.hp <= 0){
 
 
   // guardar recompensas sin bloquear el juego
-  if(winner){
-    giveWinnerReward(winner);
-  }
+if(winner){
+  giveWinnerReward(winner)
+  .then(()=>console.log("WIN REWARD OK"))
+  .catch(err=>console.log("WIN REWARD ERROR", err));
+}
 
-  if(loser){
-    giveLoserReward(loser);
-  }
-
+if(loser){
+  giveLoserReward(loser)
+  .then(()=>console.log("LOSE REWARD OK"))
+  .catch(err=>console.log("LOSE REWARD ERROR", err));
+}
 
   sendRoom(room,{
     type:"gameover",
