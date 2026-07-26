@@ -679,7 +679,7 @@ p.fire = false;
           // DEAD
           console.log("ENTRANDO A MUERTE", p.username, p.hp);
 if(p.hp <= 0){
-
+  console.log("========== MUERTE ==========");
   const loser = p;
 
   const winner = room.players.find(
