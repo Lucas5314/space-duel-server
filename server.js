@@ -677,6 +677,7 @@ p.fire = false;
 
           // DEAD
           // DEAD
+          console.log("ENTRANDO A MUERTE", p.username, p.hp);
 if(p.hp <= 0){
 
   const loser = p;
