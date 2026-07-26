@@ -1,5 +1,4 @@
 import { ScreenOrientation } from '@capacitor/screen-orientation';
-import { ScreenOrientation } from '@capacitor/screen-orientation';
 const progress = document.getElementById("progress");
 const percent = document.getElementById("percent");
 
