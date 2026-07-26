@@ -1,7 +1,7 @@
 // ===========================
 // MÚSICA DE PERFIL
 // ===========================
-import { ScreenOrientation } from '@capacitor/screen-orientation';
+//import { ScreenOrientation } from '@capacitor/screen-orientation';
 async function lockLandscape(){
 
     try{
