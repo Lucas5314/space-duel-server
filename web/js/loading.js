@@ -1,4 +1,10 @@
-import { ScreenOrientation } from '@capacitor/screen-orientation';
+/*
+import "@capacitor/screen-orientation";
+
+await ScreenOrientation.lock({
+    orientation: "landscape"
+});
+*/
 
 const progress = document.getElementById("progress");
 const percent = document.getElementById("percent");

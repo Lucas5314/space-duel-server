@@ -216,6 +216,61 @@ canvas{
 
     transform:translate(-50%,-50%);
 }
+#playerCard,
+#enemyCard{
+
+    position:fixed;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    background:rgba(0,0,0,.45);
+
+    border:2px solid cyan;
+
+    border-radius:15px;
+
+    padding:10px;
+
+    color:white;
+
+    z-index:900;
+
+    backdrop-filter:blur(8px);
+
+}
+
+#playerCard{
+
+    left:15px;
+
+    bottom:15px;
+
+}
+
+#enemyCard{
+
+    right:15px;
+
+    top:15px;
+
+}
+
+#playerCard img,
+#enemyCard img{
+
+    width:48px;
+
+    height:48px;
+
+    border-radius:50%;
+
+    border:2px solid white;
+
+}
 </style>
 </head>
 
@@ -259,6 +314,38 @@ canvas{
 </video>
 
 <canvas id="c"></canvas>
+
+<!-- FICHA JUGADOR -->
+<div id="playerCard">
+
+    <img id="playerAvatar"
+         src="assets/ui/default-avatar.png">
+
+    <div>
+
+        <div id="playerName">Jugador</div>
+
+        <div id="playerLevel">Lv.1</div>
+
+    </div>
+
+</div>
+
+<!-- FICHA RIVAL -->
+<div id="enemyCard">
+
+    <img id="enemyAvatar"
+         src="assets/ui/default-avatar.png">
+
+    <div>
+
+        <div id="enemyName">Rival</div>
+
+        <div id="enemyLevel">Lv.1</div>
+
+    </div>
+
+</div>
 
 <button id="shoot">🔥</button>
 <button id="invisible">👻</button>
