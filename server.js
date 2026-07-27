@@ -122,7 +122,6 @@ const {
 } = require("./powers");
 
 // ================= PLAYER =================
-
 function createPlayer(id, side, isBot = false, username = null){
 
   return {
@@ -143,8 +142,22 @@ function createPlayer(id, side, isBot = false, username = null){
 
     fire:false,
 
-    lastShot:0
+    lastShot:0,
+
+    ai: isBot ? {
+
+      state:"move",
+
+      nextDecision:0,
+
+      targetX:WORLD_WIDTH / 2,
+
+      reaction:200 + Math.random() * 250
+
+    } : null
+
   };
+
 }
 
 function sendRoom(room,data){
@@ -407,44 +420,6 @@ if(msg.type === "invisible"){
   });
   });
   
-async function giveWinnerReward(winner){
-
-  console.log("DANDO PREMIO GANADOR:", winner.username);
-
-  await db.query(
-    `
-    UPDATE players
-    SET
-      coins = coins + 100,
-      xp = xp + 50,
-      wins = wins + 1,
-      games = games + 1
-    WHERE username = $1
-    `,
-    [winner.username]
-  );
-
-}
-
-
-async function giveLoserReward(loser){
-
-  console.log("DANDO PREMIO PERDEDOR:", loser.username);
-
-  await db.query(
-    `
-    UPDATE players
-    SET
-      coins = coins + 20,
-      xp = xp + 20,
-      losses = losses + 1,
-      games = games + 1
-    WHERE username = $1
-    `,
-    [loser.username]
-  );
-
-}
 // ================= LOOP =================
 
 setInterval(async ()=>{
@@ -458,39 +433,57 @@ setInterval(async ()=>{
     continue;
     console.log("SALA ACTIVA:", room.id);
 
-    // ================= BOT AI =================
+    /// ================= BOT AI =================
 
-    for(const p of room.players){
+for(const p of room.players){
 
-      if(!p.isBot)
-      continue;
+  if(!p.isBot)
+  continue;
 
-      const enemy =
-      room.players.find(
-        x=>x.id !== p.id
-      );
+  const enemy =
+  room.players.find(
+    x => x.id !== p.id
+  );
+
+  if(!enemy)
+  continue;
+
+  // El bot solo piensa cada cierto tiempo
+  if(Date.now() >= p.ai.nextDecision){
+
+    p.ai.nextDecision =
+    Date.now() + p.ai.reaction;
+
+    // La mayoría de veces sigue al rival
+    if(Math.random() < 0.75){
 
       p.targetX =
-      enemy.x;
+      enemy.x +
+      (Math.random() * 60 - 30);
 
-      if(Math.random() < 0.03){
-
-        p.fire = true;
-      }
-      
     }
- 
 
-     
-     
+    // Algunas veces cambia de posición
+    else{
 
+      p.targetX =
+      80 + Math.random() * (WORLD_WIDTH - 160);
 
-    
+    }
 
+    // Dispara solo si está bastante alineado
+    if(
+      Math.abs(p.x - enemy.x) < 70 &&
+      Math.random() < 0.7
+    ){
 
-    
+      p.fire = true;
 
-    // ================= PLAYERS =================
+    }
+
+  }
+
+}
 
   // ================= PLAYERS =================
 
@@ -600,10 +593,6 @@ p.fire = false;
 }
 
 }
-
-
-
-// ================= BULLETS =================
 
     // ================= BULLETS =================
 
