@@ -55,15 +55,12 @@ body{
         #7a0000
     );
 
-    transform:translateX(-100%);
+    transform:translateY(-100%);
 
     animation:redEnter .7s forwards;
 
 }
 
-
-
-/* MITAD VERDE */
 
 
 .greenSide{
@@ -75,7 +72,7 @@ body{
         #006633
     );
 
-    transform:translateX(100%);
+    transform:translateY(100%);
 
     animation:greenEnter .7s forwards;
 
@@ -156,21 +153,16 @@ body{
 @keyframes redEnter{
 
     to{
-
-        transform:translateX(0);
-
+        transform:translateY(0);
     }
 
 }
 
 
-
 @keyframes greenEnter{
 
     to{
-
-        transform:translateX(0);
-
+        transform:translateY(0);
     }
 
 }
@@ -218,5 +210,21 @@ body{
         opacity:1;
 
     }
+
+}
+.avatarVideo{
+
+    width:220px;
+    height:220px;
+
+    object-fit:cover;
+
+    border-radius:50%;
+
+    border:4px solid white;
+
+    box-shadow:
+    0 0 20px cyan,
+    0 0 50px cyan;
 
 }

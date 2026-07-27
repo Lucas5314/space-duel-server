@@ -271,6 +271,87 @@ canvas{
     border:2px solid white;
 
 }
+#matchIntro{
+
+    position:fixed;
+
+    inset:0;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:9000;
+
+    pointer-events:none;
+
+    opacity:0;
+
+}
+
+
+#introLine{
+
+    position:absolute;
+
+    width:120vw;
+
+    height:4px;
+
+    background:white;
+
+    transform:rotate(-25deg) translateX(-120%);
+
+    box-shadow:
+    0 0 15px cyan,
+    0 0 30px cyan;
+
+}
+
+
+#introText{
+
+    color:white;
+
+    text-align:center;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+    transform:scale(0);
+
+    text-shadow:
+    0 0 15px cyan;
+
+}
+
+
+#introTitle{
+
+    font-size:25px;
+
+}
+
+
+#introMode{
+
+    font-size:60px;
+
+}
+
+
+#introObjective{
+
+    margin-top:20px;
+
+    font-size:22px;
+
+}
 </style>
 </head>
 
@@ -285,6 +366,24 @@ canvas{
 
 
 <div id="countdown"></div>
+<!-- INTRO PARTIDA -->
+
+<div id="matchIntro">
+
+    <div id="introLine"></div>
+
+    <div id="introText">
+        <span id="introTitle">MODO</span>
+        <strong id="introMode">
+            PING PONG
+        </strong>
+
+        <span id="introObjective">
+            Destruye la nave rival
+        </span>
+    </div>
+
+</div>
 
 <div id="result">
   <div id="resultText"></div>

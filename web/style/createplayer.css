@@ -20,17 +20,6 @@ body{
 
 /* Fondo espacial */
 
-#background{
-
-    position:fixed;
-
-    inset:0;
-
-    background:
-    radial-gradient(circle at top,#203870,#08101d 45%,#040915 80%);
-
-}
-
 /* Estrellas */
 
 #background::before{
@@ -74,26 +63,15 @@ body{
 
     position:absolute;
 
-    left:50%;
-    top:50%;
+    inset:0;
 
-    transform:translate(-50%,-50%);
+    display:flex;
 
-    width:90%;
-    max-width:430px;
+    flex-direction:column;
 
-    padding:35px;
+    align-items:center;
 
-    border-radius:28px;
-
-    background:rgba(15,24,45,.78);
-
-    backdrop-filter:blur(14px);
-
-    border:2px solid rgba(0,255,255,.35);
-
-    box-shadow:
-    0 0 45px rgba(0,255,255,.18);
+    justify-content:center;
 
     text-align:center;
 
@@ -183,25 +161,27 @@ h2{
 .group input,
 .group select{
 
-    width:100%;
+    width:300px;
 
-    height:54px;
+    height:55px;
+
+    background:
+    rgba(0,0,0,.35);
 
     border:none;
 
-    outline:none;
-
-    border-radius:15px;
-
-    padding:0 18px;
-
-    font-size:17px;
-
-    background:#162342;
+    border-bottom:
+    2px solid cyan;
 
     color:white;
 
-    transition:.25s;
+    font-size:22px;
+
+    text-align:center;
+
+    letter-spacing:2px;
+
+    outline:none;
 
 }
 
@@ -265,5 +245,26 @@ button:active{
         margin:20px auto;
 
     }
+
+}
+#background{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+
+    linear-gradient(
+    rgba(0,0,20,.25),
+    rgba(0,0,20,.5)
+    ),
+
+    url("../assets/world/spacetip-world.jpg");
+
+
+    background-size:cover;
+
+    background-position:center;
 
 }
