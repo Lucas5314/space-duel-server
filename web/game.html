@@ -287,7 +287,7 @@ canvas{
 
     pointer-events:none;
 
-    opacity:0;
+    opacity:1;
 
 }
 
@@ -302,7 +302,7 @@ canvas{
 
     background:white;
 
-    transform:rotate(-25deg) translateX(-120%);
+    transform:rotate(-25deg) translateX(0);
 
     box-shadow:
     0 0 15px cyan,
@@ -323,7 +323,7 @@ canvas{
 
     gap:10px;
 
-    transform:scale(0);
+    transform:scale(1);
 
     text-shadow:
     0 0 15px cyan;
@@ -478,6 +478,22 @@ canvas{
 <script src="js/game.js"></script>
 
 <script>
+const sounds = {
+
+    shoot: new Audio("assets/sounds/laser.mp3"),
+
+    hit: new Audio("assets/sounds/hit.mp3"),
+
+    engine: new Audio("assets/sounds/engine.mp3"),
+
+    explosion: new Audio("assets/sounds/explosion.mp3")
+
+};
+
+
+sounds.engine.loop = true;
+sounds.engine.volume = 0.25;
+
 let currentWorld = "space";
 console.log("Mundo actual:", currentWorld);
 
@@ -663,6 +679,11 @@ ws.onmessage = e=>{
     countdown.style.opacity = 1;
     countdown.textContent = msg.value;
     statusText.textContent = "Partida iniciando...";
+    if(msg.value==="3"){
+
+    showMatchIntro();
+
+}
 
     if(msg.value==="FIGHT"){
 

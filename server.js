@@ -122,6 +122,7 @@ const {
 } = require("./powers");
 
 // ================= PLAYER =================
+
 function createPlayer(id, side, isBot = false, username = null){
 
   return {
@@ -159,7 +160,6 @@ function createPlayer(id, side, isBot = false, username = null){
   };
 
 }
-
 function sendRoom(room,data){
 
   Object.values(room.sockets)
@@ -433,9 +433,9 @@ setInterval(async ()=>{
     continue;
     console.log("SALA ACTIVA:", room.id);
 
-    /// ================= BOT AI =================
+    // ================= BOT AI =================
 
-for(const p of room.players){
+   for(const p of room.players){
 
   if(!p.isBot)
   continue;
@@ -448,13 +448,13 @@ for(const p of room.players){
   if(!enemy)
   continue;
 
-  // El bot solo piensa cada cierto tiempo
+  // El bot solo toma decisiones cada cierto tiempo
   if(Date.now() >= p.ai.nextDecision){
 
     p.ai.nextDecision =
     Date.now() + p.ai.reaction;
 
-    // La mayoría de veces sigue al rival
+    // 75% seguir al rival
     if(Math.random() < 0.75){
 
       p.targetX =
@@ -462,8 +462,7 @@ for(const p of room.players){
       (Math.random() * 60 - 30);
 
     }
-
-    // Algunas veces cambia de posición
+    // 25% moverse a otro sitio
     else{
 
       p.targetX =
@@ -471,7 +470,7 @@ for(const p of room.players){
 
     }
 
-    // Dispara solo si está bastante alineado
+    // Si está más o menos alineado, puede disparar
     if(
       Math.abs(p.x - enemy.x) < 70 &&
       Math.random() < 0.7
@@ -484,7 +483,6 @@ for(const p of room.players){
   }
 
 }
-
   // ================= PLAYERS =================
 
 for(const p of room.players){
