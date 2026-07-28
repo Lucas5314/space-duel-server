@@ -556,3 +556,21 @@ body{
 
 
 }
+/* BOTÓN JUGAR PERSONALIZADO */
+
+#playBtn{
+
+    background:red !important;
+
+    width:170px !important;
+    height:55px !important;
+
+}
+
+#playBtn:hover{
+
+    transform:scale(1.05);
+
+    filter:brightness(1.15);
+
+}

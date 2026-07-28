@@ -145,17 +145,6 @@ function createPlayer(id, side, isBot = false, username = null){
 
     lastShot:0,
 
-    ai: isBot ? {
-
-      state:"move",
-
-      nextDecision:0,
-
-      targetX:WORLD_WIDTH / 2,
-
-      reaction:200 + Math.random() * 250
-
-    } : null
 
   };
 
@@ -434,8 +423,9 @@ setInterval(async ()=>{
     console.log("SALA ACTIVA:", room.id);
 
     // ================= BOT AI =================
+// ================= BOT AI =================
 
-   for(const p of room.players){
+for(const p of room.players){
 
   if(!p.isBot)
   continue;
@@ -445,40 +435,12 @@ setInterval(async ()=>{
     x => x.id !== p.id
   );
 
-  if(!enemy)
-  continue;
+  p.targetX =
+  enemy.x;
 
-  // El bot solo toma decisiones cada cierto tiempo
-  if(Date.now() >= p.ai.nextDecision){
+  if(Math.random() < 0.03){
 
-    p.ai.nextDecision =
-    Date.now() + p.ai.reaction;
-
-    // 75% seguir al rival
-    if(Math.random() < 0.75){
-
-      p.targetX =
-      enemy.x +
-      (Math.random() * 60 - 30);
-
-    }
-    // 25% moverse a otro sitio
-    else{
-
-      p.targetX =
-      80 + Math.random() * (WORLD_WIDTH - 160);
-
-    }
-
-    // Si está más o menos alineado, puede disparar
-    if(
-      Math.abs(p.x - enemy.x) < 70 &&
-      Math.random() < 0.7
-    ){
-
-      p.fire = true;
-
-    }
+    p.fire = true;
 
   }
 

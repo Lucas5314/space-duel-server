@@ -1,24 +1,29 @@
+console.log("ENGINE CARGADO");
+const block01 = new Block({
+
+    road:"engine/roads/road_01.png",
+
+    left:"engine/bloques/paredes/left.png",
+
+    right:"engine/bloques/paredes/right.png"
+
+});
+
+
 function loop(){
+    console.log("LOOP FUNCIONANDO");
 
 
-Renderer.clear();
+    Renderer.clear();
+    console.log("dibujando bloque");
 
 
-
-Renderer.rect(
-    100,
-    100,
-    200,
-    200,
-    "gray"
-);
+    block01.draw();
 
 
-
-requestAnimationFrame(loop);
+    requestAnimationFrame(loop);
 
 }
-
 
 
 loop();
