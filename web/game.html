@@ -657,7 +657,6 @@ addEventListener("resize", resize);
 const countdown = document.getElementById("countdown");
 const result = document.getElementById("result");
 const resultText = document.getElementById("resultText");
-const statusText = document.getElementById("statusText");
 
 // ================= ASSETS =================
 
@@ -704,7 +703,6 @@ function showMatchIntro(){
 
     intro.style.display = "flex";
 
-    statusText.textContent = "Preparando batalla...";
 
     setTimeout(()=>{
 
@@ -764,7 +762,6 @@ ws.onmessage = e=>{
 
     countdown.textContent = msg.value;
 
-    statusText.textContent = "Partida iniciando...";
 
   }
 
