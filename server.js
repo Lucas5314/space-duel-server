@@ -205,10 +205,26 @@ function matchPlayers(){
 
     const room = createRoom(a,b);
 
-    startCountdown(room);
+console.log("CREANDO MATCH");
+console.log(a.id,b.id);
+
+
+sendRoom(room,{
+  type:"matchIntro"
+});
+
+
+console.log("MATCH INTRO ENVIADO");
+
+
+setTimeout(()=>{
+
+  startCountdown(room);
+
+},5000);
+
   }
 }
-
 // ================= BOT =================
 
 function createBotSocket(){
