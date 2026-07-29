@@ -129,8 +129,53 @@ cancel.onclick = ()=>{
     location.href = "profile.html";
 
 };
+const ws = new WebSocket(
+    "wss://space-duel-server-1.onrender.com"
+);
+
+ws.onmessage = e => {
+
+    const msg = JSON.parse(e.data);
 
 
+    console.log("Matchmaking recibió:", msg);
+
+
+    if(msg.type === "matchIntro"){
+
+        status.textContent = "¡Piloto encontrado!";
+
+
+        music.pause();
+
+        music.currentTime = 0;
+
+
+        setTimeout(()=>{
+
+            location.href = "game.html";
+
+        },1500);
+
+    }
+
+};
+ws.onopen = ()=>{
+
+    const player = JSON.parse(
+        localStorage.getItem("player")
+    );
+
+
+    ws.send(JSON.stringify({
+
+        type:"play",
+
+        username: player?.username
+
+    }));
+
+};
 // =======================================================
 // TEMPORAL
 //
@@ -139,18 +184,3 @@ cancel.onclick = ()=>{
 //
 // =======================================================
 
-setTimeout(()=>{
-
-    status.textContent = "¡Piloto encontrado!";
-
-    setTimeout(()=>{
-
-        music.pause();
-
-        music.currentTime = 0;
-
-        location.href = "versus.html";
-
-    },1500);
-
-},8000);
