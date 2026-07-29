@@ -702,7 +702,17 @@ function showMatchIntro(){
 
     console.log("MOSTRANDO INTRO");
 
+    const intro = document.getElementById("matchIntro");
+
+    intro.style.display = "flex";
+
     statusText.textContent = "Preparando batalla...";
+
+    setTimeout(()=>{
+
+        intro.style.display = "none";
+
+    },3000);
 
 }
 
