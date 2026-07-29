@@ -402,6 +402,44 @@ canvas{
     margin-bottom:30px;
 
 }
+.countdownImage{
+
+    width:min(45vw,420px);
+
+    animation:
+        countdownPop
+        .7s ease;
+
+    filter:
+        drop-shadow(0 0 20px cyan)
+        drop-shadow(0 0 50px cyan);
+
+}
+
+@keyframes countdownPop{
+
+    0%{
+
+        transform:scale(.2);
+        opacity:0;
+
+    }
+
+    50%{
+
+        transform:scale(1.2);
+        opacity:1;
+
+    }
+
+    100%{
+
+        transform:scale(1);
+        opacity:1;
+
+    }
+
+}
 </style>
 </head>
 
@@ -767,7 +805,16 @@ ws.onmessage = e=>{
 
 if(msg.type==="countdown"){
 
-    countdown.textContent = msg.value;
+    const file =
+    msg.value === "FIGHT"
+        ? "fight"
+        : msg.value;
+
+countdown.innerHTML = `
+    <img
+        src="assets/ui/countdown/${file}.jpeg"
+        class="countdownImage">
+`;
 
     countdown.style.opacity = 1;
 
