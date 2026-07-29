@@ -694,6 +694,18 @@ const state = {
 
 const particles = [];
 
+// ===========================
+// INTRO DEL MATCH
+// ===========================
+
+function showMatchIntro(){
+
+    console.log("MOSTRANDO INTRO");
+
+    statusText.textContent = "Preparando batalla...";
+
+}
+
 // ================= WS =================
 console.log("Creando WebSocket...");
 const ws = new WebSocket("wss://space-duel-server-1.onrender.com");
@@ -761,7 +773,7 @@ ws.onmessage = e=>{
         countdown.style.opacity=0;
     },700);
 
-  
+
   
 }
 
