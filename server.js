@@ -203,6 +203,7 @@ function matchPlayers(){
     const a = waiting.shift();
     const b = waiting.shift();
 const room = createRoom(a,b);
+console.log("AAAAAAAA MATCH FOUND NUEVO");
 
 console.log("CREANDO MATCH");
 console.log(a.id,b.id);
