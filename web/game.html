@@ -82,12 +82,26 @@ canvas{
     width:100%;
     height:100%;
 
-    z-index:10000;
-
-    display:none;
+    display:flex;
 
     align-items:center;
     justify-content:center;
+
+    font-size:180px;
+    font-weight:900;
+    color:white;
+
+    text-shadow:
+        0 0 20px cyan,
+        0 0 40px cyan;
+
+    opacity:0;
+
+    transition:opacity .25s;
+
+    pointer-events:none;
+
+    z-index:10001;
 
 }
 
@@ -394,7 +408,6 @@ canvas{
 <body>
 
 
-<div id="countdown"></div>
 
 
 <div id="countdown"></div>
@@ -697,18 +710,15 @@ const particles = [];
 
 function showMatchIntro(){
 
-    console.log("MOSTRANDO INTRO");
-
     const intro = document.getElementById("matchIntro");
 
     intro.style.display = "flex";
-
 
     setTimeout(()=>{
 
         intro.style.display = "none";
 
-    },3000);
+    },2500);
 
 }
 
@@ -753,14 +763,29 @@ ws.onmessage = e=>{
 
     showMatchIntro();
 
-  }
+}
 
+if(msg.type==="countdown"){
 
-  if(msg.type==="countdown"){
+    countdown.textContent = msg.value;
 
     countdown.style.opacity = 1;
 
-    countdown.textContent = msg.value;
+    if(msg.value==="FIGHT"){
+
+        const bg = document.getElementById("gameBackground");
+
+        bg.play();
+
+    }
+
+    setTimeout(()=>{
+
+        countdown.style.opacity = 0;
+
+    },700);
+
+
 
 
   }
