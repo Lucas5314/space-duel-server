@@ -319,23 +319,26 @@ canvas{
 
 #introText{
 
-    color:white;
+    position:absolute;
 
-    text-align:center;
+    top:50%;
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+    z-index:10001;
 
     display:flex;
-
     flex-direction:column;
+    align-items:center;
 
-    gap:10px;
-
-    transform:scale(1);
+    color:white;
 
     text-shadow:
-    0 0 15px cyan;
+        0 0 15px cyan,
+        0 0 30px black;
 
 }
-
 
 #introTitle{
 
@@ -360,15 +363,14 @@ canvas{
 }
 #mapName{
 
-    color:white;
-    font-size:50px;
-    font-weight:900;
-    text-align:center;
-    margin-bottom:20px;
+    position:absolute;
 
-    text-shadow:
-    0 0 15px cyan,
-    0 0 35px cyan;
+    top:60px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    z-index:10001;
 
 }
 
@@ -391,10 +393,6 @@ canvas{
 
 <body>
 
-<div id="status">
-🚀 SPACE TIP
-<div id="statusText">Buscando rival...</div>
-</div>
 
 <div id="countdown"></div>
 
