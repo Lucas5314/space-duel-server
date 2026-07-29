@@ -723,17 +723,31 @@ ws.onmessage = e=>{
 
   console.log("Mensaje recibido:", msg.type);
 
-  if(msg.type==="welcome") myId = msg.id;
 
-  if(msg.type==="countdown"){
-    countdown.style.opacity = 1;
-    countdown.textContent = msg.value;
-    statusText.textContent = "Partida iniciando...";
-    if(msg.type==="matchIntro"){
+  if(msg.type==="welcome"){
+
+    myId = msg.id;
+
+  }
+
+
+  if(msg.type==="matchIntro"){
 
     showMatchIntro();
 
-}
+  }
+
+
+  if(msg.type==="countdown"){
+
+    countdown.style.opacity = 1;
+
+    countdown.textContent = msg.value;
+
+    statusText.textContent = "Partida iniciando...";
+
+  }
+
 
 
     if(msg.value==="FIGHT"){
