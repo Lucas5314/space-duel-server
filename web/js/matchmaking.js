@@ -141,7 +141,7 @@ ws.onmessage = e => {
     console.log("Matchmaking recibió:", msg);
 
 
-    if(msg.type === "matchIntro"){
+    if(msg.type === "matchFound"){
 
         status.textContent = "¡Piloto encontrado!";
 

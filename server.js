@@ -202,28 +202,42 @@ function matchPlayers(){
 
     const a = waiting.shift();
     const b = waiting.shift();
-
-    const room = createRoom(a,b);
+const room = createRoom(a,b);
 
 console.log("CREANDO MATCH");
 console.log(a.id,b.id);
 
 
+// AVISA AL MATCHMAKING QUE ENCONTRÓ RIVAL
 sendRoom(room,{
-  type:"matchIntro"
+  type:"matchFound"
 });
 
 
-console.log("MATCH INTRO ENVIADO");
+console.log("MATCH FOUND ENVIADO");
 
 
+// ESPERA PARA MOSTRAR LA INTRO DEL MAPA
+setTimeout(()=>{
+
+  sendRoom(room,{
+    type:"matchIntro"
+  });
+
+
+  console.log("MATCH INTRO ENVIADO");
+
+
+},1500);
+
+
+// DESPUÉS DEL MAPA Y MODO, INICIA COUNTDOWN
 setTimeout(()=>{
 
   startCountdown(room);
 
-},5000);
-
-  }
+},4000);
+}
 }
 // ================= BOT =================
 
