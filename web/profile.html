@@ -23,36 +23,22 @@
 
 <div class="profile">
     <button id="settingsBtn">
-
-    ⚙ 
-
+    <img src="assets/ui/icons/settings.png" class="settingsIcon">
 </button>
 
 <!-- Botones sociales -->
 
 <div class="socialButtons">
 
-
-    <button onclick="location.href='chat.html'">
-
-        💬 CHAT
-
-    </button>
-
-
-    <button onclick="location.href='ranking.html'">
-
-        🏆 RANKING
-
-    </button>
-
-
-    <button onclick="location.href='invite.html'">
-
-        👥 INVITAR
-
-    </button>
-
+<button onclick="location.href='chat.html'">
+    <img src="assets/ui/icons/chat.jpeg">
+</button>
+<button onclick="location.href='ranking.html'">
+    <img src="assets/ui/icons/ranking.jpeg">
+</button>
+<button onclick="location.href='invite.html'">
+    <img src="assets/ui/icons/invite.jpeg">
+</button>
 
 </div>
 
@@ -158,53 +144,57 @@
 
     <!-- Nave -->
 
-    <div class="shipContainer">
-                <video
+    <<div class="shipContainer">
+
+    <video
+        id="shipEnergy"
+        autoplay
+        loop
+        muted
+        playsinline>
+        <source src="assets/ui/ship-energy.webm" type="video/webm">
+    </video>
+
+    <video
         id="shipBase"
         autoplay
         loop
         muted
         playsinline>
-
         <source src="assets/ui/ship-base.webm" type="video/webm">
-
     </video>
 
+    <img
+        id="ship"
+        src="assets/ships/naveee1.png"
+        alt="Perfil">
 
-        <img
-            id="ship"
-            src="assets/ships/naveee1.png"
-            alt="Perfil">
- 
-
-    </div>
-
-
+</div>
 
 
 
 
 
     <!-- Nivel -->
+<div class="level">
+
+    <img
+        class="levelIcon"
+        src="assets/ui/icons/level.png">
+
+    <span>
+        Nivel 1
+    </span>
+
+    <div class="xpBar">
+        <div class="xp"></div>
+    </div>
+
+</div>
 
 
-    <div class="level">
 
-
-        <span>
-            ⭐ Nivel 1
-        </span>
-
-
-
-        <div class="xpBar">
-
-
-            <div class="xp"></div>
-
-
-        </div>
-
+    
 
     </div>
 
@@ -220,12 +210,7 @@
 <div class="menuButtons">
 
 
-    <img
-        id="playBtn"
-        class="gameButton playButton"
-        src="assets/ui/btn-play.png"
-        alt="Jugar">
-
+   <button id="playBtn"></button>
 
 
     <button id="skinsBtn">

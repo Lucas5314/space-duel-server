@@ -115,54 +115,33 @@ h1{
 
 #back{
 
-
-    background:
-
-    linear-gradient(
-    135deg,
-    #1f75ff,
-    #00c6ff
-    );
-
-
-    color:white;
-
+    background:none;
 
     border:none;
 
-
-    padding:12px 22px;
-
-
-    border-radius:15px;
-
-
     cursor:pointer;
 
+    padding:0;
 
-    font-size:16px;
+    box-shadow:none;
 
+}
+#back img{
 
-    font-weight:bold;
+    width:80px; /* ajusta el tamaño */
 
+    height:auto;
 
-    box-shadow:
-
-    0 0 20px rgba(0,200,255,.5);
-
-
-    transition:.3s;
+    transition:.25s;
 
 }
 
 
-
-#back:hover{
+#back:hover img{
 
     transform:scale(1.08);
 
 }
-
 
 
 
