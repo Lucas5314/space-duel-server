@@ -1,6 +1,9 @@
 // ===========================
 // MÚSICA DE PERFIL
 // ===========================
+const clickSound = new Audio("assets/audio/click.mp3");
+
+clickSound.volume = 0.4;
 //import { ScreenOrientation } from '@capacitor/screen-orientation';
 async function lockLandscape(){
 
@@ -104,13 +107,14 @@ if(savedPlayer){
 // ===========================
 // JUGAR
 // ===========================
-
 document.getElementById("playBtn").onclick = () => {
+
+    clickSound.currentTime = 0;
+    clickSound.play();
 
     location.href = "matchmaking.html";
 
 };
-
 
 
 
@@ -120,10 +124,12 @@ document.getElementById("playBtn").onclick = () => {
 
 document.getElementById("skinsBtn").onclick = () => {
 
+    clickSound.currentTime = 0;
+    clickSound.play();
+
     location.href = "skins.html";
 
 };
-
 
 
 
@@ -132,6 +138,9 @@ document.getElementById("skinsBtn").onclick = () => {
 // ===========================
 
 document.getElementById("settingsBtn").onclick = () => {
+
+    clickSound.currentTime = 0;
+    clickSound.play();
 
     location.href = "settings.html";
 

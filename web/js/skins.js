@@ -1,19 +1,27 @@
+const clickSound = new Audio("assets/audio/click.mp3");
+
+clickSound.volume = 0.4;
 const skins = [
 
 {
     id:"nave1",
     nombre:"Nave Azul",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/ships/nave1.png",
     desbloqueada:true,
-    rareza:"Común"
+    rareza:"Común",
+    tipo:"gratis",
+    precio:0
 },
 
 {
     id:"nave2",
     nombre:"Nave Roja",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/ships/nave2.png",
     desbloqueada:false,
-    rareza:"Rara"
+    rareza:"Rara",
+    tipo:"compra",
+    precio:1.99,
+    productoId:"skin_nave_roja"
 },
 
 {
@@ -187,69 +195,114 @@ function render(){
 
         };
 
-        const boton =
+const boton =
 
-        skin.desbloqueada
+skin.desbloqueada
 
-        ?
+?
 
-        (skin.id===equipada ? "Equipada" : "Equipar")
+(skin.id === equipada ? "Equipada" : "Equipar")
 
-        :
+:
 
-        "Bloqueada";
+(skin.tipo === "compra"
 
-        card.innerHTML=`
+? `Comprar ($${skin.precio})`
 
-            <h2>${skin.nombre}</h2>
+: "Bloqueada");
 
-            <img src="${skin.imagen}">
+card.innerHTML = `
 
-            <p>${skin.rareza}</p>
+    <img 
+    class="rarityBadge"
+    src="assets/ui/rarity/${skin.rareza.toLowerCase()}.png">
 
-            <button
-            ${skin.desbloqueada ? "" : "disabled"}
-            data-id="${skin.id}">
 
-            ${boton}
+    <h2>${skin.nombre}</h2>
 
-            </button>
 
-        `;
+    <img 
+    src="${skin.imagen}">
 
-        container.appendChild(card);
 
-    });
+    <button
+    data-id="${skin.id}">
 
-    document
-    .querySelectorAll("button[data-id]")
-    .forEach(btn=>{
+    ${boton}
 
-        btn.onclick=(e)=>{
+    </button>
 
-            // Evita abrir la ficha
-            e.stopPropagation();
+`;
 
-            equipada =
-            btn.dataset.id;
+container.appendChild(card);
 
-            localStorage.setItem(
-                "selectedShip",
-                equipada
+});
+
+document
+.querySelectorAll("button[data-id]")
+.forEach(btn => {
+
+    btn.onclick = (e) => {
+
+    e.stopPropagation();
+
+
+    clickSound.currentTime = 0;
+    clickSound.play();
+;
+
+        const skin =
+        skins.find(
+            s => s.id === btn.dataset.id
+        );
+
+        if (!skin.desbloqueada) {
+
+            alert(
+                "Aquí iniciaremos la compra con Google Play."
             );
 
-            render();
+            return;
 
-        };
+        }
 
-    });
+        equipada = skin.id;
+
+        localStorage.setItem(
+            "selectedShip",
+            equipada
+        );
+
+        render();
+
+    };
+
+});
 
 }
 
 render();
 
-document.getElementById("back").onclick=()=>{
+document.getElementById("back").onclick = () => {
 
-    location.href="profile.html";
+    clickSound.currentTime = 0;
+    clickSound.play();
+
+    setTimeout(()=>{
+
+        location.href = "profile.html";
+
+    },120);
 
 };
+document.querySelectorAll("button").forEach(btn=>{
+
+    btn.addEventListener("click",()=>{
+
+        clickSound.currentTime = 0;
+
+        clickSound.play();
+
+    });
+
+});
