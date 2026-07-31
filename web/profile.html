@@ -4,7 +4,6 @@
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Perfil</title>
@@ -13,226 +12,169 @@
 
 </head>
 
-
 <body>
-
 
 <div id="stars"></div>
 
-
-
 <div class="profile">
-    <button id="settingsBtn">
-    <img src="assets/ui/icons/settings.png" class="settingsIcon">
-</button>
 
-<!-- Botones sociales -->
+    <!-- ========================= -->
+    <!-- A1 - CONFIGURACIÓN -->
+    <!-- ========================= -->
 
-<div class="socialButtons">
+    <button id="settingsBtn"
+    onclick="location.href='settings.html'">
+        
+        <img src="assets/ui/icons/settings.png" class="settingsIcon">
+    </button>
 
-<button onclick="location.href='chat.html'">
-    <img src="assets/ui/icons/chat.jpeg">
-</button>
-<button onclick="location.href='ranking.html'">
-    <img src="assets/ui/icons/ranking.jpeg">
-</button>
-<button onclick="location.href='invite.html'">
-    <img src="assets/ui/icons/invite.jpeg">
-</button>
+
+    <!-- ========================= -->
+    <!-- A2 / A3 / C1 -->
+    <!-- ========================= -->
+
+   <div class="socialButtons">
+
+    <button
+        id="chatBtn"
+        onclick="location.href='chat.html'">
+    </button>
+
+    <button
+        id="rankingBtn"
+        onclick="location.href='ranking.html'">
+    </button>
+
+    <button
+        id="inviteBtn"
+        onclick="location.href='invite.html'">
+    </button>
 
 </div>
 
-    <!-- Información superior -->
+    <!-- ========================= -->
+    <!-- A5 - PERFIL -->
+    <!-- ========================= -->
 
     <div class="topBar">
 
-
         <div class="playerInfo">
 
-
             <div class="playerRow">
-
 
                 <h2 id="playerName">
                     Ricardo
                 </h2>
 
-
                 <span class="flag">
                     🇵🇾 PY
                 </span>
 
-
             </div>
-
-
-
 
             <div class="miniStats">
 
-
                 <div class="stat statWins">
-
-                    <span>
-                        🟢 V
-                    </span>
-
-                    <strong id="wins">
-                        0
-                    </strong>
-
+                    <span>🟢 V</span>
+                    <strong id="wins">0</strong>
                 </div>
-
-
-
 
                 <div class="stat statLosses">
-
-                    <span>
-                        🔴 D
-                    </span>
-
-                    <strong id="losses">
-                        0
-                    </strong>
-
+                    <span>🔴 D</span>
+                    <strong id="losses">0</strong>
                 </div>
-
-
-
 
                 <div class="stat statStreak">
-
-                    <span>
-                        🔥
-                    </span>
-
-                    <strong id="streak">
-                        0
-                    </strong>
-
+                    <span>🔥</span>
+                    <strong id="streak">0</strong>
                 </div>
-
-
-
 
                 <div class="stat statGames">
-
-                    <span>
-                        🎮
-                    </span>
-
-                    <strong id="games">
-                        0
-                    </strong>
-
+                    <span>🎮</span>
+                    <strong id="games">0</strong>
                 </div>
-
 
             </div>
 
-
         </div>
 
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- CENTRO - NAVE -->
+    <!-- ========================= -->
+
+    <div class="shipContainer">
+
+        <video
+            id="shipEnergy"
+            autoplay
+            loop
+            muted
+            playsinline>
+
+            <source src="assets/ui/ship-energy.webm" type="video/webm">
+
+        </video>
+
+        <video
+            id="shipBase"
+            autoplay
+            loop
+            muted
+            playsinline>
+
+            <source src="assets/ui/ship-base.webm" type="video/webm">
+
+        </video>
+
+        <img
+            id="ship"
+            src="assets/ships/naveee1.png"
+            alt="Perfil">
 
     </div>
 
 
+    <!-- ========================= -->
+    <!-- ENERGÍA / NIVEL -->
+    <!-- ========================= -->
 
+    <div class="level">
 
+        <img
+            class="levelIcon"
+            src="assets/ui/icons/level.png">
 
+        <span>
+            Nivel 1
+        </span>
 
-    <!-- Nave -->
-
-    <<div class="shipContainer">
-
-    <video
-        id="shipEnergy"
-        autoplay
-        loop
-        muted
-        playsinline>
-        <source src="assets/ui/ship-energy.webm" type="video/webm">
-    </video>
-
-    <video
-        id="shipBase"
-        autoplay
-        loop
-        muted
-        playsinline>
-        <source src="assets/ui/ship-base.webm" type="video/webm">
-    </video>
-
-    <img
-        id="ship"
-        src="assets/ships/naveee1.png"
-        alt="Perfil">
-
-</div>
-
-
-
-
-
-    <!-- Nivel -->
-<div class="level">
-
-    <img
-        class="levelIcon"
-        src="assets/ui/icons/level.png">
-
-    <span>
-        Nivel 1
-    </span>
-
-    <div class="xpBar">
-        <div class="xp"></div>
-    </div>
-
-</div>
-
-
-
-    
+        <div class="xpBar">
+            <div class="xp"></div>
+        </div>
 
     </div>
 
 
+    <!-- ========================= -->
+    <!-- E5 -->
+    <!-- ========================= -->
 
+    <div class="menuButtons">
 
+        <button id="playBtn"></button>
 
+        <button id="skinsBtn">
+            🚀 SKINS
+        </button>
 
-
-
-    <!-- Botones principales -->
-
-<div class="menuButtons">
-
-
-   <button id="playBtn"></button>
-
-
-    <button id="skinsBtn">
-
-        🚀 SKINS
-
-    </button>
-
+    </div>
 
 </div>
-
-
-
-</div>
-
-
-
-
 
 <script type="module" src="js/profile.js"></script>
 
-
 </body>
-
 </html>

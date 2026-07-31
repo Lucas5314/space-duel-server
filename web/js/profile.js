@@ -1,7 +1,7 @@
 // ===========================
 // MÚSICA DE PERFIL
 // ===========================
-const clickSound = new Audio("assets/audio/click.mp3");
+const clickSound = new Audio("assets/audio/click.m4a");
 
 clickSound.volume = 0.4;
 //import { ScreenOrientation } from '@capacitor/screen-orientation';
@@ -124,10 +124,19 @@ document.getElementById("playBtn").onclick = () => {
 
 document.getElementById("skinsBtn").onclick = () => {
 
-    clickSound.currentTime = 0;
-    clickSound.play();
+    console.log("CLICK SKINS");
 
-    location.href = "skins.html";
+    clickSound.currentTime = 0;
+
+    clickSound.play()
+    .then(()=>{
+        console.log("SONIDO REPRODUCIDO");
+    })
+    .catch(e=>{
+        console.log("ERROR SONIDO:", e);
+    });
+
+    location.href="skins.html";
 
 };
 
@@ -145,3 +154,46 @@ document.getElementById("settingsBtn").onclick = () => {
     location.href = "settings.html";
 
 };
+const ship = document.getElementById("ship");
+
+const frames = [];
+for(let i = 0; i < 36; i++){
+    const angle = String(i * 10).padStart(3, "0");
+    frames.push(`assets/ships/demo3d/ship_${angle}.png`);
+}
+
+let currentFrame = 0;
+let startX = 0;
+
+function updateShip(){
+    ship.src = frames[currentFrame];
+}
+
+ship.addEventListener("pointerdown", e=>{
+    startX = e.clientX;
+});
+
+window.addEventListener("pointermove", e=>{
+
+    if(e.buttons !== 1) return;
+
+    const dx = e.clientX - startX;
+
+    if(Math.abs(dx) > 8){
+
+        if(dx > 0){
+
+            currentFrame = (currentFrame + 1) % frames.length;
+
+        }else{
+
+            currentFrame = (currentFrame - 1 + frames.length) % frames.length;
+
+        }
+
+        updateShip();
+        startX = e.clientX;
+
+    }
+
+});
