@@ -62,18 +62,30 @@ body{
 .container{
 
     position:absolute;
-
     inset:0;
 
     display:flex;
-
     flex-direction:column;
 
     align-items:center;
 
-    justify-content:center;
+    justify-content:space-evenly;
+
+    padding:20px;
 
     text-align:center;
+
+}
+.container img{
+
+    width:80%;
+    max-width:500px;
+
+    max-height:120px;
+
+    object-fit:contain;
+
+    margin-bottom:20px;
 
 }
 
@@ -260,11 +272,27 @@ button:active{
     rgba(0,0,20,.5)
     ),
 
-    url("../assets/world/spacetip-world.jpg");
+    url("../assets/world/spacetip-world.jpeg");
 
 
     background-size:cover;
 
     background-position:center;
+
+}
+#continueBtn{
+
+    width:220px;
+    height:70px;
+
+    background-image:url("../assets/ui/buttoncontinue.png");
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
+
+    border:none;
+    background-color:transparent;
+
+    cursor:pointer;
 
 }

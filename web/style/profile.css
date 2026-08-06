@@ -4,7 +4,6 @@
     box-sizing:border-box;
 }
 
-
 html,
 body{
 
@@ -15,24 +14,62 @@ body{
 
     font-family:Arial,Helvetica,sans-serif;
 
+    background:#000;
+
+}
+body::before{
+
+    content:"";
+     
+
+    position:fixed;
+
+    inset:0;
 
     background:linear-gradient(
         -45deg,
-        #ff63b7,
-        #ff4040,
-        #ff8f1f,
-        #ffe44d,
-        #37ff7a,
-        #00d9ff,
-        #4f7cff,
-        #b84dff
+        #b42672,
+        #ff40402f,
+        #661fff3c,
+        #e5d36d3c,
+        #37ff7a46,
+        #00d9ff42,
+        #4f7bff3f,
+        #b84dff43
     );
-
 
     background-size:700% 700%;
 
     animation:rainbowBackground 25s ease infinite;
 
+    opacity:0.18;
+
+    z-index:1;
+
+    pointer-events:none;
+
+}
+
+@keyframes aparecerPerfil {
+    0% {
+        opacity: 0;
+        filter: brightness(0.2);
+    }
+
+    40% {
+        opacity: 0.5;
+        filter: brightness(0.5);
+    }
+
+    70% {
+        opacity: 0.85;
+        filter: brightness(0.8);
+    }
+
+    100% {
+        opacity: 1;
+        filter: brightness(1);
+    }
 }
 
 
@@ -57,44 +94,6 @@ body{
 
     100%{
         background-position:0% 50%;
-    }
-
-}
-
-
-
-/* ESTRELLAS */
-
-#stars{
-
-    position:fixed;
-
-    inset:0;
-
-
-    background:
-    radial-gradient(circle,#fff 1px,transparent 1px);
-
-
-    background-size:45px 45px;
-
-    opacity:.25;
-
-
-    animation:stars 35s linear infinite;
-
-}
-
-
-@keyframes stars{
-
-    from{
-        transform:translateY(0);
-    }
-
-
-    to{
-        transform:translateY(45px);
     }
 
 }
@@ -258,6 +257,22 @@ body{
     width:100%;
     height:100%;
      pointer-events:none;
+
+}
+#shipEnergy{
+
+    position:absolute;
+
+    left:50%;
+    top:69%;
+
+    transform:translateX(-50%);
+
+    width:clamp(120px,18vw,180px);
+
+    pointer-events:none;
+
+    z-index:0;
 
 }
 
@@ -495,38 +510,43 @@ body{
 
 }
 /* BOTÓN JUGAR PERSONALIZADO */
+/* BOTÓN PLAY */
 
 #playBtn{
 
-   width:clamp(140px,18vw,180px);
-
-   height:clamp(45px,7vh,60px);
+    width:clamp(140px,18vw,180px);
+    height:clamp(45px,7vh,60px);
 
     background:url("../assets/ui/btn-play.png") center/contain no-repeat;
-   }
+
+}
 
 #playBtn:hover{
 
     transform:scale(1.05);
-
     filter:brightness(1.15);
 
 }
-#settingsBtn{
+
+
+/* BOTONES LATERALES */
+
+#settingsBtn,
+#chatBtn,
+#inviteBtn,
+#skinsBtn,
+#rankingBtn{
 
     position:absolute;
-
-    left:20px;
-    top:20px;
 
     width:60px;
     height:60px;
 
-    background:none;
-
     border:none;
-
-    padding:0;
+    background-color:transparent;
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
 
     cursor:pointer;
 
@@ -535,40 +555,254 @@ body{
 }
 
 
-.settingsIcon{
+/* IMÁGENES */
+
+#settingsBtn{
+
+    background-image:url("../assets/icons/settings.png");
+
+}
+
+#chatBtn{
+
+    background-image:url("../assets/icons/chat.jpeg");
+
+}
+
+#inviteBtn{
+
+    background-image:url("../assets/icons/invite.jpeg");
+
+}
+
+#skinsBtn{
+
+    background-image:url("../assets/icons/skins.jpeg");
+
+}
+
+#rankingBtn{
+
+    background-image:url("../assets/icons/ranking.jpeg");
+
+}
+
+
+/* POSICIONES */
+
+#settingsBtn{
+
+    left:20px;
+    top:20px;
+
+}
+
+#chatBtn{
+
+    left:20px;
+    top:95px;
+
+}
+
+#inviteBtn{
+
+    left:20px;
+    top:170px;
+
+}
+
+#skinsBtn{
+
+    left:20px;
+    top:245px;
+
+}
+
+#rankingBtn{
+
+    left:20px;
+    top:320px;
+
+}
+/* ========================= */
+/* FONDOS DEL PERFIL */
+/* ========================= */
+
+/* ========================= */
+/* FONDO DEL PERFIL */
+/* ========================= */
+
+/* ========================= */
+/* FONDO DEL PERFIL */
+/* ========================= */
+
+#profileBackground{
+
+    position:fixed;
+
+    inset:0;
 
     width:100%;
     height:100%;
 
-    object-fit:contain;
+    z-index:0;
 
-    pointer-events:none;
+    overflow:hidden;
 
 }
-.socialButtons button{
+
+
+.world{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100vw;
+    height:100vh;
+
+    overflow:hidden;
+
+}
+
+
+.world img{
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+}
+
+
+.world.active{
+
+    opacity:1;
+
+}
+
+
+/* ESTRELLAS */
+
+#stars{
+
+    z-index:1;
+
+}
+
+
+/* PERFIL ENCIMA */
+
+.profile{
+
+    position:relative;
+
+    z-index:2;
+
+}
+/*=========================
+        NEWS POPUP
+=========================*/
+
+#newsPopup{
+
+    position:fixed;
+
+    inset:0;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:9999;
+
+}
+
+#popupBackground{
+
+    position:absolute;
+
+    inset:0;
+
+    background:rgba(0,0,0,.6);
+
+}
+
+#popupWindow{
+
+    position:relative;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    width:90vw;
+
+    height:80vh;
+
+    animation:popupShow .25s ease;
+
+}
+
+#popupImage{
+
+    width:auto;
+
+    height:auto;
+
+    max-width:90%;
+
+    max-height:90%;
+
+    object-fit:contain;
+
+    display:block;
+
+}
+
+#popupClose{
+
+    position:absolute;
+
+    top:0;
+
+    right:0;
 
     width:60px;
-    height:60px;
-
-    border:none;
-
-    background-color:transparent;
-
-    background-size:contain;
-    background-repeat:no-repeat;
-    background-position:center;
 
     cursor:pointer;
 
-}
-#chatBtn{
-    background-image:url("../assets/icons/chat.jpeg");
+    transition:.2s;
+
+    z-index:10;
+
 }
 
-#rankingBtn{
-    background-image:url("../assets/icons/ranking.jpeg");
+#popupClose:hover{
+
+    transform:scale(1.1);
+
 }
 
-#inviteBtn{
-    background-image:url("../assets/icons/invite.jpeg");
+@keyframes popupShow{
+
+    from{
+
+        opacity:0;
+        transform:scale(.9);
+
+    }
+
+    to{
+
+        opacity:1;
+        transform:scale(1);
+
+    }
+
 }

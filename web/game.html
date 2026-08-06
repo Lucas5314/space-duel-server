@@ -239,32 +239,16 @@ canvas{
 
     position:fixed;
 
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    background:rgba(0,0,0,.45);
-
-    border:2px solid cyan;
-
-    border-radius:15px;
-
-    padding:10px;
-
-    color:white;
+    width:300px;
+    height:90px;
 
     z-index:900;
-
-    backdrop-filter:blur(8px);
 
 }
 
 #playerCard{
 
     left:15px;
-
     bottom:15px;
 
 }
@@ -272,21 +256,45 @@ canvas{
 #enemyCard{
 
     right:15px;
-
     top:15px;
 
 }
 
-#playerCard img,
-#enemyCard img{
+.cardFrame{
 
-    width:48px;
+    position:absolute;
 
-    height:48px;
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:contain;
+
+}
+
+.avatar{
+
+    position:absolute;
+
+    left:15px;
+    top:15px;
+
+    width:60px;
+    height:60px;
 
     border-radius:50%;
 
-    border:2px solid white;
+}
+
+.cardInfo{
+
+    position:absolute;
+
+    left:90px;
+    top:20px;
+
+    color:white;
 
 }
 #matchIntro{
@@ -389,15 +397,9 @@ canvas{
 }
 
 #mapImage{
-
-    width:70%;
-    max-width:700px;
-
-    border:4px solid cyan;
-    border-radius:20px;
-
-    box-shadow:
-    0 0 25px cyan;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 
     margin-bottom:30px;
 
@@ -512,14 +514,16 @@ canvas{
 <!-- FICHA JUGADOR -->
 <div id="playerCard">
 
-    <img id="playerAvatar"
-         src="assets/ui/default-avatar.png">
+    <img class="cardFrame"
+         src="assets/ui/playercard.png">
 
-    <div>
+    <img id="playerAvatar">
 
-        <div id="playerName">Jugador</div>
+    <div id=layerInfo">
 
-        <div id="playerLevel">Lv.1</div>
+        <span id="playerName">RICARDO</span>
+
+        <span id="playerLevel">Lv.15</span>
 
     </div>
 

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Vestuario</title>
+
+    <link rel="stylesheet" href="style/wardrobe.css">
+
+</head>
+
+<body>
+
+    <!-- Fondo -->
+    <img id="background" src="assets/backgrounds/wardrobe.jpg">
+
+    <div id="overlay"></div>
+
+    <!-- Botón volver PNG -->
+    <img id="backButton" src="assets/ui/back.png">
+
+    <!-- Logo PNG -->
+    <img id="title" src="assets/ui/wardrobe_title.png">
+
+    <!-- Contenedor principal -->
+    <div id="wardrobe">
+
+        <!-- Menú izquierdo -->
+        <div id="leftPanel">
+
+            <div class="category selected" data-category="avatars">
+                <img src="assets/ui/icons/avatar.png">
+            </div>
+
+            <div class="category" data-category="clothes">
+                <img src="assets/ui/icons/clothes.png">
+            </div>
+
+            <div class="category" data-category="weapons">
+                <img src="assets/ui/icons/sword.png">
+            </div>
+
+            <div class="category" data-category="helmets">
+                <img src="assets/ui/icons/helmet.png">
+            </div>
+
+            <div class="category" data-category="effects">
+                <img src="assets/ui/icons/effect.png">
+            </div>
+
+            <div class="category" data-category="pets">
+                <img src="assets/ui/icons/pet.png">
+            </div>
+
+        </div>
+
+        <!-- Panel derecho -->
+        <div id="rightPanel">
+
+            <!-- Personaje -->
+            <div id="preview">
+
+                <img id="character" src="assets/player/default.png">
+
+            </div>
+
+            <!-- Objetos -->
+            <div id="itemsGrid">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="js/wardrobe.js"></script>
+
+</body>
+</html>

@@ -1,8 +1,10 @@
-const worlds = {
+export const worlds = {
 
     space:{
+
+        id:"space",
         name:"Espacio",
-        
+
         background:"assets/worlds/space/background.png",
 
         player:{
@@ -19,18 +21,19 @@ const worlds = {
         },
 
         effects:{
-            explosion:"spaceExplosion"
+            explosion:"assets/worlds/space/explosion.png"
         },
 
         rules:{
             gravity:false,
             wind:false
         }
+
     },
 
-
-
     western:{
+
+        id:"western",
         name:"Viejo Oeste",
 
         background:"assets/worlds/western/background.png",
@@ -49,18 +52,19 @@ const worlds = {
         },
 
         effects:{
-            explosion:"dust"
+            explosion:"assets/worlds/western/explosion.png"
         },
 
         rules:{
             gravity:false,
             wind:true
         }
+
     },
 
-
-
     frozen:{
+
+        id:"frozen",
         name:"Planeta Congelado",
 
         background:"assets/worlds/frozen/background.png",
@@ -79,7 +83,7 @@ const worlds = {
         },
 
         effects:{
-            explosion:"snow"
+            explosion:"assets/worlds/frozen/explosion.png"
         },
 
         rules:{
@@ -87,11 +91,12 @@ const worlds = {
             wind:true,
             slippery:true
         }
+
     },
 
-
-
     volcanic:{
+
+        id:"volcanic",
         name:"Mundo Volcánico",
 
         background:"assets/worlds/volcanic/background.png",
@@ -110,18 +115,19 @@ const worlds = {
         },
 
         effects:{
-            explosion:"fire"
+            explosion:"assets/worlds/volcanic/explosion.png"
         },
 
         rules:{
             lava:true,
             heat:true
         }
+
     },
 
-
-
     jungle:{
+
+        id:"jungle",
         name:"Selva Alienígena",
 
         background:"assets/worlds/jungle/background.png",
@@ -140,18 +146,19 @@ const worlds = {
         },
 
         effects:{
-            explosion:"leaves"
+            explosion:"assets/worlds/jungle/explosion.png"
         },
 
         rules:{
             fog:true,
             creatures:true
         }
+
     },
 
-
-
     cyberCity:{
+
+        id:"cyberCity",
         name:"Ciudad Cyber",
 
         background:"assets/worlds/cyber/background.png",
@@ -170,13 +177,14 @@ const worlds = {
         },
 
         effects:{
-            explosion:"electric"
+            explosion:"assets/worlds/cyber/explosion.png"
         },
 
         rules:{
             rain:true,
             neon:true
         }
+
     }
 
 };

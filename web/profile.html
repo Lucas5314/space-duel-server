@@ -3,37 +3,44 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Perfil</title>
+    <title>Perfil</title>
+    
 
-<link rel="stylesheet" href="style/profile.css">
+    <link rel="stylesheet" href="style/profile.css">
 
 </head>
 
+
 <body>
 
-<div id="stars"></div>
+    <div id="selectedWorld"></div>
+
+<!-- ========================= -->
+<!-- FONDO DEL MUNDO -->
+<div id="profileBackground">
+
+    <div class="world active">
+
+        <img src="assets/worlds/city.jpg">
+
+    </div>
+
+</div>
+
 
 <div class="profile">
 
     <!-- ========================= -->
-    <!-- A1 - CONFIGURACIÓN -->
+    <!-- COLUMNA IZQUIERDA -->
     <!-- ========================= -->
 
-    <button id="settingsBtn"
-    onclick="location.href='settings.html'">
-        
-        <img src="assets/ui/icons/settings.png" class="settingsIcon">
+    <button
+        id="settingsBtn"
+        onclick="location.href='settings.html'">
     </button>
-
-
-    <!-- ========================= -->
-    <!-- A2 / A3 / C1 -->
-    <!-- ========================= -->
-
-   <div class="socialButtons">
 
     <button
         id="chatBtn"
@@ -41,19 +48,23 @@
     </button>
 
     <button
-        id="rankingBtn"
-        onclick="location.href='ranking.html'">
-    </button>
-
-    <button
         id="inviteBtn"
         onclick="location.href='invite.html'">
     </button>
 
-</div>
+    <button
+        id="skinsBtn"
+        onclick="location.href='skins.html'">
+    </button>
+
+    <button
+        id="rankingBtn"
+        onclick="location.href='ranking.html'">
+    </button>
+
 
     <!-- ========================= -->
-    <!-- A5 - PERFIL -->
+    <!-- PERFIL -->
     <!-- ========================= -->
 
     <div class="topBar">
@@ -102,7 +113,7 @@
 
 
     <!-- ========================= -->
-    <!-- CENTRO - NAVE -->
+    <!-- NAVE -->
     <!-- ========================= -->
 
     <div class="shipContainer">
@@ -114,7 +125,7 @@
             muted
             playsinline>
 
-            <source src="assets/ui/ship-energy.webm" type="video/webm">
+            <source src="assets/ui/ship-energy.mp4" type="video/mp4">
 
         </video>
 
@@ -138,7 +149,7 @@
 
 
     <!-- ========================= -->
-    <!-- ENERGÍA / NIVEL -->
+    <!-- NIVEL -->
     <!-- ========================= -->
 
     <div class="level">
@@ -159,16 +170,33 @@
 
 
     <!-- ========================= -->
-    <!-- E5 -->
+    <!-- PLAY -->
     <!-- ========================= -->
 
     <div class="menuButtons">
+        <button
+    id="worldBtn"
+    onclick="location.href='elegirmapa.html'">
+</button>
 
         <button id="playBtn"></button>
 
-        <button id="skinsBtn">
-            🚀 SKINS
-        </button>
+    </div>
+
+</div>
+<!-- =========================
+        NEWS POPUP
+========================== -->
+
+<div id="newsPopup">
+
+    <div id="popupBackground"></div>
+
+    <div id="popupWindow">
+
+        <img id="popupImage" src="assets/events/news01.png">
+
+        <img id="popupClose" src="assets/ui/close.png">
 
     </div>
 
@@ -177,4 +205,5 @@
 <script type="module" src="js/profile.js"></script>
 
 </body>
+
 </html>

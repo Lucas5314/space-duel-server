@@ -16,7 +16,7 @@
 
 <div class="marco">
 
-    <!-- Tu imagen del recuadro -->
+    <!-- Marco principal -->
     <img src="img/recuadro.png" class="marco-img" alt="">
 
     <div class="contenido">
@@ -27,39 +27,94 @@
 
             <div class="resultContent">
 
-                <h1 id="resultTitle">
-                    VICTORIA
-                </h1>
+                <!-- VICTORIA / DERROTA -->
+                <img
+                    id="resultTitle"
+                    class="titleImage"
+                    src="assets/result/victory.png"
+                    alt="Victoria"
+                >
 
-                <h2 id="player">
-                    RICARDO
-                </h2>
+                <!-- Nombre del jugador -->
+                <div class="playerBox">
 
-                <div class="cards">
+                    <img
+                        class="playerFrame"
+                        src="assets/result/player_box.png"
+                        alt=""
+                    >
 
-                    <div class="card">
-                        <span>⭐</span>
-                        <h3>+25</h3>
-                        <p>PUNTOS</p>
+                    <span id="playerName">
+                        RICARDO
+                    </span>
+
+                </div>
+
+                <!-- Rango -->
+                <div class="rankBox">
+
+                    <img
+                        id="rankImage"
+                        src="assets/ranks/captain.png"
+                        alt="Captain"
+                    >
+
+                </div>
+
+                <!-- Recompensas -->
+                <div class="rewards">
+
+                    <!-- Puntos -->
+                    <div class="reward">
+
+                        <img
+                            src="assets/result/reward_points.png"
+                            alt=""
+                        >
+
+                        <span id="pointsValue">
+                            +25
+                        </span>
+
                     </div>
 
-                    <div class="card">
-                        <span>🚀</span>
-                        <h3>RANGO ↑</h3>
-                        <p>CAPITÁN</p>
+                    <!-- Victorias -->
+                    <div class="reward">
+
+                        <img
+                            src="assets/result/reward_wins.png"
+                            alt=""
+                        >
+
+                        <span id="winsValue">
+                            10
+                        </span>
+
                     </div>
 
-                    <div class="card">
-                        <span>🏆</span>
-                        <h3>10</h3>
-                        <p>VICTORIAS</p>
+                    <!-- Monedas -->
+                    <div class="reward">
+
+                        <img
+                            src="assets/result/reward_coins.png"
+                            alt=""
+                        >
+
+                        <span id="coinsValue">
+                            +50
+                        </span>
+
                     </div>
 
                 </div>
 
-                <button id="continueBtn">
-                    CONTINUAR
-                </button>
+                <!-- Botón Continuar -->
+                <img
+                    id="continueBtn"
+                    class="continueButton"
+                    src="assets/result/continue.png"
+                    alt="Continuar"
+                >
 
             </div>
 

@@ -4,11 +4,14 @@ const http = require("http");
 const WebSocket = require("ws");
 const crypto = require("crypto");
 const cors = require("cors");
+const BOT_NAMES = require("./botNames");
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+
+
  
 // ===========================
 // CREAR JUGADOR
@@ -124,6 +127,13 @@ const {
 // ================= PLAYER =================
 
 function createPlayer(id, side, isBot = false, username = null){
+
+  if (isBot && !username) {
+        username = BOT_NAMES[
+            Math.floor(Math.random() * BOT_NAMES.length)
+        ];
+    }
+
 
   return {
 
@@ -244,11 +254,17 @@ setTimeout(()=>{
 
 function createBotSocket(){
 
+  const botName = BOT_NAMES[
+    Math.floor(Math.random() * BOT_NAMES.length)
+  ];
+
   return {
 
     id:
     "BOT_" +
     crypto.randomUUID(),
+
+    username: botName,
 
     isBot:true,
 
@@ -258,7 +274,6 @@ function createBotSocket(){
     close(){}
   };
 }
-
 // ================= CONNECTION =================
 
 wss.on("connection",ws=>{
@@ -452,6 +467,8 @@ setInterval(async ()=>{
     if(!room.started)
     continue;
     console.log("SALA ACTIVA:", room.id);
+        // aplicar reglas del mundo
+    applyWorldRules(room);
 
     // ================= BOT AI =================
 // ================= BOT AI =================

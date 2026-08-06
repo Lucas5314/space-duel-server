@@ -1,4 +1,5 @@
-// ===========================
+import { worlds } from "./worlds.js";
+
 // MÚSICA DE PERFIL
 // ===========================
 const clickSound = new Audio("assets/audio/click.m4a");
@@ -197,3 +198,22 @@ window.addEventListener("pointermove", e=>{
     }
 
 });
+const selectedWorldId = localStorage.getItem("selectedWorld") || "space";
+
+const selectedWorld = worlds[selectedWorldId];
+
+document.getElementById("selectedWorld").textContent = selectedWorld.name;
+const newsPopup = document.getElementById("newsPopup");
+const popupClose = document.getElementById("popupClose");
+
+if(newsPopup && popupClose){
+
+    newsPopup.style.display = "flex";
+
+    popupClose.addEventListener("click", () => {
+
+        newsPopup.style.display = "none";
+
+    });
+
+}

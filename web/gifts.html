@@ -2,97 +2,92 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Space Tip - Regalos</title>
+    <meta charset="UTF-8">
+
+    <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>Recompensa</title>
 
     <link rel="stylesheet" href="style/gifts.css">
-</head>
 
+</head>
 
 <body>
 
-
-    <div class="container">
-
-
-        <header>
-
-            <h1>
-                🎁 Regalo de Bienvenida
-            </h1>
-
-            <p>
-                Bienvenido piloto espacial!
-            </p>
-
-        </header>
+    <!-- Fondo -->
+    <img
+    id="background"
+    src="assets/backgrounds/reward.jpg"
+    alt="">
 
 
-
-        <section class="gift-box">
-
-
-            <div class="gift-icon">
-                🎁
-            </div>
+    <div id="overlay"></div>
 
 
+    <!-- Botón volver -->
+    <button
+    id="backButton"
+    onclick="location.href='menu.html'">
 
-            <h2>
-                Tu primera recompensa
+        <img
+        src="assets/ui/back-button.png"
+        alt="Volver">
+
+    </button>
+
+
+    <!-- Pantalla -->
+    <main id="rewardScreen">
+
+
+        <!-- Título -->
+        <img
+        id="rewardTitle"
+        src="assets/ui/reward-title.png"
+        alt="Recompensa">
+
+
+        <!-- Cofre -->
+        <img
+        id="giftChest"
+        src="assets/ui/chest.png"
+        alt="Cofre">
+
+
+        <!-- Recompensa -->
+        <div id="rewardAnimation">
+
+            <img
+            id="coinImage"
+            src="assets/ui/coin.png"
+            alt="Monedas">
+
+            <h2 id="coinAmount">
+
+                +500
+
             </h2>
 
+        </div>
 
 
-            <div class="skin-card">
+        <!-- Botón reclamar -->
+        <button id="claimBtn">
 
-
-                <img 
-                src="assets/ships/naveee1.png"
-                alt="Skin de nave"
-                >
-
-
-                <h3>
-                    Nave Azul
-                </h3>
-
-
-                <p>
-                    Skin inicial desbloqueada
-                </p>
-
-
-            </div>
-
-
-
-            <button id="claimBtn">
-
-                RECLAMAR REGALO
-
-            </button>
-
-
-
-        </section>
-
-
-
-        <button class="back-btn" onclick="location.href='menu.html'">
-
-            ← Volver al menú
+            <img
+            src="assets/ui/claim-button.png"
+            alt="Reclamar">
 
         </button>
 
 
-    </div>
+    </main>
 
 
-
-<script src="js/gifts.js"></script>
+    <script src="js/gifts.js"></script>
 
 </body>
 
