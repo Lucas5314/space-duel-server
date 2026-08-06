@@ -4,7 +4,7 @@ const http = require("http");
 const WebSocket = require("ws");
 const crypto = require("crypto");
 const cors = require("cors");
-const BOT_NAMES = require("./botNames");
+const BOT_NAMES = require("./botnames");
 
 const app = express();
 
