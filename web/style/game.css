@@ -1,0 +1,437 @@
+
+html,body{
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  width:100%;
+  height:100%;
+  background:transparent;
+  font-family:sans-serif;
+  touch-action:none;
+}
+#shoot{
+
+  position:fixed;
+
+  bottom:30px;
+
+  right:30px;
+
+  width:95px;
+
+  height:95px;
+
+  border-radius:50%;
+
+  border:none;
+
+  background:#ff3b3b;
+
+  color:white;
+
+  font-size:40px;
+
+  z-index:999;
+
+}
+/* CELULAR */
+@media (max-width: 768px){
+
+    #shoot{
+        display:none;
+    }
+
+}
+
+canvas{
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100vh;
+  display:block;
+  background: transparent;
+}
+
+#status{
+  position:fixed;
+  top:12px;
+  left:50%;
+  transform:translateX(-50%);
+  color:white;
+  background:rgba(0,0,0,0.45);
+  padding:10px 18px;
+  border-radius:16px;
+  z-index:999;
+  text-align:center;
+}
+
+#countdown{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    font-size:180px;
+    font-weight:900;
+    color:white;
+
+    text-shadow:
+        0 0 20px cyan,
+        0 0 40px cyan;
+
+    opacity:0;
+
+    transition:opacity .25s;
+
+    pointer-events:none;
+
+    z-index:10001;
+
+}
+
+#result{
+  position:fixed;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  background:rgba(0,0,0,0.92);
+  color:white;
+  z-index:9999;
+  font-size:46px;
+}
+
+.sticker-panel {
+
+    position: fixed;
+
+    bottom: 20px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    display: flex;
+
+    gap: 10px;
+
+    z-index: 10;
+
+}
+
+
+
+.sticker-panel button {
+
+    width: 60px;
+
+    height: 60px;
+
+    background: rgba(0,0,0,0.4);
+
+    border: 2px solid white;
+
+    border-radius: 15px;
+
+    padding: 5px;
+
+    cursor:pointer;
+
+}
+
+
+
+.sticker-panel img {
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:contain;
+
+}
+#invisible{
+
+  position:fixed;
+
+  bottom:30px;
+
+  left:30px;
+
+  width:95px;
+
+  height:95px;
+
+  border-radius:50%;
+
+  border:none;
+
+  background:#7b3cff;
+
+  color:white;
+
+  font-size:34px;
+
+  z-index:999;
+
+}
+#gameBackground{
+  position:fixed;
+
+  top:0;
+  left:0;
+
+  width:100vw;
+  height:100vh;
+
+  object-fit:cover;
+
+  z-index:-1;
+}
+#explosionVideo{
+
+    position:fixed;
+
+    width:200px;
+    height:200px;
+
+    display:none;
+
+    z-index:5;
+
+    object-fit:contain;
+
+}
+#joystick{
+
+    position:fixed;
+
+    width:180px;
+    height:180px;
+
+    display:none;
+
+    pointer-events:none;
+
+    z-index:500;
+
+    transform:translate(-50%,-50%);
+}
+#playerCard,
+#enemyCard{
+
+    position:fixed;
+
+    width:300px;
+    height:90px;
+
+    z-index:900;
+
+}
+
+#playerCard{
+
+    left:15px;
+    bottom:15px;
+
+}
+
+#enemyCard{
+
+    right:15px;
+    top:15px;
+
+}
+
+.cardFrame{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:contain;
+
+}
+
+.avatar{
+
+    position:absolute;
+
+    left:15px;
+    top:15px;
+
+    width:60px;
+    height:60px;
+
+    border-radius:50%;
+
+}
+
+.cardInfo{
+
+    position:absolute;
+
+    left:90px;
+    top:20px;
+
+    color:white;
+
+}
+#matchIntro{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:black;
+
+    z-index:9999;
+
+    display:none;
+
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+}
+
+
+#introLine{
+
+    position:absolute;
+
+    width:120vw;
+
+    height:4px;
+
+    background:white;
+
+    transform:rotate(-25deg) translateX(0);
+
+    box-shadow:
+    0 0 15px cyan,
+    0 0 30px cyan;
+
+}
+
+
+#introText{
+
+    position:absolute;
+
+    top:50%;
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+    z-index:10001;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    color:white;
+
+    text-shadow:
+        0 0 15px cyan,
+        0 0 30px black;
+
+}
+
+#introTitle{
+
+    font-size:25px;
+
+}
+
+
+#introMode{
+
+    font-size:60px;
+
+}
+
+
+#introObjective{
+
+    margin-top:20px;
+
+    font-size:22px;
+
+}
+#mapName{
+
+    position:absolute;
+
+    top:60px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    z-index:10001;
+
+}
+
+#mapImage{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    margin-bottom:30px;
+
+}
+.countdownImage{
+
+    width:min(45vw,420px);
+
+    animation:
+        countdownPop
+        .7s ease;
+
+    filter:
+        drop-shadow(0 0 20px cyan)
+        drop-shadow(0 0 50px cyan);
+
+}
+
+@keyframes countdownPop{
+
+    0%{
+
+        transform:scale(.2);
+        opacity:0;
+
+    }
+
+    50%{
+
+        transform:scale(1.2);
+        opacity:1;
+
+    }
+
+    100%{
+
+        transform:scale(1);
+        opacity:1;
+
+    }
+
+}

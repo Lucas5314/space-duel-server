@@ -5,7 +5,8 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>Skin</title>
 
@@ -15,100 +16,76 @@
 
 <body>
 
-<div id="stars"></div>
-
-<div class="skinPage">
+    <!-- Imagen de la interfaz -->
+    <img
+        id="ui"
+        src="assets/backgrounds/hangar.png"
+        alt="Interfaz">
 
     <!-- Botón volver -->
+    <img
+        id="backBtn"
+        src="assets/ui/back.png"
+        alt="Volver">
 
-    <button id="backBtn">
-        ← VOLVER
-    </button>
+    <!-- Panel izquierdo -->
 
+    <div id="infoPanel">
 
-    <!-- Rareza -->
+        <div id="rarity">
 
-    <div id="rarity" class="rarity">
-
-        ⭐ COMÚN
-
-    </div>
-
-
-    <!-- Nave -->
-
-    <div class="shipContainer">
-
-        <img
-            id="skinImage"
-            src="assets/ships/naveee1.png"
-            alt="Skin">
-
-    </div>
-
-
-    <!-- Nombre -->
-
-    <h1 id="skinName">
-
-        TRUE YELLOW DIAMOND
-
-    </h1>
-
-
-    <!-- Descripción -->
-
-    <p id="skinDescription">
-
-        Una nave creada para explorar el universo
-        y enfrentar cualquier desafío espacial.
-
-    </p>
-
-
-    <!-- Información -->
-
-    <div class="skinInfo">
-
-        <div class="infoBox">
-
-            <span>Rareza</span>
-
-            <strong id="skinRarity">
-
-                Común
-
-            </strong>
+            COMÚN
 
         </div>
 
+        <h1 id="skinName">
 
-        <div class="infoBox">
+            TRUE YELLOW DIAMOND
 
-            <span>Estado</span>
+        </h1>
 
-            <strong id="skinState">
+        <p id="skinDescription">
 
-                Desbloqueada
+            Una nave creada para explorar el universo
+            y enfrentar cualquier desafío.
 
-            </strong>
+        </p>
+
+        <div id="skinState">
+
+            DESBLOQUEADA
 
         </div>
 
     </div>
 
+    <!-- Personaje -->
 
-    <!-- Botón -->
+    <div id="viewer">
 
-    <button id="equipBtn">
+        <video
+            id="characterVideo"
+            autoplay
+            loop
+            muted
+            playsinline>
 
-        EQUIPAR
+            <source
+                src="assets/skins/yellow.webm"
+                type="video/webm">
 
-    </button>
+        </video>
 
-</div>
+    </div>
 
-<script src="js/paginaskin.js"></script>
+    <!-- Botón equipar -->
+
+    <img
+        id="equipBtn"
+        src="assets/ui/equipar.png"
+        alt="Equipar">
+
+    <script src="js/paginaskin.js"></script>
 
 </body>
 

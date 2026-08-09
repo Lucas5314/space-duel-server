@@ -14,7 +14,6 @@ body{
 
     font-family:Arial,Helvetica,sans-serif;
 
-    background:#000;
 
 }
 body::before{
@@ -430,6 +429,10 @@ body::before{
 
 /* BOTONES MENU */
 
+/* =========================
+   BOTONES PERSONALIZADOS
+========================= */
+
 .menuButtons{
 
     position:absolute;
@@ -450,81 +453,85 @@ body::before{
 }
 
 
-
+/* BOTONES */
 
 .menuButtons button{
 
-    width:clamp(120px,18vw,170px);
+    border:none;
 
-    height:clamp(42px,7vh,55px);
+    outline:none;
 
+    padding:0;
 
-    border-radius:30px;
+    margin:0;
 
+    background-color:transparent;
 
+    background-repeat:no-repeat;
 
-    border:2px solid rgba(255,255,255,.4);
+    background-position:center;
 
-
-
-    background:rgba(10,20,50,.75);
-
-
-
-    backdrop-filter:blur(10px);
-
-
-
-    color:white;
-
-
-
-    font-size:clamp(12px,2vw,18px);
-
-
+    background-size:contain;
 
     cursor:pointer;
 
-
-
-    transition:.25s;
-
+    transition:.2s;
 
 }
 
 
+/* =========================
+   BATALLA
+========================= */
 
+#worldBtn{
 
-.menuButtons button:hover{
+    width:180px;
 
+    height:60px;
 
-    transform:scale(1.05);
-
-
-    border-color:cyan;
-
-
-
-    box-shadow:0 0 25px cyan;
-
+    background-image:url("../assets/ui/btn-battle.png");
 
 }
-/* BOTÓN JUGAR PERSONALIZADO */
-/* BOTÓN PLAY */
+
+
+/* =========================
+   PLAY
+========================= */
 
 #playBtn{
 
-    width:clamp(140px,18vw,180px);
-    height:clamp(45px,7vh,60px);
+    width:180px;
 
-    background:url("../assets/ui/btn-play.png") center/contain no-repeat;
+    height:60px;
+
+    background-image:url("../assets/ui/btn-play.png");
 
 }
 
+
+/* =========================
+   HOVER
+========================= */
+
+#worldBtn:hover,
 #playBtn:hover{
 
     transform:scale(1.05);
+
     filter:brightness(1.15);
+
+}
+
+
+/* =========================
+   FOCUS
+========================= */
+
+#worldBtn:focus,
+#playBtn:focus{
+
+    outline:none;
 
 }
 
@@ -565,25 +572,25 @@ body::before{
 
 #chatBtn{
 
-    background-image:url("../assets/icons/chat.jpeg");
+    background-image:url("../assets/icons/chat.png");
 
 }
 
 #inviteBtn{
 
-    background-image:url("../assets/icons/invite.jpeg");
+    background-image:url("../assets/icons/invite.png");
 
 }
 
 #skinsBtn{
 
-    background-image:url("../assets/icons/skins.jpeg");
+    background-image:url("../assets/icons/skins.png");
 
 }
 
 #rankingBtn{
 
-    background-image:url("../assets/icons/ranking.jpeg");
+    background-image:url("../assets/icons/ranking.png");
 
 }
 
@@ -651,17 +658,17 @@ body::before{
 
 }
 
-
 .world{
 
-    position:absolute;
+    position:fixed;
 
-    inset:0;
+    top:0;
+    left:0;
 
     width:100vw;
     height:100vh;
 
-    overflow:hidden;
+    z-index:0;
 
 }
 
@@ -672,6 +679,17 @@ body::before{
     height:100%;
 
     object-fit:cover;
+
+    display:block;
+
+}
+
+
+.profile{
+
+    position:relative;
+
+    z-index:2;
 
 }
 
@@ -692,15 +710,7 @@ body::before{
 }
 
 
-/* PERFIL ENCIMA */
 
-.profile{
-
-    position:relative;
-
-    z-index:2;
-
-}
 /*=========================
         NEWS POPUP
 =========================*/
@@ -802,6 +812,164 @@ body::before{
 
         opacity:1;
         transform:scale(1);
+
+    }
+
+}
+.profileCard{
+
+    position:absolute;
+
+    top:20px;
+    right:20px;
+
+    width:420px;
+    height:180px;
+
+    padding:28px 30px;
+
+    background:
+        url("../assets/icons/card.png")
+        center / 100% 100%
+        no-repeat;
+
+    z-index:10;
+
+}
+
+
+.playerInfo{
+
+    width:100%;
+
+}
+
+
+.playerRow{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-start;
+
+    gap:10px;
+
+}
+
+
+#playerName{
+
+    margin:0;
+
+    color:white;
+
+    font-size:clamp(24px,3vw,34px);
+
+    letter-spacing:1px;
+
+    text-shadow:0 0 15px cyan;
+
+}
+
+
+.flag{
+
+    color:#dff8ff;
+
+    font-size:18px;
+
+}
+
+
+.miniStats{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-start;
+
+    gap:15px;
+
+    margin-top:18px;
+
+}
+
+
+.stat{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:4px;
+
+    padding:0;
+
+    background:none;
+
+    border-radius:0;
+
+    backdrop-filter:none;
+
+    color:white;
+
+}
+
+
+.stat strong{
+
+    font-size:18px;
+
+}
+#nameError{
+
+    display:none;
+
+    margin-top:8px;
+
+    padding:8px 14px;
+
+    border:1px solid rgba(255,80,80,.7);
+
+    border-radius:10px;
+
+    background:rgba(80,0,0,.45);
+
+    color:#ff8f8f;
+
+    font-size:14px;
+
+    text-align:center;
+
+    animation:errorAppear .2s ease;
+
+}
+
+
+#nameError.show{
+
+    display:block;
+
+}
+
+
+@keyframes errorAppear{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(-5px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
 
     }
 

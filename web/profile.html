@@ -24,15 +24,16 @@
 
     <div class="world active">
 
-        <img src="assets/worlds/city.jpg">
-
-    </div>
+    <img src="assets/worlds/fondo.jpeg">
 
 </div>
 
 
 <div class="profile">
 
+    <!-- TODO EL RESTO DEL HTML AQUÍ -->
+
+</div>
     <!-- ========================= -->
     <!-- COLUMNA IZQUIERDA -->
     <!-- ========================= -->
@@ -67,49 +68,73 @@
     <!-- PERFIL -->
     <!-- ========================= -->
 
-    <div class="topBar">
+    <div class="profileCard">
 
-        <div class="playerInfo">
+    <div class="playerInfo">
 
-            <div class="playerRow">
+        <div class="playerRow">
 
-                <h2 id="playerName">
-                    Ricardo
-                </h2>
+            <h2 id="playerName">
+                Ricardo
+            </h2>
 
-                <span class="flag">
-                    🇵🇾 PY
-                </span>
+            <span class="flag">
+                🇵🇾 PY
+            </span>
+
+        </div>
+
+
+        <div class="miniStats">
+
+            <div class="stat statWins">
+
+                <span>🟢 V</span>
+
+                <strong id="wins">
+                    0
+                </strong>
 
             </div>
 
-            <div class="miniStats">
 
-                <div class="stat statWins">
-                    <span>🟢 V</span>
-                    <strong id="wins">0</strong>
-                </div>
+            <div class="stat statLosses">
 
-                <div class="stat statLosses">
-                    <span>🔴 D</span>
-                    <strong id="losses">0</strong>
-                </div>
+                <span>🔴 D</span>
 
-                <div class="stat statStreak">
-                    <span>🔥</span>
-                    <strong id="streak">0</strong>
-                </div>
+                <strong id="losses">
+                    0
+                </strong>
 
-                <div class="stat statGames">
-                    <span>🎮</span>
-                    <strong id="games">0</strong>
-                </div>
+            </div>
+
+
+            <div class="stat statStreak">
+
+                <span>🔥</span>
+
+                <strong id="streak">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="stat statGames">
+
+                <span>🎮</span>
+
+                <strong id="games">
+                    0
+                </strong>
 
             </div>
 
         </div>
 
     </div>
+
+</div>
 
 
     <!-- ========================= -->
@@ -125,7 +150,7 @@
             muted
             playsinline>
 
-            <source src="assets/ui/ship-energy.mp4" type="video/mp4">
+            <source src="assets/ui/ship-energy.webm" type="video/webm">
 
         </video>
 

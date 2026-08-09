@@ -18,44 +18,7 @@ body{
 
 }
 
-/* Fondo espacial */
 
-/* Estrellas */
-
-#background::before{
-
-    content:"";
-
-    position:absolute;
-
-    inset:0;
-
-    background-image:
-    radial-gradient(white 1px,transparent 1px);
-
-    background-size:45px 45px;
-
-    opacity:.30;
-
-    animation:stars 45s linear infinite;
-
-}
-
-@keyframes stars{
-
-    from{
-
-        transform:translateY(0);
-
-    }
-
-    to{
-
-        transform:translateY(45px);
-
-    }
-
-}
 
 /* Panel */
 
@@ -226,8 +189,6 @@ button{
 
     color:white;
 
-    background:linear-gradient(90deg,#00a8ff,#00ff9d);
-
     transition:.25s;
 
 }
@@ -235,8 +196,6 @@ button{
 button:hover{
 
     transform:scale(1.04);
-
-    box-shadow:0 0 25px cyan;
 
 }
 
