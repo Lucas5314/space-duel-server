@@ -1,4 +1,4 @@
-export const worlds = {
+const worlds = {
 
     space:{
 
@@ -184,7 +184,6 @@ export const worlds = {
             rain:true,
             neon:true
         }
-
     }
 
 };
