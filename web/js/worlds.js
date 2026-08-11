@@ -1,4 +1,4 @@
-const worlds = {
+export const worlds = {
 
     space:{
 

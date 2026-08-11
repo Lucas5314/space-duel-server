@@ -1,12 +1,19 @@
 const clickSound = new Audio("assets/audio/click.mp3");
 
 clickSound.volume = 0.4;
+const rarityImages = {
+    "Común": "assets/icons/comun.png",
+    "Rara": "assets/icons/raro.png",
+    "Épica": "assets/icons/epico.png",
+    "Legendaria": "assets/icons/legendario.png",
+    "Mítica": "assets/icons/mitico.png"
+};
 const skins = [
 
 {
     id:"nave1",
     nombre:"Nave Azul",
-    imagen:"assets/ships/nave1.png",
+    imagen:"assets/icons/nave1.png",
     desbloqueada:true,
     rareza:"Común",
     tipo:"gratis",
@@ -16,7 +23,7 @@ const skins = [
 {
     id:"nave2",
     nombre:"Nave Roja",
-    imagen:"assets/ships/nave2.png",
+    imagen:"assets/icons/nave2.png",
     desbloqueada:false,
     rareza:"Rara",
     tipo:"compra",
@@ -27,7 +34,7 @@ const skins = [
 {
     id:"nave3",
     nombre:"Nave Dorada",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Épica"
 },
@@ -35,7 +42,7 @@ const skins = [
 {
     id:"nave4",
     nombre:"Nave Galaxia",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Rara"
 },
@@ -43,7 +50,7 @@ const skins = [
 {
     id:"nave5",
     nombre:"Nave Eclipse",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Legendaria"
 },
@@ -51,7 +58,7 @@ const skins = [
 {
     id:"nave6",
     nombre:"Nave Fénix",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Épica"
 },
@@ -59,7 +66,7 @@ const skins = [
 {
     id:"nave7",
     nombre:"Nave Plasma",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Rara"
 },
@@ -67,7 +74,7 @@ const skins = [
 {
     id:"nave8",
     nombre:"Nave Nebulosa",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Legendaria"
 },
@@ -75,7 +82,7 @@ const skins = [
 {
     id:"nave9",
     nombre:"Nave Cometa",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Común"
 },
@@ -83,7 +90,7 @@ const skins = [
 {
     id:"nave10",
     nombre:"Nave Aurora",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Épica"
 },
@@ -91,7 +98,7 @@ const skins = [
 {
     id:"nave11",
     nombre:"Nave Titan",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Rara"
 },
@@ -99,7 +106,7 @@ const skins = [
 {
     id:"nave12",
     nombre:"Nave Omega",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Legendaria"
 },
@@ -107,7 +114,7 @@ const skins = [
 {
     id:"nave13",
     nombre:"Nave Solar",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Épica"
 },
@@ -115,7 +122,7 @@ const skins = [
 {
     id:"nave14",
     nombre:"Nave Lunar",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Rara"
 },
@@ -123,7 +130,7 @@ const skins = [
 {
     id:"nave15",
     nombre:"Nave Void",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Legendaria"
 },
@@ -131,7 +138,7 @@ const skins = [
 {
     id:"nave16",
     nombre:"Nave Neon",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Épica"
 },
@@ -139,7 +146,7 @@ const skins = [
 {
     id:"nave17",
     nombre:"Nave Hunter",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Rara"
 },
@@ -147,7 +154,7 @@ const skins = [
 {
     id:"nave18",
     nombre:"Nave Dragon",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Legendaria"
 },
@@ -155,7 +162,7 @@ const skins = [
 {
     id:"nave19",
     nombre:"Nave Shadow",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Épica"
 },
@@ -163,7 +170,7 @@ const skins = [
 {
     id:"nave20",
     nombre:"Nave Legendaria",
-    imagen:"assets/ships/naveee1.png",
+    imagen:"assets/icons/naveee1.png",
     desbloqueada:false,
     rareza:"Mítica"
 }
@@ -212,12 +219,10 @@ skin.desbloqueada
 : "Bloqueada");
 
 card.innerHTML = `
-
-    <img 
-    class="rarityBadge"
-    src="assets/ui/rarity/${skin.rareza.toLowerCase()}.png">
-
-
+<img 
+class="rarityBadge"
+src="${rarityImages[skin.rareza]}"
+alt="${skin.rareza}">
     <h2>${skin.nombre}</h2>
 
 
