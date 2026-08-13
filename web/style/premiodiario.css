@@ -1,0 +1,599 @@
+*{
+    box-sizing:border-box;
+}
+
+
+/* =========================
+   BASE
+========================= */
+
+html,
+body{
+
+    width:100%;
+    height:100%;
+
+    margin:0;
+
+}
+
+
+body{
+
+    overflow:hidden;
+
+    font-family:Arial, Helvetica, sans-serif;
+
+    background:#080914;
+
+    color:white;
+
+}
+
+
+/* =========================
+   FONDO PNG
+========================= */
+
+body::before{
+
+    content:"";
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:-2;
+
+    background-image:
+        url("../assets/premiodiario/fondo.png");
+
+    background-size:cover;
+
+    background-position:center;
+
+    background-repeat:no-repeat;
+
+}
+
+
+/* Oscurecimiento suave */
+
+body::after{
+
+    content:"";
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:-1;
+
+    background:
+        linear-gradient(
+            rgba(0,0,0,.20),
+            rgba(0,0,0,.45)
+        );
+
+    pointer-events:none;
+
+}
+
+
+/* =========================
+   CONTENEDOR
+========================= */
+
+.container{
+
+    width:100%;
+    height:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.dailyHeader{
+
+    position:relative;
+
+    width:100%;
+
+    height:95px;
+
+    flex-shrink:0;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    overflow:hidden;
+
+}
+
+
+/* Fondo del header */
+
+.headerBackground{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    z-index:0;
+
+}
+
+
+/* Título PNG */
+
+.headerTitle{
+
+    position:relative;
+
+    z-index:2;
+
+    width:auto;
+
+    height:65px;
+
+    max-width:55vw;
+
+    object-fit:contain;
+
+}
+
+
+/* =========================
+   BOTÓN VOLVER
+========================= */
+
+.volver{
+
+    position:absolute;
+
+    top:50%;
+    right:22px;
+
+    transform:translateY(-50%);
+
+    z-index:5;
+
+    width:115px;
+
+    padding:0;
+
+    margin:0;
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    cursor:pointer;
+
+    appearance:none;
+
+    -webkit-appearance:none;
+
+}
+
+
+.volver img{
+
+    display:block;
+
+    width:100%;
+
+    height:auto;
+
+    background:transparent;
+
+    transition:
+        transform .2s ease,
+        filter .2s ease;
+
+}
+
+
+.volver:hover img{
+
+    transform:scale(1.06);
+
+}
+
+
+.volver:active img{
+
+    transform:scale(.94);
+
+}
+
+
+/* =========================
+   ZONA DE RECOMPENSAS
+========================= */
+
+.recompensas-wrapper{
+
+    flex:1;
+
+    width:100%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    overflow:hidden;
+
+    padding:
+        15px 25px 20px;
+
+}
+
+
+/* =========================
+   FILA DE CARTAS
+========================= */
+
+.recompensas{
+
+    width:100%;
+
+    max-width:1250px;
+
+    height:100%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:12px;
+
+}
+
+
+/* =========================
+   CARTA
+========================= */
+
+.recompensa{
+
+    position:relative;
+
+    width:150px;
+
+    height:260px;
+
+    flex:1;
+
+    max-width:165px;
+
+    min-width:105px;
+
+    flex-shrink:1;
+
+    overflow:hidden;
+
+    border-radius:18px;
+
+    background:transparent;
+
+    transition:
+        transform .25s ease,
+        filter .25s ease;
+
+}
+
+
+/* =========================
+   MARCO PNG
+========================= */
+
+.marcoRecompensa{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:fill;
+
+    z-index:3;
+
+    pointer-events:none;
+
+}
+
+
+/* =========================
+   IMAGEN DEL PREMIO
+========================= */
+
+.premioImagen{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:contain;
+
+    z-index:1;
+
+    pointer-events:none;
+
+}
+
+
+/* =========================
+   BOTÓN RECLAMAR
+========================= */
+
+.reclamar{
+
+    position:absolute;
+
+    left:50%;
+
+    bottom:12px;
+
+    transform:translateX(-50%);
+
+    width:78%;
+
+    padding:0;
+
+    margin:0;
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    cursor:pointer;
+
+    z-index:5;
+
+}
+
+
+.reclamar img{
+
+    display:block;
+
+    width:100%;
+    height:auto;
+
+    transition:
+        transform .2s ease,
+        filter .2s ease;
+
+}
+
+
+.reclamar:hover img{
+
+    transform:scale(1.06);
+
+}
+
+
+.reclamar:active img{
+
+    transform:scale(.94);
+
+}
+
+
+/* =========================
+   DISPONIBLE
+========================= */
+
+.disponible{
+
+    transform:
+        translateY(-8px)
+        scale(1.04);
+
+    filter:
+        drop-shadow(0 0 10px rgba(255,215,60,.7))
+        drop-shadow(0 0 25px rgba(255,215,60,.35));
+
+}
+
+
+.disponible:hover{
+
+    transform:
+        translateY(-10px)
+        scale(1.07);
+
+}
+
+
+/* =========================
+   BLOQUEADAS
+========================= */
+
+.bloqueada{
+
+    filter:
+        brightness(.55)
+        saturate(.65);
+
+}
+
+
+/* =========================
+   CANDADO PNG
+========================= */
+
+.candado{
+
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    transform:
+        translate(-50%,-50%);
+
+    width:45px;
+    height:45px;
+
+    object-fit:contain;
+
+    z-index:6;
+
+    pointer-events:none;
+
+}
+
+
+/* =========================
+   LANDSCAPE
+========================= */
+
+@media (orientation:landscape){
+
+    .dailyHeader{
+
+        height:82px;
+
+    }
+
+
+    .headerTitle{
+
+        height:55px;
+
+    }
+
+
+    .volver{
+
+        width:105px;
+
+        right:18px;
+
+    }
+
+
+    .recompensas-wrapper{
+
+        padding:
+            10px 20px 15px;
+
+    }
+
+
+    .recompensas{
+
+        gap:10px;
+
+        max-width:1200px;
+
+    }
+
+
+    .recompensa{
+
+        height:calc(100vh - 125px);
+
+        max-height:250px;
+
+        min-height:180px;
+
+    }
+
+}
+
+
+/* =========================
+   PANTALLAS LANDSCAPE BAJAS
+========================= */
+
+@media (
+    orientation:landscape
+) and (max-height:600px){
+
+    .dailyHeader{
+
+        height:65px;
+
+    }
+
+
+    .headerTitle{
+
+        height:44px;
+
+    }
+
+
+    .volver{
+
+        width:85px;
+
+        right:12px;
+
+    }
+
+
+    .recompensas-wrapper{
+
+        padding:
+            6px 12px 10px;
+
+    }
+
+
+    .recompensas{
+
+        gap:7px;
+
+    }
+
+
+    .recompensa{
+
+        height:calc(100vh - 90px);
+
+        max-height:220px;
+
+    }
+
+
+    .candado{
+
+        width:35px;
+        height:35px;
+
+    }
+
+}

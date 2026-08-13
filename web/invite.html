@@ -3,12 +3,12 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Space Tip - Invitar</title>
+    <title>Space Tip - Invitar</title>
 
-<link rel="stylesheet" href="style/invite.css">
+    <link rel="stylesheet" href="style/invite.css">
 
 </head>
 
@@ -19,72 +19,92 @@
 <div class="container">
 
 
-<header>
+    <!-- TÍTULO PERSONALIZADO -->
 
-<h1>
-⚔️ Invitar a Batalla
-</h1>
+    <header>
 
+        <img
+            class="tituloInvite"
+            src="assets/invite/titulo-invitar.png"
+            alt="Invitar a batalla"
+        >
 
-<p>
-Ahora puedes invitar a cualquier piloto de Space Tip 🚀
-</p>
+        <img
+            class="subtituloInvite"
+            src="assets/invite/subtitulo-invitar.png"
+            alt="Ahora puedes invitar a amigos a batallas personalizadas"
+        >
 
-
-</header>
-
-
-
-<section class="invite-box">
-
-
-<div class="search-area">
+    </header>
 
 
-<input 
-id="playerName"
-type="text"
-placeholder="Nombre del jugador"
->
+    <!-- PANEL -->
+
+    <section class="invite-box">
 
 
-<button id="inviteBtn">
+        <div class="search-area">
 
-INVITAR
 
-</button>
+            <!-- CAMPO -->
+
+            <div class="input-wrapper">
+
+                <img
+                    class="marcoInput"
+                    src="assets/invite/marco-input.png"
+                    alt=""
+                >
+
+                <input
+                    id="playerName"
+                    type="text"
+                    placeholder="Nombre del jugador"
+                >
+
+            </div>
+
+
+            <!-- BOTÓN -->
+
+            <button id="inviteBtn">
+
+                <img
+                    src="assets/invite/boton-invitar.png"
+                    alt="Invitar"
+                >
+
+            </button>
+
+
+        </div>
+
+
+        <div id="status"></div>
+
+
+    </section>
+
+
+    <!-- VOLVER -->
+
+    <button
+        class="back-btn"
+        onclick="location.href='profile.html'"
+    >
+
+        <img
+            src="assets/invite/boton-volver.png"
+            alt="Volver"
+        >
+
+    </button>
 
 
 </div>
-
-
-
-<div id="status">
-
-</div>
-
-
-
-</section>
-
-
-
-
-<button class="back-btn" onclick="location.href='profile.html'">
-
-← Volver
-
-</button>
-
-
-
-</div>
-
-
 
 
 <script src="js/invite.js"></script>
-
 
 </body>
 

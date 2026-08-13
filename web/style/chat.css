@@ -1,359 +1,802 @@
-*{
+/* =========================
+RESET
+========================= */
 
-box-sizing:border-box;
+* {
+
+  box-sizing: border-box;
+
+  margin: 0;
+
+  padding: 0;
 
 }
 
-
+/* =========================
+BODY
+========================= */
 
 html,
-body{
+body {
 
-width:100%;
-height:100%;
+width: 100%;
+height: 100%;
 
-margin:0;
+overflow: hidden;
 
-overflow:hidden;
+font-family: Arial, Helvetica, sans-serif;
 
-font-family:Arial,sans-serif;
+color: white;
+
+}
+
+body {
 
 background:
+    radial-gradient(
+        circle at top,
+        #4b38b8,
+        #10142d
+    );
 
-radial-gradient(circle at top,#4b38b8,#10142d);
+display: flex;
 
+justify-content: center;
 
-color:white;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-}
-
-
-
-
-
-.container{
-
-
-width:95%;
-
-height:95vh;
-
-max-width:500px;
-
-
-display:flex;
-
-flex-direction:column;
-
-
-text-align:center;
+align-items: center;
 
 
 }
 
+/* =========================
+CONTENEDOR
+========================= */
 
+.container {
 
+width: 94vw;
 
+height: 92vh;
 
-header h1{
+max-width: 1100px;
 
+display: flex;
 
-font-size:clamp(24px,6vw,34px);
+flex-direction: column;
 
+}
 
-margin:10px 0;
+/* =========================
+CABECERA
+========================= */
+
+header {
+
+text-align: center;
+
+flex-shrink: 0;
 
 
 }
 
+header h1 {
 
 
-header p{
+font-size: clamp(25px, 4vw, 38px);
 
-
-opacity:.9;
-
-font-size:clamp(14px,3vw,18px);
-
-
-}
-
-
-
-
-
-
-.chat-box{
-
-
-flex:1;
-
-
-margin-top:20px;
-
-
-background:rgba(255,255,255,.12);
-
-
-border-radius:25px;
-
-
-padding:15px;
-
-
-box-shadow:0 0 30px rgba(0,0,0,.4);
-
-
-
-display:flex;
-
-
-flex-direction:column;
-
-
-
-overflow:hidden;
+margin: 5px 0 3px;
 
 
 }
 
+header p {
 
 
+opacity: .75;
 
+font-size: clamp(13px, 2vw, 16px);
 
-
-.chat-header{
-
-
-background:rgba(0,0,0,.25);
-
-
-padding:12px;
-
-
-border-radius:15px;
-
-
-font-size:clamp(18px,5vw,22px);
-
-
-font-weight:bold;
+margin-bottom: 15px;
 
 
 }
 
+/* =========================
+LAYOUT DEL CHAT
+========================= */
+
+.chat-layout {
 
 
+flex: 1;
 
-.chat-header span{
+min-height: 0;
 
+display: grid;
 
-display:block;
+grid-template-columns: 250px 1fr;
 
-
-font-size:14px;
-
-
-margin-top:5px;
-
-
-}
-
-
-
-
-
-
-.messages{
-
-
-flex:1;
-
-
-min-height:0;
-
-
-overflow-y:auto;
-
-
-padding:15px 5px;
-
-
-display:flex;
-
-
-flex-direction:column;
-
-
-gap:12px;
+gap: 15px;
 
 
 }
 
+/* =========================
+PANEL DE AMIGOS
+========================= */
+
+.friends-panel {
 
 
+min-height: 0;
 
+background:
+    rgba(255,255,255,.10);
 
-.message{
+border:
 
+    1px solid
+    rgba(255,255,255,.12);
 
-padding:12px 16px;
+border-radius: 22px;
 
+box-shadow:
+    0 0 30px rgba(0,0,0,.35);
 
-border-radius:20px;
+backdrop-filter: blur(12px);
 
+overflow: hidden;
 
-max-width:80%;
+display: flex;
 
-
-font-size:clamp(14px,4vw,16px);
-
-
-word-wrap:break-word;
-
-
-}
-
-
-
-
-
-.friend{
-
-
-background:#ffffff;
-
-
-color:#222;
-
-
-align-self:flex-start;
+flex-direction: column;
 
 
 }
 
+/* =========================
+TÍTULO AMIGOS
+========================= */
+
+.friends-title {
 
 
+padding: 17px;
 
+background:
+    rgba(0,0,0,.22);
 
-.me{
-
-
-background:#ffcf33;
-
-
-color:#382500;
-
-
-align-self:flex-end;
-
-
-}
-
-
-
-
-
-
-
-.write-area{
-
-
-display:flex;
-
-
-gap:8px;
-
-
-padding-top:10px;
+border-bottom:
+    1px solid
+    rgba(255,255,255,.08);
 
 
 }
 
+.friends-title h2 {
 
+font-size: 20px;
 
-
-#messageInput{
-
-
-flex:1;
-
-
-min-width:0;
-
-
-padding:12px;
-
-
-border:none;
-
-
-border-radius:20px;
-
-
-outline:none;
-
-
-font-size:16px;
+text-align: left;
 
 
 }
 
+/* =========================
+LISTA
+========================= */
+
+.friends-list {
 
 
+flex: 1;
 
-#sendBtn{
+min-height: 0;
 
+overflow-y: auto;
 
-border:none;
-
-
-border-radius:20px;
-
-
-padding:12px 15px;
-
-
-background:#ffcf33;
-
-
-font-weight:bold;
-
-
-cursor:pointer;
+padding: 8px;
 
 
 }
 
+/* =========================
+AMIGO
+========================= */
+
+.friend-item {
 
 
+width: 100%;
+
+min-height: 65px;
+
+display: flex;
+
+align-items: center;
+
+gap: 12px;
+
+padding: 10px;
+
+margin-bottom: 6px;
+
+border: none;
+
+border-radius: 15px;
+
+background: transparent;
+
+color: white;
+
+text-align: left;
+
+cursor: pointer;
+
+transition:
+    background .2s ease,
+    transform .15s ease;
 
 
-.back-btn{
+}
+
+.friend-item:hover {
 
 
-margin-top:15px;
+background:
+    rgba(255,255,255,.08);
 
 
-background:none;
+}
+
+.friend-item:active {
+
+transform: scale(.98);
 
 
-border:none;
+}
+
+/* AMIGO SELECCIONADO */
+
+.friend-item.active {
+
+background:
+    rgba(255,207,51,.16);
+
+box-shadow:
+    inset 3px 0 0 #ffcf33;
 
 
-color:white;
+}
+
+/* =========================
+AVATAR
+========================= */
+
+.friend-avatar {
 
 
-font-size:18px;
+width: 42px;
+
+height: 42px;
+
+flex-shrink: 0;
+
+display: flex;
+
+justify-content: center;
+
+align-items: center;
+
+border-radius: 50%;
+
+background:
+    rgba(255,255,255,.12);
+
+font-size: 21px;
 
 
-cursor:pointer;
+}
+
+/* =========================
+INFORMACIÓN
+========================= */
+
+.friend-info {
+
+
+min-width: 0;
+
+display: flex;
+
+flex-direction: column;
+
+gap: 4px;
+
+}
+
+.friend-info strong {
+
+
+font-size: 15px;
+
+white-space: nowrap;
+
+overflow: hidden;
+
+text-overflow: ellipsis;
+
+}
+
+.friend-info span {
+
+font-size: 12px;
+
+
+}
+
+/* ONLINE */
+
+.online {
+color: #4cff88;
+
+
+}
+
+/* OFFLINE */
+
+.offline {
+
+color: rgba(255,255,255,.45);
+
+}
+
+/* =========================
+CHAT
+========================= */
+
+.chat-box {
+
+min-width: 0;
+
+min-height: 0;
+
+background:
+    rgba(255,255,255,.10);
+
+border:
+    1px solid
+    rgba(255,255,255,.12);
+
+border-radius: 25px;
+
+padding: 12px;
+
+box-shadow:
+    0 0 30px rgba(0,0,0,.4);
+
+backdrop-filter: blur(12px);
+
+display: flex;
+
+flex-direction: column;
+
+overflow: hidden;
+
+
+}
+
+/* =========================
+CABECERA DEL CHAT
+========================= */
+
+.chat-header {
+
+flex-shrink: 0;
+
+padding: 13px 16px;
+
+border-radius: 16px;
+
+background:
+    rgba(0,0,0,.25);
+
+font-size: 20px;
+
+}
+
+.chat-header strong {
+
+display: block;
+
+
+}
+
+.chat-header span {
+
+
+display: block;
+
+margin-top: 4px;
+
+font-size: 12px;
+
+font-weight: normal;
+
+
+}
+
+/* =========================
+MENSAJES
+========================= */
+
+.messages {
+
+
+flex: 1;
+
+min-height: 0;
+
+overflow-y: auto;
+
+padding: 15px 5px;
+
+display: flex;
+
+flex-direction: column;
+
+gap: 10px;
+
+
+}
+
+/* =========================
+MENSAJE
+========================= */
+
+.message {
+
+
+max-width: 75%;
+
+padding: 11px 15px;
+
+border-radius: 18px;
+
+font-size: 15px;
+
+word-wrap: break-word;
+
+line-height: 1.35;
+
+}
+
+/* MENSAJE DEL AMIGO */
+
+.friend {
+
+
+align-self: flex-start;
+
+background: white;
+
+color: #222;
+
+border-bottom-left-radius: 5px;
+
+
+}
+
+/* MENSAJE PROPIO */
+
+.me {
+
+
+align-self: flex-end;
+
+background: #ffcf33;
+
+color: #382500;
+
+border-bottom-right-radius: 5px;
+
+
+}
+
+/* =========================
+ESCRIBIR
+========================= */
+
+.write-area {
+
+flex-shrink: 0;
+
+display: flex;
+
+gap: 8px;
+
+padding-top: 10px;
+
+
+}
+
+#messageInput {
+
+
+flex: 1;
+
+min-width: 0;
+
+height: 44px;
+
+padding: 0 15px;
+
+border: none;
+
+border-radius: 22px;
+
+outline: none;
+
+background: rgba(255,255,255,.95);
+
+color: #222;
+
+font-size: 15px;
+
+
+}
+
+#messageInput::placeholder {
+
+color: #777;
+
+
+}
+
+#sendBtn {
+
+
+flex-shrink: 0;
+
+height: 44px;
+
+padding: 0 18px;
+
+border: none;
+
+border-radius: 22px;
+
+background: #ffcf33;
+
+color: #382500;
+
+font-weight: bold;
+
+cursor: pointer;
+
+transition: transform .15s ease;
+
+
+}
+
+#sendBtn:active {
+
+
+transform: scale(.95);
+
+
+}
+
+/* =========================
+VOLVER
+========================= */
+
+.back-btn {
+
+
+align-self: center;
+
+flex-shrink: 0;
+
+margin-top: 10px;
+
+background: none;
+
+border: none;
+
+color: white;
+
+font-size: 16px;
+
+cursor: pointer;
+
+opacity: .8;
+
+
+}
+
+.back-btn:hover {
+
+opacity: 1;
+
+
+}
+
+/* =========================
+SCROLL
+========================= */
+
+.friends-list::-webkit-scrollbar,
+.messages::-webkit-scrollbar {
+
+
+width: 5px;
+
+
+}
+
+.friends-list::-webkit-scrollbar-thumb,
+.messages::-webkit-scrollbar-thumb {
+
+
+background:
+    rgba(255,255,255,.18);
+
+border-radius: 10px;
+
+
+}
+
+/* =========================
+MÓVIL
+========================= */
+
+@media (max-width: 700px) {
+
+.container {
+
+    width: 96vw;
+
+    height: 94vh;
+
+}
+
+
+.chat-layout {
+
+    grid-template-columns: 170px 1fr;
+
+    gap: 8px;
+
+}
+
+
+.friends-title {
+
+    padding: 13px;
+
+}
+
+
+.friends-title h2 {
+
+    font-size: 17px;
+
+}
+
+
+.friend-item {
+
+    min-height: 58px;
+
+    padding: 7px;
+
+    gap: 8px;
+
+}
+
+
+.friend-avatar {
+
+    width: 35px;
+
+    height: 35px;
+
+    font-size: 17px;
+
+}
+
+
+.friend-info strong {
+
+    font-size: 13px;
+
+}
+
+
+.friend-info span {
+
+    font-size: 10px;
+
+}
+
+
+.chat-header {
+
+    font-size: 17px;
+
+}
+
+
+.message {
+
+    max-width: 85%;
+
+    font-size: 14px;
+
+}
+
+
+#sendBtn {
+
+    padding: 0 13px;
+
+}
+
+
+}
+
+/* =========================
+MÓVIL MUY PEQUEÑO
+========================= */
+
+@media (max-width: 480px) {
+
+
+.chat-layout {
+
+    grid-template-columns: 125px 1fr;
+
+}
+
+
+.friend-avatar {
+
+    display: none;
+
+}
+
+
+.friend-item {
+
+    padding-left: 8px;
+
+}
+
+
+.friend-info strong {
+
+    font-size: 12px;
+
+}
+
+
+.friend-info span {
+
+    font-size: 9px;
+
+}
+
+
+#sendBtn {
+
+    font-size: 0;
+
+    width: 44px;
+
+    padding: 0;
+
+}
 
 
 }

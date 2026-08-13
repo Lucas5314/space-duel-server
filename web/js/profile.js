@@ -1,4 +1,4 @@
-import { worlds } from "./worlds.js";
+//import { worlds } from "./worlds.js";
 
 // MÚSICA DE PERFIL
 // ===========================

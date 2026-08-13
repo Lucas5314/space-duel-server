@@ -1,37 +1,83 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
 
+
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
 
-<title>Ranking</title>
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="style/ranking.css">
+<title>SPACE TIP - Ranking</title>
+
+<link
+    rel="stylesheet"
+    href="style/ranking.css">
 
 </head>
 
 <body>
 
+
+<!-- =========================
+     FONDO PERSONALIZADO
+========================== -->
+
 <div id="background"></div>
+
+
+<!-- =========================
+     CONTENEDOR
+========================== -->
 
 <div class="container">
 
-    <h1>🏆 TOP MUNDIAL</h1>
+
+    <!-- =========================
+         TÍTULO PNG
+    ========================== -->
+
+    <h1 class="rankingTitle">
+
+        <img
+            src="assets/ui/ranking/ranking.png"
+            alt="TOP MUNDIAL">
+
+    </h1>
+
+
+    <!-- =========================
+         LISTA DEL RANKING
+    ========================== -->
 
     <div id="rankingList"></div>
 
-    <button id="backBtn">
 
-        ⬅ Volver
+    <!-- =========================
+         BOTÓN VOLVER
+    ========================== -->
+
+    <button
+        id="backBtn"
+        aria-label="Volver">
+
+        <img
+            src="assets/ui/voltar.png"
+            alt="Volver">
 
     </button>
 
+
 </div>
 
+
+<!-- JAVASCRIPT -->
+
 <script src="js/ranking.js"></script>
+
 
 </body>
 

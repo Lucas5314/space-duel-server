@@ -3,40 +3,117 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no"
+    >
 
-<title>SPACE TIP - Buscando rival</title>
+    <title>SPACE TIP - Buscando rival</title>
 
-<link rel="stylesheet" href="style/matchmaking.css">
+    <link
+        rel="stylesheet"
+        href="style/matchmaking.css"
+    >
 
 </head>
 
+
 <body>
+
 
 <div id="background"></div>
 
 <div id="overlay"></div>
 
+
 <div class="container">
 
-    <!-- Portal -->
+
+    <!-- =========================
+         PORTAL
+    ========================== -->
 
     <video
         id="portal"
         autoplay
         muted
         loop
-        playsinline>
+        playsinline
+    >
 
         <source
             src="assets/videos/portal.mp4"
-            type="video/mp4">
+            type="video/mp4"
+        >
 
     </video>
 
-    <!-- Título -->
+
+    <!-- =========================
+         ESCÁNER DE MUNDOS
+    ========================== -->
+
+    <div class="worldScanner">
+
+
+        <div class="worldCard">
+
+            <img
+                src="assets/mapasaelegir/oeste.jpg"
+                alt="Viejo Oeste"
+            >
+
+        </div>
+
+
+        <div class="worldCard">
+
+            <img
+                src="assets/mapasaelegir/espacio.jpg"
+                alt="Espacio"
+            >
+
+        </div>
+
+
+        <div class="worldCard">
+
+            <img
+                src="assets/mapasaelegir/bosque.jpg"
+                alt="Bosque"
+            >
+
+        </div>
+
+
+        <div class="worldCard">
+
+            <img
+                src="assets/mapasaelegir/pirata.jpg"
+                alt="Isla Pirata"
+            >
+
+        </div>
+
+
+        <div class="worldCard">
+
+            <img
+                src="assets/mapasaelegir/hielo.jpg"
+                alt="Reino de Hielo"
+            >
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =========================
+         TÍTULO
+    ========================== -->
 
     <h1>
 
@@ -44,21 +121,34 @@
 
     </h1>
 
-    <!-- Estado de conexión -->
+
+    <!-- =========================
+         ESTADO DE CONEXIÓN
+    ========================== -->
 
     <div class="connectionStatus">
 
+
         <span id="connectionIcon">
+
             🟢
+
         </span>
 
+
         <span id="connectionText">
+
             Conectado
+
         </span>
+
 
     </div>
 
-    <!-- Mensaje dinámico -->
+
+    <!-- =========================
+         MENSAJE DINÁMICO
+    ========================== -->
 
     <p id="status">
 
@@ -66,13 +156,21 @@
 
     </p>
 
-    <!-- Información del matchmaking -->
+
+    <!-- =========================
+         INFORMACIÓN DEL MATCHMAKING
+    ========================== -->
 
     <div class="matchInfo">
 
+
         <div class="infoRow">
 
-            <span>🌎</span>
+            <span>
+
+                🌎
+
+            </span>
 
             <span id="region">
 
@@ -82,9 +180,14 @@
 
         </div>
 
+
         <div class="infoRow">
 
-            <span>👨‍🚀</span>
+            <span>
+
+                👨‍🚀
+
+            </span>
 
             <span id="playersOnline">
 
@@ -94,9 +197,14 @@
 
         </div>
 
+
         <div class="infoRow">
 
-            <span>🎯</span>
+            <span>
+
+                🎯
+
+            </span>
 
             <span id="playersSearching">
 
@@ -106,9 +214,14 @@
 
         </div>
 
+
         <div class="infoRow">
 
-            <span>⏱</span>
+            <span>
+
+                ⏱
+
+            </span>
 
             <span id="searchTime">
 
@@ -118,9 +231,14 @@
 
         </div>
 
+
         <div class="infoRow">
 
-            <span>📶</span>
+            <span>
+
+                📶
+
+            </span>
 
             <span id="ping">
 
@@ -130,21 +248,30 @@
 
         </div>
 
+
     </div>
 
-    <!-- Animación de carga -->
+
+    <!-- =========================
+         ANIMACIÓN DE CARGA
+    ========================== -->
 
     <div class="loading">
 
-        <div class="dot"></div>
 
         <div class="dot"></div>
 
         <div class="dot"></div>
+
+        <div class="dot"></div>
+
 
     </div>
 
-    <!-- Cancelar búsqueda -->
+
+    <!-- =========================
+         CANCELAR BÚSQUEDA
+    ========================== -->
 
     <button id="cancel">
 
@@ -152,9 +279,12 @@
 
     </button>
 
+
 </div>
 
+
 <script src="js/matchmaking.js"></script>
+
 
 </body>
 

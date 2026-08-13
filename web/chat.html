@@ -1,121 +1,306 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
 
+```
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
 
 <title>Space Tip - Chat</title>
 
-<link rel="stylesheet" href="style/chat.css">
+<link
+    rel="stylesheet"
+    href="style/chat.css">
+```
 
 </head>
 
-
 <body>
-
 
 <div class="container">
 
+```
+<!-- =========================
+     CABECERA
+========================== -->
 
 <header>
 
-<h1>
-💬 Chat
-</h1>
+    <h1>
+        💬 Chat
+    </h1>
 
-<p>
-Habla con tus amigos pilotos 🚀
-</p>
+    <p>
+        Habla con tus amigos pilotos 🚀
+    </p>
 
 </header>
 
 
 
+<!-- =========================
+     CONTENEDOR PRINCIPAL
+========================== -->
 
-<section class="chat-box">
+<div class="chat-layout">
+
+
+    <!-- =========================
+         LISTA DE AMIGOS
+    ========================== -->
+
+    <aside class="friends-panel">
+
+
+        <div class="friends-title">
+
+            <h2>
+                Amigos
+            </h2>
+
+        </div>
+
+
+        <div
+            id="friendsList"
+            class="friends-list">
+
+
+            <!-- AMIGO SELECCIONADO -->
+
+            <button
+                class="friend-item active"
+                data-user="Alex">
+
+
+                <div class="friend-avatar">
+
+                    👤
+
+                </div>
+
+
+                <div class="friend-info">
+
+                    <strong>
+                        Alex
+                    </strong>
+
+                    <span class="online">
+                        ● Online
+                    </span>
+
+                </div>
+
+
+            </button>
 
 
 
-<div class="chat-header">
+            <!-- OTROS AMIGOS -->
 
-🚀 Alex
+            <button
+                class="friend-item"
+                data-user="Lucas">
 
-<span>
-🟢 Online
-</span>
+
+                <div class="friend-avatar">
+
+                    👤
+
+                </div>
+
+
+                <div class="friend-info">
+
+                    <strong>
+                        Lucas
+                    </strong>
+
+                    <span class="online">
+                        ● Online
+                    </span>
+
+                </div>
+
+
+            </button>
+
+
+
+            <button
+                class="friend-item"
+                data-user="Shadow">
+
+
+                <div class="friend-avatar">
+
+                    👤
+
+                </div>
+
+
+                <div class="friend-info">
+
+                    <strong>
+                        Shadow
+                    </strong>
+
+                    <span class="offline">
+                        ● Desconectado
+                    </span>
+
+                </div>
+
+
+            </button>
+
+
+
+            <button
+                class="friend-item"
+                data-user="Nova">
+
+
+                <div class="friend-avatar">
+
+                    👤
+
+                </div>
+
+
+                <div class="friend-info">
+
+                    <strong>
+                        Nova
+                    </strong>
+
+                    <span class="online">
+                        ● Online
+                    </span>
+
+                </div>
+
+
+            </button>
+
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- =========================
+         CHAT
+    ========================== -->
+
+    <section class="chat-box">
+
+
+        <!-- CABECERA DEL CHAT -->
+
+        <div class="chat-header">
+
+
+            <div>
+
+                <strong id="chatUser">
+                    🚀 Alex
+                </strong>
+
+                <span
+                    id="chatStatus"
+                    class="online">
+
+                    ● Online
+
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- MENSAJES -->
+
+        <div
+            id="messages"
+            class="messages">
+
+
+            <div class="message friend">
+
+                Hola! ¿jugamos una batalla? 🚀
+
+            </div>
+
+
+            <div class="message me">
+
+                Claro! ⚔️
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ESCRIBIR -->
+
+        <div class="write-area">
+
+
+            <input
+                id="messageInput"
+                type="text"
+                placeholder="Escribe un mensaje..."
+                autocomplete="off">
+
+
+            <button
+                id="sendBtn">
+
+                Enviar
+
+            </button>
+
+
+        </div>
+
+
+    </section>
+
 
 </div>
 
 
 
+<!-- =========================
+     VOLVER
+========================== -->
 
+<button
+    class="back-btn"
+    onclick="location.href='profile.html'">
 
-<div id="messages" class="messages">
-
-
-<div class="message friend">
-
-Hola! ¿jugamos una batalla? 🚀
-
-</div>
-
-
-<div class="message me">
-
-Claro! ⚔️
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="write-area">
-
-
-<input 
-id="messageInput"
-type="text"
-placeholder="Escribe un mensaje..."
->
-
-
-<button id="sendBtn">
-
-Enviar
+    ← Volver
 
 </button>
-
-
-</div>
-
-
-
-</section>
-
-
-
-
-
-<button class="back-btn" onclick="location.href='profile.html'">
-
-← Volver
-
-</button>
-
-
+```
 
 </div>
-
-
 
 <script src="js/chat.js"></script>
-
 
 </body>
 

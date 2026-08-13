@@ -7,7 +7,9 @@ const music = new Audio("assets/audio/matchmaking.mp3");
 music.loop = true;
 music.volume = 0.4;
 
+
 // Iniciar la música en la primera interacción
+
 document.addEventListener("click", () => {
 
     music.play().catch(err => console.log(err));
@@ -50,7 +52,8 @@ const messages = [
 
 let messageIndex = 0;
 
-setInterval(()=>{
+
+setInterval(() => {
 
     messageIndex++;
 
@@ -71,14 +74,21 @@ setInterval(()=>{
 
 let seconds = 0;
 
-setInterval(()=>{
+
+setInterval(() => {
 
     seconds++;
 
-    const min = String(Math.floor(seconds / 60)).padStart(2,"0");
-    const sec = String(seconds % 60).padStart(2,"0");
+    const min =
+        String(Math.floor(seconds / 60))
+        .padStart(2,"0");
 
-    searchTime.textContent = `${min}:${sec}`;
+    const sec =
+        String(seconds % 60)
+        .padStart(2,"0");
+
+    searchTime.textContent =
+        `${min}:${sec}`;
 
 },1000);
 
@@ -87,22 +97,27 @@ setInterval(()=>{
 // DATOS TEMPORALES
 // ===========================
 
-region.textContent = "Sudamérica";
+region.textContent =
+    "Sudamérica";
 
-playersOnline.textContent = "12 pilotos conectados";
+playersOnline.textContent =
+    "12 pilotos conectados";
 
-playersSearching.textContent = "3 buscando combate";
+playersSearching.textContent =
+    "3 buscando combate";
 
 
 // ===========================
 // PING SIMULADO
 // ===========================
 
-setInterval(()=>{
+setInterval(() => {
 
-    const value = Math.floor(Math.random()*18)+28;
+    const value =
+        Math.floor(Math.random()*18)+28;
 
-    ping.textContent = value + " ms";
+    ping.textContent =
+        value + " ms";
 
 },1500);
 
@@ -111,39 +126,54 @@ setInterval(()=>{
 // ESTADO DE CONEXIÓN
 // ===========================
 
-connectionText.textContent = "Conectado";
+connectionText.textContent =
+    "Conectado";
 
-connectionIcon.textContent = "🟢";
+connectionIcon.textContent =
+    "🟢";
 
 
 // ===========================
 // CANCELAR
 // ===========================
 
-cancel.onclick = ()=>{
+cancel.onclick = () => {
 
     music.pause();
 
     music.currentTime = 0;
 
-    location.href = "profile.html";
+    location.href =
+        "profile.html";
 
 };
+
+
+// ===========================
+// WEBSOCKET
+// ===========================
+
 const ws = new WebSocket(
     "wss://space-duel-server-1.onrender.com"
 );
 
+
 ws.onmessage = e => {
 
-    const msg = JSON.parse(e.data);
+    const msg =
+        JSON.parse(e.data);
 
 
-    console.log("Matchmaking recibió:", msg);
+    console.log(
+        "Matchmaking recibió:",
+        msg
+    );
 
 
     if(msg.type === "matchFound"){
 
-        status.textContent = "¡Piloto encontrado!";
+        status.textContent =
+            "¡Piloto encontrado!";
 
 
         music.pause();
@@ -151,16 +181,19 @@ ws.onmessage = e => {
         music.currentTime = 0;
 
 
-        setTimeout(()=>{
+        setTimeout(() => {
 
-            location.href = "game.html";
+            location.href =
+                "game.html";
 
         },1500);
 
     }
 
 };
-ws.onopen = ()=>{
+
+
+ws.onopen = () => {
 
     const player = JSON.parse(
         localStorage.getItem("player")
@@ -171,16 +204,64 @@ ws.onopen = ()=>{
 
         type:"play",
 
-        username: player?.username
+        username:
+            player?.username
 
     }));
 
 };
+
+
 // =======================================================
-// TEMPORAL
-//
-// Cuando el servidor encuentre un rival,
-// después esto será reemplazado por WebSocket.
-//
+// ESCÁNER VISUAL DE MUNDOS
 // =======================================================
 
+const mundos = [
+
+    "assets/mapasaelegir/oeste.jpg",
+
+    "assets/mapasaelegir/espacio.jpg",
+
+    "assets/mapasaelegir/bosque.jpg",
+
+    "assets/mapasaelegir/pirata.jpg",
+
+    "assets/mapasaelegir/hielo.jpg",
+
+    "assets/mapasaelegir/volcan.jpg"
+
+];
+
+
+const tarjetas =
+    document.querySelectorAll(
+        ".worldCard img"
+    );
+
+
+// Cada tarjeta comienza
+// en una posición diferente
+
+tarjetas.forEach((imagen, indice) => {
+
+    let posicion = indice;
+
+
+    setInterval(() => {
+
+        posicion++;
+
+
+        if(posicion >= mundos.length){
+
+            posicion = 0;
+
+        }
+
+
+        imagen.src =
+            mundos[posicion];
+
+    },180 + (indice * 70));
+
+});
