@@ -1,13 +1,25 @@
-/*
-import "@capacitor/screen-orientation";
 
-await ScreenOrientation.lock({
-    orientation: "landscape"
-});
-*/
+//import "@capacitor/screen-orientation";
+
+//await ScreenOrientation.lock({
+//    orientation: "landscape"
+//});
+
 
 const progress = document.getElementById("progress");
 const percent = document.getElementById("percent");
+
+const loadingText = document.getElementById("loadingText");
+
+const messages = [
+
+    "Preparing battle...",
+    "Loading assets...",
+    "Connecting server...",
+    "Synchronizing data...",
+    "Almost ready..."
+
+];
 
 // Música del loading
 const music = new Audio("assets/audio/loading.mp3");

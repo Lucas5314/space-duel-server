@@ -114,6 +114,8 @@ body{
 
 #rewardScreen{
 
+    position:relative;
+
     width:100%;
     height:100%;
 
@@ -126,7 +128,9 @@ body{
 
     text-align:center;
 
-    padding:20px;
+    padding:10px;
+
+    overflow:hidden;
 
 }
 
@@ -137,16 +141,17 @@ body{
 
 #rewardTitle{
 
-    font-size:48px;
+    display:block;
 
-    font-weight:bold;
+    width:min(350px,45vw);
 
-    letter-spacing:3px;
+    max-height:12vh;
 
-    text-shadow:
-    0 0 20px rgba(255,255,255,.6);
+    height:auto;
 
-    margin-bottom:25px;
+    object-fit:contain;
+
+    margin-bottom:1.5vh;
 
 }
 
@@ -157,7 +162,15 @@ body{
 
 #giftChest{
 
-    width:180px;
+    display:block;
+
+    width:min(150px,22vw);
+
+    max-height:22vh;
+
+    height:auto;
+
+    object-fit:contain;
 
     animation:
     float 3s ease-in-out infinite;
@@ -177,13 +190,23 @@ body{
 
     align-items:center;
 
-    margin-top:30px;
+    justify-content:center;
+
+    margin-top:1.5vh;
 
 }
 
 #coinImage{
 
-    width:120px;
+    display:block;
+
+    width:min(90px,14vw);
+
+    max-height:12vh;
+
+    height:auto;
+
+    object-fit:contain;
 
     animation:
     pop .6s;
@@ -192,9 +215,11 @@ body{
 
 #coinAmount{
 
-    margin-top:12px;
+    margin-top:2px;
 
-    font-size:60px;
+    font-size:clamp(30px,5vw,50px);
+
+    line-height:1;
 
     font-weight:bold;
 
@@ -215,7 +240,9 @@ body{
 
 #claimBtn{
 
-    margin-top:40px;
+    margin-top:2vh;
+
+    padding:0;
 
     border:none;
 
@@ -227,7 +254,15 @@ body{
 
 #claimBtn img{
 
-    width:320px;
+    display:block;
+
+    width:min(250px,38vw);
+
+    max-height:16vh;
+
+    height:auto;
+
+    object-fit:contain;
 
     transition:.2s;
 

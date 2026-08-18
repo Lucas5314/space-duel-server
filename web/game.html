@@ -1,15 +1,28 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+
+<meta
+    name="viewport"
+    content="width=device-width,initial-scale=1.0,user-scalable=no"
+>
+
 <title>SPACE TIP</title>
+
 <link rel="stylesheet" href="style/game.css">
+
 </head>
+
 
 <body>
 
+
 <div id="countdown"></div>
+
+
 <!-- INTRO PARTIDA -->
 
 <div id="matchIntro">
@@ -21,7 +34,8 @@
     <img
         id="mapImage"
         src="assets/ui/callejon.jpeg"
-        alt="Callejón Asesino">
+        alt="Callejón Asesino"
+    >
 
     <div id="introLine"></div>
 
@@ -43,69 +57,109 @@
 
 </div>
 
-</div>
 
 <div id="result">
-  <div id="resultText"></div>
-  <button onclick="location.reload()">Jugar otra vez</button>
+
+    <div id="resultText"></div>
+
+    <button onclick="location.reload()">
+        Jugar otra vez
+    </button>
+
 </div>
-<video id="gameBackground" loop muted playsinline>
-    <source src="assets/backgrounds/mapa.mp4" type="video/mp4">
-</video>
+
+
 <video
     id="joystick"
     muted
     loop
     playsinline
-    preload="auto">
+    preload="auto"
+>
 
     <source
-    src="assets/ui/joystick.mp4"
-    type="video/mp4">
+        src="assets/ui/joystick.mp4"
+        type="video/mp4"
+    >
 
 </video>
-<video id="explosionVideo" muted playsinline>
-   <source src="assets/effects/explosion.webm" type="video/webm">
+
+
+<video
+    id="explosionVideo"
+    muted
+    playsinline
+>
+
+    <source
+        src="assets/effects/explosion.webm"
+        type="video/webm"
+    >
+
 </video>
+
 
 <canvas id="c"></canvas>
 
+
 <!-- FICHA JUGADOR -->
+
 <div id="playerCard">
 
-    <img class="cardFrame"
-         src="assets/ui/playercard.png">
+    <img
+        class="cardFrame"
+        src="assets/ui/playercard.png"
+    >
 
     <img id="playerAvatar">
 
-    <div id=layerInfo">
+    <div id="layerInfo">
 
-        <span id="playerName">RICARDO</span>
+        <span id="playerName">
+            RICARDO
+        </span>
 
-        <span id="playerLevel">Lv.15</span>
+        <span id="playerLevel">
+            Lv.15
+        </span>
 
     </div>
 
 </div>
 
+
 <!-- FICHA RIVAL -->
+
 <div id="enemyCard">
 
-    <img id="enemyAvatar"
-         src="assets/ui/default-avatar.png">
+    <img
+        id="enemyAvatar"
+        src="assets/ui/default-avatar.png"
+    >
 
     <div>
 
-        <div id="enemyName">Rival</div>
+        <div id="enemyName">
+            Rival
+        </div>
 
-        <div id="enemyLevel">Lv.1</div>
+        <div id="enemyLevel">
+            Lv.1
+        </div>
 
     </div>
 
 </div>
 
-<button id="shoot">🔥</button>
-<button id="invisible">👻</button>
+
+<button id="shoot">
+    🔥
+</button>
+
+
+<button id="invisible">
+    👻
+</button>
 
 
 <!-- STICKERS -->
@@ -114,776 +168,560 @@
 
 
     <button>
-        <img src="assets/stickers/fuego.jpg">
+
+        <img
+            src="assets/stickers/fuego.jpg"
+        >
+
     </button>
 
 
     <button>
-        <img src="assets/stickers/gg.jpg">
+
+        <img
+            src="assets/stickers/gg.jpg"
+        >
+
     </button>
 
 
     <button>
-        <img src="assets/stickers/corona.jpg">
+
+        <img
+            src="assets/stickers/corona.jpg"
+        >
+
     </button>
 
 
 </div>
 
 
-
 <div id="stickerEffect"></div>
 
 
-//<script src="js/worlds.js"></script>//
+<!-- RENDERER -->
+
+<script
+    type="module"
+    src="js/renderer.js"
+></script>
+
 
 <script src="js/game.js"></script>
 
+
 <script>
+
+
+// =====================================================
+// SONIDOS
+// =====================================================
+
 const sounds = {
 
-    shoot: new Audio("assets/sounds/laser.mp3"),
+    shoot: new Audio(
+        "assets/sounds/laser.mp3"
+    ),
 
-    hit: new Audio("assets/sounds/hit.mp3"),
+    hit: new Audio(
+        "assets/sounds/hit.mp3"
+    ),
 
-    engine: new Audio("assets/sounds/engine.mp3"),
+    engine: new Audio(
+        "assets/sounds/engine.mp3"
+    ),
 
-    explosion: new Audio("assets/sounds/explosion.mp3")
+    explosion: new Audio(
+        "assets/sounds/explosion.mp3"
+    )
 
 };
 
 
 sounds.engine.loop = true;
+
 sounds.engine.volume = 0.25;
 
-let currentWorld = "space";
-console.log("Mundo actual:", currentWorld);
 
-console.log("Datos del mundo:", worlds[currentWorld]);
-
-
-// ================= CONFIG =================
+// =====================================================
+// CONFIG
+// =====================================================
 
 const WORLD_WIDTH = 900;
+
 const WORLD_HEIGHT = 820;
 
-// ================= CANVAS =================
 
-const canvas = document.getElementById("c");
-const ctx = canvas.getContext("2d");
+// =====================================================
+// CANVAS
+// =====================================================
+
+const canvas =
+    document.getElementById("c");
+
+const ctx =
+    canvas.getContext("2d");
+
 
 function resize(){
-  const dpr = window.devicePixelRatio || 1;
 
-  canvas.width = innerWidth * dpr;
-  canvas.height = innerHeight * dpr;
+    const dpr =
+        window.devicePixelRatio || 1;
 
-  ctx.setTransform(dpr,0,0,dpr,0,0);
+
+    canvas.width =
+        innerWidth * dpr;
+
+    canvas.height =
+        innerHeight * dpr;
+
+
+    ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
 }
+
 
 resize();
-addEventListener("resize", resize);
-
-// ================= UI =================
-
-const countdown = document.getElementById("countdown");
-const result = document.getElementById("result");
-const resultText = document.getElementById("resultText");
-
-// ================= ASSETS =================
-
-const ship = new Image();
-ship.src = "assets/ships/naveee1.png";
-
-const portalImage = new Image();
-
-portalImage.src =
-"assets/portal.gif";
-
-// BALA
-
-const bulletImage = new Image();
-bulletImage.src = "assets/bullets/bullet1.png";
 
 
-const shootSound = new Audio(
-"https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"
+addEventListener(
+    "resize",
+    resize
 );
-shootSound.volume = 0.25;
 
-// ================= STATE =================
 
-let myId = null;
+// =====================================================
+// UI
+// =====================================================
 
-const state = {
-  players:[],
-  projectiles:[],
-  portal:null
-};
+const countdown =
+    document.getElementById("countdown");
 
-const particles = [];
 
-// ===========================
-// INTRO DEL MATCH
-// ===========================
+const result =
+    document.getElementById("result");
 
-function showMatchIntro(){
 
-    const intro = document.getElementById("matchIntro");
+const resultText =
+    document.getElementById("resultText");
 
-    intro.style.display = "flex";
 
-    setTimeout(()=>{
+// =====================================================
+// WEBSOCKET
+// =====================================================
 
-        intro.style.display = "none";
+console.log(
+    "Creando WebSocket..."
+);
 
-    },2500);
 
-}
+const ws =
+    new WebSocket(
+        "wss://space-duel-server-1.onrender.com"
+    );
 
-// ================= WS =================
-console.log("Creando WebSocket...");
-const ws = new WebSocket("wss://space-duel-server-1.onrender.com");
 
 ws.onopen = ()=>{
 
-  console.log("WebSocket conectado");
+    console.log(
+        "WebSocket conectado"
+    );
 
-  const player = JSON.parse(
-    localStorage.getItem("player")
-  );
-  console.log("PLAYER:", player);
-console.log("USERNAME:", player?.username);
 
-  ws.send(JSON.stringify({
+    // ==========================================
+    // OBTENER JUGADOR
+    // ==========================================
 
-    type:"play",
+    const playerData =
+        localStorage.getItem("player");
 
-    username: player.username
 
-  }));
+    console.log(
+        "PLAYER DATA:",
+        playerData
+    );
+
+
+    // Si no existe jugador,
+    // no dejamos que el juego se rompa.
+
+    if(!playerData){
+
+        console.error(
+            "❌ No existe el jugador en localStorage"
+        );
+
+        location.href =
+            "createplayer.html";
+
+        return;
+
+    }
+
+
+    let player;
+
+
+    try{
+
+        player =
+            JSON.parse(playerData);
+
+    }catch(error){
+
+        console.error(
+            "❌ Error leyendo player:",
+            error
+        );
+
+        localStorage.removeItem(
+            "player"
+        );
+
+        location.href =
+            "createplayer.html";
+
+        return;
+
+    }
+
+
+    console.log(
+        "PLAYER:",
+        player
+    );
+
+
+    console.log(
+        "USERNAME:",
+        player?.username
+    );
+
+
+    // ==========================================
+    // VALIDAR USERNAME
+    // ==========================================
+
+    if(!player?.username){
+
+        console.error(
+            "❌ El jugador no tiene username"
+        );
+
+        location.href =
+            "createplayer.html";
+
+        return;
+
+    }
+
+
+    // ==========================================
+    // ENVIAR AL SERVIDOR
+    // ==========================================
+
+    ws.send(
+        JSON.stringify({
+
+            type: "play",
+
+            username: player.username
+
+        })
+    );
 
 };
+
+
 ws.onmessage = e=>{
 
-  const msg = JSON.parse(e.data);
-
-  console.log("Mensaje recibido:", msg.type);
-
-
-  if(msg.type==="welcome"){
-
-    myId = msg.id;
-
-  }
+    const msg =
+        JSON.parse(e.data);
 
 
-  if(msg.type==="matchIntro"){
-
-    showMatchIntro();
-
-}
-
-if(msg.type==="countdown"){
-
-    const file =
-    msg.value === "FIGHT"
-        ? "fight"
-        : msg.value;
-
-countdown.innerHTML = `
-    <img
-        src="assets/ui/countdown/${file}.png"
-        class="countdownImage">
-`;
-
-    countdown.style.opacity = 1;
-
-    if(msg.value==="FIGHT"){
-
-        const bg = document.getElementById("gameBackground");
-
-        bg.play();
-
-    }
-
-    setTimeout(()=>{
-
-        countdown.style.opacity = 0;
-
-    },700);
+    console.log(
+        "Mensaje recibido:",
+        msg.type
+    );
 
 
+    // ==========================================
+    // WELCOME
+    // ==========================================
 
+    if(msg.type === "welcome"){
 
-  }
-
-
-
-    if(msg.value==="FIGHT"){
-
-    const bg =
-    document.getElementById("gameBackground");
-
-    bg.play();
-
-    setTimeout(()=>{
-        countdown.style.opacity=0;
-    },700);
-
-
-  
-}
-
-  if(msg.type==="state"){
-      
-      console.log("STATE RECIBIDO", msg); 
-      for(const p of msg.players){
-    console.log(p.id, p.invisible);
-}
-
-      state.players = msg.players;
-
-      state.projectiles = msg.projectiles;
-
-      state.portal = msg.portal;
-  }
-
-  if(msg.type==="hit"){
-    createHitEffect(msg.x,msg.y);
-}
-  if(msg.type==="gameover"){
-
-    console.log("GAME OVER");
-
-    stopBattleMusic();
-
-    matchCount++;
-
-    console.log("Partidas jugadas:", matchCount);
-
-
-    if(matchCount % 1 === 0){
-
-        console.log("Intentando mostrar anuncio...");
-
-        showInterstitialAd();
-
-    }else{
-
-        console.log("Todavía no corresponde anuncio");
+        myId = msg.id;
 
     }
 
 
-    if(msg.loser === myId){
+    // ==========================================
+    // MATCH INTRO
+    // ==========================================
 
-        localStorage.setItem("matchResult","lose");
+    if(msg.type === "matchIntro"){
 
-    }else{
-
-        localStorage.setItem("matchResult","win");
+        showMatchIntro();
 
     }
 
 
-    // EXPLOSIÓN
+    // ==========================================
+    // COUNTDOWN
+    // ==========================================
 
-    const explosion =
-document.getElementById("explosionVideo");
+    if(msg.type === "countdown"){
 
-const loser =
-state.players.find(
-    p => p.id === msg.loser
-);
+        const file =
+            msg.value === "FIGHT"
+                ? "fight"
+                : msg.value;
 
-if(loser){
 
-    const x =
-    (loser.x / WORLD_WIDTH) * innerWidth;
+        countdown.innerHTML = `
 
-    const y =
-    (loser.id === myId)
-    ? innerHeight - 130
-    : 130;
+            <img
+                src="assets/ui/countdown/${file}.png"
+                class="countdownImage"
+            >
 
-    explosion.style.left =
-    (x - 100) + "px";
+        `;
 
-    explosion.style.top =
-    (y - 100) + "px";
 
-}
+        countdown.style.opacity = 1;
 
-explosion.style.display = "block";
 
-explosion.currentTime = 0;
+        // Solo intentar reproducir
+        // si realmente existe.
 
-explosion.play();
+        if(msg.value === "FIGHT"){
 
-setTimeout(()=>{
+            const bg =
+                document.getElementById(
+                    "gameBackground"
+                );
 
-    location.href = "result.html";
 
-},2000);
-}
+            if(bg){
+
+                bg.play().catch(()=>{});
+
+            }
+
+        }
+
+
+        setTimeout(()=>{
+
+            countdown.style.opacity = 0;
+
+        },700);
+
+    }
+
+
+    // ==========================================
+    // STATE
+    // ==========================================
+
+    if(msg.type === "state"){
+
+        console.log(
+            "STATE RECIBIDO",
+            msg
+        );
+
+
+        for(
+            const p of msg.players
+        ){
+
+            console.log(
+                p.id,
+                p.invisible
+            );
+
+        }
+
+
+        state.players =
+            msg.players;
+
+
+        state.projectiles =
+            msg.projectiles;
+
+
+        state.portal =
+            msg.portal;
+
+    }
+
+
+    // ==========================================
+    // HIT
+    // ==========================================
+
+    if(msg.type === "hit"){
+
+        createHitEffect(
+            msg.x,
+            msg.y
+        );
+
+    }
+
+
+    // ==========================================
+    // GAME OVER
+    // ==========================================
+
+    if(msg.type === "gameover"){
+
+        console.log(
+            "GAME OVER"
+        );
+
+
+        stopBattleMusic();
+
+
+        matchCount++;
+
+
+        console.log(
+            "Partidas jugadas:",
+            matchCount
+        );
+
+
+        if(matchCount % 1 === 0){
+
+            console.log(
+                "Intentando mostrar anuncio..."
+            );
+
+
+            showInterstitialAd();
+
+        }else{
+
+            console.log(
+                "Todavía no corresponde anuncio"
+            );
+
+        }
+
+
+        if(msg.loser === myId){
+
+            localStorage.setItem(
+                "matchResult",
+                "lose"
+            );
+
+        }else{
+
+            localStorage.setItem(
+                "matchResult",
+                "win"
+            );
+
+        }
+
+    }
+
 };
-// ================= INPUT =================
-// ================= INPUT =================
 
 
-
-// ================= TOUCH JOYSTICK =================
-// ================= TOUCH CONTROL MOVIL =================
+// =====================================================
+// TOUCH JOYSTICK
+// =====================================================
 
 const joystick =
-document.getElementById("joystick");
+    document.getElementById(
+        "joystick"
+    );
+
 
 let touchActive = false;
+
 let joystickActive = false;
+
 let lastTap = 0;
 
 let keys = {};
 
 
-// ================= TOUCH START =================
+// =====================================================
+// SHOOT
+// =====================================================
 
-addEventListener("touchstart",(e)=>{
+document.getElementById(
+    "shoot"
+).onclick = ()=>{
 
 
-    // no interferir con botones
+    // ==========================================
+    // SONIDO
+    // ==========================================
 
-    if(
-        e.target.id === "shoot" ||
-        e.target.id === "invisible"
-    ){
-        return;
-    }
+    sounds.shoot.currentTime = 0;
 
 
-    e.preventDefault();
+    sounds.shoot
+        .play()
+        .catch(()=>{});
 
 
-    const touch = e.touches[0];
+    // ==========================================
+    // DISPARAR
+    // ==========================================
 
-    const now = Date.now();
+    ws.send(
+        JSON.stringify({
 
+            type: "input",
 
+            fire: true
 
-    // DOBLE TOQUE = ACTIVAR JOYSTICK DE DISPARO
-
-    if(now - lastTap < 300){
-
-
-        joystickActive = true;
-
-
-        joystick.style.display="block";
-
-
-        joystick.style.left =
-        touch.clientX+"px";
-
-
-        joystick.style.top =
-        touch.clientY+"px";
-
-
-        joystick.currentTime=0;
-
-        joystick.play();
-
-
-
-        touchActive = true;
-
-
-    }
-
-
-    lastTap = now;
-
-
-
-    // Si NO hay joystick:
-    // el toque normal queda para mover nave
-
-
-    if(!joystickActive){
-
-
-        if(ws.readyState===1){
-
-
-            ws.send(JSON.stringify({
-
-                type:"input",
-
-                targetX:
-                (touch.clientX / innerWidth)
-                * WORLD_WIDTH
-
-            }));
-
-        }
-
-    }
-
-
-
-},{passive:false});
-
-
-
-
-
-// ================= TOUCH MOVE =================
-
-
-addEventListener("touchmove",(e)=>{
-
-
-    e.preventDefault();
-
-
-    const touch=e.touches[0];
-
-
-
-    // Si joystick está activo:
-    // solo dispara
-
-    if(joystickActive){
-
-
-        if(ws.readyState===1){
-
-
-            ws.send(JSON.stringify({
-
-                type:"input",
-
-                fire:true
-
-            }));
-
-        }
-
-
-        return;
-
-    }
-
-
-
-    // Si no hay joystick:
-    // mover nave
-
-
-    if(ws.readyState===1){
-
-
-        ws.send(JSON.stringify({
-
-            type:"input",
-
-            targetX:
-            (touch.clientX / innerWidth)
-            * WORLD_WIDTH
-
-        }));
-
-    }
-
-
-
-},{passive:false});
-
-
-
-
-
-// ================= TOUCH END =================
-
-
-addEventListener("touchend",()=>{
-
-
-    touchActive=false;
-
-
-    if(joystickActive){
-
-
-        joystickActive=false;
-
-
-        joystick.pause();
-
-
-        joystick.style.display="none";
-
-
-    }
-
-
-});
-
-
-// ================= TECLADO PC =================
-
-
-addEventListener("keydown",e=>{
-
-    keys[e.code]=true;
-
-});
-
-
-addEventListener("keyup",e=>{
-
-    keys[e.code]=false;
-
-});
-
-
-
-
-
-// enviar movimiento teclado
-
-setInterval(()=>{
-
-    if(ws.readyState!==1)
-    return;
-
-
-    ws.send(JSON.stringify({
-
-        type:"input",
-
-        left:
-        keys["ArrowLeft"] ||
-        keys["KeyA"],
-
-
-        right:
-        keys["ArrowRight"] ||
-        keys["KeyD"]
-
-    }));
-
-},50);
-// ================= SHOOT =================
-
-document.getElementById("shoot").onclick=()=>{
-
-  shootSound.currentTime=0;
-  shootSound.play();
-
-  ws.send(JSON.stringify({
-    type:"input",
-    fire:true
-  }));
-};
-document.getElementById("invisible").onclick = ()=>{
-
-  ws.send(JSON.stringify({
-
-    type:"invisible"
-
-  }));
+        })
+    );
 
 };
 
-// ================= FX =================
 
-function createHitEffect(x,y){
+// =====================================================
+// INVISIBLE
+// =====================================================
 
-    const gif = document.createElement("img");
+document.getElementById(
+    "invisible"
+).onclick = ()=>{
 
-    const effects = [
-        "assets/effects/particle1.gif",
-        "assets/effects/particle2.gif",
-        "assets/effects/particle3.gif"
-    ];
+    ws.send(
+        JSON.stringify({
 
-    gif.src =
-    effects[Math.floor(Math.random()*effects.length)];
+            type: "invisible"
 
-
-    gif.style.position="fixed";
-
-    gif.style.width="90px";
-    gif.style.height="90px";
-
-    gif.style.left =
-    ((x/WORLD_WIDTH)*innerWidth - 45)+"px";
-
-    gif.style.top =
-    ((y/WORLD_HEIGHT)*innerHeight - 45)+"px";
-
-
-    gif.style.pointerEvents="none";
-
-    gif.style.zIndex="50";
-
-
-    document.body.appendChild(gif);
-
-
-    setTimeout(()=>{
-
-        gif.remove();
-
-    },600);
-
-}
-// ================= DRAW =================
-
-function draw(){
-
-  ctx.clearRect(0,0,innerWidth,innerHeight);
-  // =================
-// PORTAL
-// =================
-
-if(state.portal && state.portal.active){
-
-    const px =
-    (state.portal.x / WORLD_WIDTH) * innerWidth;
-
-    const py =
-    (state.portal.y / WORLD_HEIGHT) * innerHeight;
-
-
-    ctx.save();
-
-    ctx.shadowBlur = 30;
-    ctx.shadowColor = "cyan";
-
-
-    ctx.drawImage(
-        portalImage,
-        px - 60,
-        py - 60,
-        120,
-        120
+        })
     );
 
+};
 
-    ctx.restore();
-
-}
-
-  // estrellas
-  
-
-  const shipSize=Math.min(innerWidth*0.16,110);
-
-  // players
-  for(const p of state.players){
-
-    const isMe=p.id===myId;
-
-    const x=(p.x/WORLD_WIDTH)*innerWidth;
-    const y=isMe?innerHeight-130:130;
-
-ctx.save();
-
-ctx.shadowBlur = 20;
-ctx.shadowColor = isMe ? "cyan" : "orange";
-
-if(!p.invisible){
-
-    ctx.save();
-
-    ctx.translate(x, y);
-
-
-    // El rival mira hacia abajo
-    if(!isMe){
-
-        ctx.rotate(Math.PI);
-
-    }
-
-
-    ctx.drawImage(
-
-        ship,
-
-        -shipSize/2,
-        -shipSize/2,
-
-        shipSize,
-        shipSize
-
-    );
-
-
-    ctx.restore();
-
-}
-
-    ctx.restore();
-
-    ctx.fillStyle="lime";
-    ctx.fillRect(x-shipSize/2,y-shipSize/2-16,p.hp*(shipSize/4),8);
-  }
-
-  /// bullets
-for(const b of state.projectiles){
-
-    const x = (b.x / WORLD_WIDTH) * innerWidth;
-    const y = (b.y / WORLD_HEIGHT) * innerHeight;
-
-    ctx.save();
-
-    ctx.shadowBlur = 20;
-    ctx.shadowColor = "cyan";
-
-    ctx.drawImage(
-
-        bulletImage,
-
-        x - 10,
-        y - 24,
-
-        20,
-        48
-
-    );
-
-    ctx.restore();
-
-}
-  // particles
-  for(let i=particles.length-1;i>=0;i--){
-
-    const p=particles[i];
-
-    p.x+=p.vx;
-    p.y+=p.vy;
-    p.life--;
-
-    ctx.fillStyle=`rgba(255,150,0,${p.life/40})`;
-
-    ctx.fillRect(
-      (p.x/WORLD_WIDTH)*innerWidth,
-      (p.y/WORLD_HEIGHT)*innerHeight,
-      4,4
-    );
-
-    if(p.life<=0) particles.splice(i,1);
-  }
-
-  requestAnimationFrame(draw);
-}
-
-draw();
 
 </script>
 
+
 </body>
+
 </html>

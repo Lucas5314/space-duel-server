@@ -1,3 +1,26 @@
+//import { ScreenOrientation } from '@capacitor/screen-orientation';
+
+//async function lockLandscape(){
+
+    //try{
+
+        //await ScreenOrientation.lock({
+        //    orientation: "landscape"
+        //});
+
+//        console.log("Create Player bloqueado en horizontal");
+
+    //}catch(error){
+
+       // console.log("No se pudo bloquear la orientación:", error);
+
+//    }
+
+//}
+
+//lockLandscape();
+
+
 const nameInput = document.getElementById("name");
 const countrySelect = document.getElementById("country");
 const continueBtn = document.getElementById("continueBtn");

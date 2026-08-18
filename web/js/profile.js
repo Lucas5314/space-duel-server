@@ -6,26 +6,26 @@ const clickSound = new Audio("assets/audio/click.m4a");
 
 clickSound.volume = 0.4;
 //import { ScreenOrientation } from '@capacitor/screen-orientation';
-async function lockLandscape(){
+//async function lockLandscape(){
 
-    try{
+    //try{
 
-        await ScreenOrientation.lock({
-            orientation:"landscape"
-        });
+        //await ScreenOrientation.lock({
+        //    orientation:"landscape"
+       // });
 
-        console.log("Perfil en horizontal");
+        //console.log("Perfil en horizontal");
 
-    }catch(error){
+    //}catch(error){
 
-        console.log("Error orientación:", error);
+        //console.log("Error orientación:", error);
 
-    }
+    //}
 
-}
+//}
 
 
-lockLandscape();
+//lockLandscape();
 const bgMusic = new Audio("assets/audio/profile.mp3");
 
 bgMusic.loop = true;
@@ -198,9 +198,9 @@ window.addEventListener("pointermove", e=>{
     }
 
 });
-const selectedWorldId = localStorage.getItem("selectedWorld") || "space";
+//const selectedWorldId = localStorage.getItem("selectedWorld") || "space";
 
-const selectedWorld = worlds[selectedWorldId];
+//const selectedWorld = worlds[selectedWorldId];
 
 document.getElementById("selectedWorld").textContent = selectedWorld.name;
 const newsPopup = document.getElementById("newsPopup");
@@ -217,3 +217,14 @@ if(newsPopup && popupClose){
     });
 
 }
+// =========================
+// MONEDAS
+// =========================
+
+const coinsBtn = document.getElementById("coinsBtn");
+
+coinsBtn.addEventListener("click", () => {
+
+    console.log("Botón de monedas pulsado");
+
+});

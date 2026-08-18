@@ -974,3 +974,77 @@ body::before{
     }
 
 }
+/* =========================
+   MONEDAS
+========================= */
+
+#coinsBtn{
+
+    position:fixed;
+
+    top:0;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    gap:8px;
+
+    padding:8px 18px;
+
+    background:none;
+    border:none;
+
+    cursor:pointer;
+
+    z-index:100;
+
+}
+
+
+#coinIcon{
+
+    width:45px;
+    height:45px;
+
+    object-fit:contain;
+
+}
+
+
+#coinsAmount{
+
+    font-size:24px;
+
+    font-weight:bold;
+
+    color:white;
+
+    text-shadow:
+        0 0 8px black,
+        0 0 15px cyan;
+
+}
+
+
+#coinsPlus{
+
+    width:28px;
+    height:28px;
+
+    object-fit:contain;
+
+    transition:.2s;
+
+}
+
+
+#coinsBtn:hover #coinsPlus{
+
+    transform:scale(1.15);
+
+}
