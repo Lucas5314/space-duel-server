@@ -1,4 +1,4 @@
-// database/stats.js
+ database/stats.js
 
 function saveMatch(){
 

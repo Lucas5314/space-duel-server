@@ -199,529 +199,573 @@
 
 <div id="stickerEffect"></div>
 
+<script type="module">
+    import {
+        state,
+        setMyId
+    } from "./js/state.js";
+    console.log("🔥 MODULE GAME CARGADO");
+console.log("🔥 setMyId:", setMyId);
+console.log("🔥 state:", state);
 
+    // aquí dentro va el código que usa state y setMyId
+</script>
 <!-- RENDERER -->
-
-<script
-    type="module"
-    src="js/renderer.js"
-></script>
-
+<script type="module" src="js/renderer.js"></script>
 
 <script src="js/game.js"></script>
 
 
-<script>
+<!-- GAME LOGIC -->
+<script type="module">
+
+    import {
+        state,
+        myId,
+        setMyId
+    } from "./js/state.js";
 
 
-// =====================================================
-// SONIDOS
-// =====================================================
+    // =====================================================
+    // SONIDOS
+    // =====================================================
 
-const sounds = {
+    const sounds = {
 
-    shoot: new Audio(
-        "assets/sounds/laser.mp3"
-    ),
+        shoot: new Audio(
+            "assets/sounds/laser.mp3"
+        ),
 
-    hit: new Audio(
-        "assets/sounds/hit.mp3"
-    ),
+        hit: new Audio(
+            "assets/sounds/hit.mp3"
+        ),
 
-    engine: new Audio(
-        "assets/sounds/engine.mp3"
-    ),
+        engine: new Audio(
+            "assets/sounds/engine.mp3"
+        ),
 
-    explosion: new Audio(
-        "assets/sounds/explosion.mp3"
-    )
+        explosion: new Audio(
+            "assets/sounds/explosion.mp3"
+        )
 
-};
-
-
-sounds.engine.loop = true;
-
-sounds.engine.volume = 0.25;
+    };
 
 
-// =====================================================
-// CONFIG
-// =====================================================
-
-const WORLD_WIDTH = 900;
-
-const WORLD_HEIGHT = 820;
+    sounds.engine.loop = true;
+    sounds.engine.volume = 0.25;
 
 
-// =====================================================
-// CANVAS
-// =====================================================
+    // =====================================================
+    // CONFIG
+    // =====================================================
 
-const canvas =
-    document.getElementById("c");
-
-const ctx =
-    canvas.getContext("2d");
+    const WORLD_WIDTH = 900;
+    const WORLD_HEIGHT = 820;
 
 
-function resize(){
+    // =====================================================
+    // CANVAS
+    // =====================================================
 
-    const dpr =
-        window.devicePixelRatio || 1;
+    const canvas =
+        document.getElementById("c");
 
-
-    canvas.width =
-        innerWidth * dpr;
-
-    canvas.height =
-        innerHeight * dpr;
+    const ctx =
+        canvas.getContext("2d");
 
 
-    ctx.setTransform(
-        dpr,
-        0,
-        0,
-        dpr,
-        0,
-        0
-    );
+    function resize(){
 
-}
+        const dpr =
+            window.devicePixelRatio || 1;
 
 
-resize();
+        canvas.width =
+            innerWidth * dpr;
+
+        canvas.height =
+            innerHeight * dpr;
 
 
-addEventListener(
-    "resize",
-    resize
-);
-
-
-// =====================================================
-// UI
-// =====================================================
-
-const countdown =
-    document.getElementById("countdown");
-
-
-const result =
-    document.getElementById("result");
-
-
-const resultText =
-    document.getElementById("resultText");
-
-
-// =====================================================
-// WEBSOCKET
-// =====================================================
-
-console.log(
-    "Creando WebSocket..."
-);
-
-
-const ws =
-    new WebSocket(
-        "wss://space-duel-server-1.onrender.com"
-    );
-
-
-ws.onopen = ()=>{
-
-    console.log(
-        "WebSocket conectado"
-    );
-
-
-    // ==========================================
-    // OBTENER JUGADOR
-    // ==========================================
-
-    const playerData =
-        localStorage.getItem("player");
-
-
-    console.log(
-        "PLAYER DATA:",
-        playerData
-    );
-
-
-    // Si no existe jugador,
-    // no dejamos que el juego se rompa.
-
-    if(!playerData){
-
-        console.error(
-            "❌ No existe el jugador en localStorage"
+        ctx.setTransform(
+            dpr,
+            0,
+            0,
+            dpr,
+            0,
+            0
         );
 
-        location.href =
-            "createplayer.html";
-
-        return;
-
     }
 
 
-    let player;
+    resize();
 
 
-    try{
+    addEventListener(
+        "resize",
+        resize
+    );
 
-        player =
-            JSON.parse(playerData);
 
-    }catch(error){
+    // =====================================================
+    // UI
+    // =====================================================
 
-        console.error(
-            "❌ Error leyendo player:",
-            error
-        );
+    const countdown =
+        document.getElementById("countdown");
 
-        localStorage.removeItem(
-            "player"
-        );
 
-        location.href =
-            "createplayer.html";
+    const result =
+        document.getElementById("result");
 
-        return;
 
-    }
+    const resultText =
+        document.getElementById("resultText");
 
+
+    // =====================================================
+    // WEBSOCKET
+    // =====================================================
 
     console.log(
-        "PLAYER:",
-        player
+        "Creando WebSocket..."
     );
 
 
-    console.log(
-        "USERNAME:",
-        player?.username
-    );
-
-
-    // ==========================================
-    // VALIDAR USERNAME
-    // ==========================================
-
-    if(!player?.username){
-
-        console.error(
-            "❌ El jugador no tiene username"
+    const ws =
+        new WebSocket(
+            "wss://space-duel-server-1.onrender.com"
         );
 
-        location.href =
-            "createplayer.html";
 
-        return;
+    ws.onopen = ()=>{
 
-    }
-
-
-    // ==========================================
-    // ENVIAR AL SERVIDOR
-    // ==========================================
-
-    ws.send(
-        JSON.stringify({
-
-            type: "play",
-
-            username: player.username
-
-        })
-    );
-
-};
+        console.log(
+            "WebSocket conectado"
+        );
 
 
-ws.onmessage = e=>{
+        // ==========================================
+        // OBTENER JUGADOR
+        // ==========================================
 
-    const msg =
-        JSON.parse(e.data);
-
-
-    console.log(
-        "Mensaje recibido:",
-        msg.type
-    );
+        const playerData =
+            localStorage.getItem("player");
 
 
-    // ==========================================
-    // WELCOME
-    // ==========================================
-
-    if(msg.type === "welcome"){
-
-        myId = msg.id;
-
-    }
+        console.log(
+            "PLAYER DATA:",
+            playerData
+        );
 
 
-    // ==========================================
-    // MATCH INTRO
-    // ==========================================
+        if(!playerData){
 
-    if(msg.type === "matchIntro"){
-
-        showMatchIntro();
-
-    }
+            console.error(
+                "❌ No existe el jugador en localStorage"
+            );
 
 
-    // ==========================================
-    // COUNTDOWN
-    // ==========================================
-
-    if(msg.type === "countdown"){
-
-        const file =
-            msg.value === "FIGHT"
-                ? "fight"
-                : msg.value;
+            location.href =
+                "createplayer.html";
 
 
-        countdown.innerHTML = `
+            return;
 
-            <img
-                src="assets/ui/countdown/${file}.png"
-                class="countdownImage"
-            >
-
-        `;
+        }
 
 
-        countdown.style.opacity = 1;
+        let player;
 
 
-        // Solo intentar reproducir
-        // si realmente existe.
+        try{
 
-        if(msg.value === "FIGHT"){
+            player =
+                JSON.parse(playerData);
 
-            const bg =
-                document.getElementById(
-                    "gameBackground"
+        }catch(error){
+
+            console.error(
+                "❌ Error leyendo player:",
+                error
+            );
+
+
+            localStorage.removeItem(
+                "player"
+            );
+
+
+            location.href =
+                "createplayer.html";
+
+
+            return;
+
+        }
+
+
+        console.log(
+            "PLAYER:",
+            player
+        );
+
+
+        console.log(
+            "USERNAME:",
+            player?.username
+        );
+
+
+        // ==========================================
+        // VALIDAR USERNAME
+        // ==========================================
+
+        if(!player?.username){
+
+            console.error(
+                "❌ El jugador no tiene username"
+            );
+
+
+            location.href =
+                "createplayer.html";
+
+
+            return;
+
+        }
+
+
+        // ==========================================
+        // ENVIAR AL SERVIDOR
+        // ==========================================
+
+        ws.send(
+            JSON.stringify({
+
+                type: "play",
+
+                username: player.username
+
+            })
+        );
+
+    };
+
+
+    // =====================================================
+    // WEBSOCKET MESSAGE
+    // =====================================================
+
+    ws.onmessage = e=>{
+
+        const msg =
+            JSON.parse(e.data);
+
+
+        console.log(
+            "Mensaje recibido:",
+            msg.type
+        );
+
+
+        // ==========================================
+        // WELCOME
+        // ==========================================
+
+        if(msg.type === "welcome"){
+
+            console.log(
+                "WELCOME ID:",
+                msg.id
+            );
+
+
+            setMyId(msg.id);
+
+        }
+
+
+        // ==========================================
+        // MATCH INTRO
+        // ==========================================
+
+        if(msg.type === "matchIntro"){
+
+            if(typeof showMatchIntro === "function"){
+
+                showMatchIntro();
+
+            }else{
+
+                console.warn(
+                    "⚠️ showMatchIntro no está disponible"
                 );
-
-
-            if(bg){
-
-                bg.play().catch(()=>{});
 
             }
 
         }
 
 
-        setTimeout(()=>{
+        // ==========================================
+        // COUNTDOWN
+        // ==========================================
 
-            countdown.style.opacity = 0;
+        if(msg.type === "countdown"){
 
-        },700);
-
-    }
-
-
-    // ==========================================
-    // STATE
-    // ==========================================
-
-    if(msg.type === "state"){
-
-        console.log(
-            "STATE RECIBIDO",
-            msg
-        );
+            const file =
+                msg.value === "FIGHT"
+                    ? "fight"
+                    : msg.value;
 
 
-        for(
-            const p of msg.players
-        ){
+            countdown.innerHTML = `
 
-            console.log(
-                p.id,
-                p.invisible
-            );
+                <img
+                    src="assets/ui/countdown/${file}.png"
+                    class="countdownImage"
+                >
 
-        }
+            `;
 
 
-        state.players =
-            msg.players;
+            countdown.style.opacity = 1;
 
 
-        state.projectiles =
-            msg.projectiles;
+            if(msg.value === "FIGHT"){
+
+                const bg =
+                    document.getElementById(
+                        "gameBackground"
+                    );
 
 
-        state.portal =
-            msg.portal;
+                if(bg){
 
-    }
+                    bg.play().catch(()=>{});
 
+                }
 
-    // ==========================================
-    // HIT
-    // ==========================================
-
-    if(msg.type === "hit"){
-
-        createHitEffect(
-            msg.x,
-            msg.y
-        );
-
-    }
+            }
 
 
-    // ==========================================
-    // GAME OVER
-    // ==========================================
+            setTimeout(()=>{
 
-    if(msg.type === "gameover"){
+                countdown.style.opacity = 0;
 
-        console.log(
-            "GAME OVER"
-        );
-
-
-        stopBattleMusic();
-
-
-        matchCount++;
-
-
-        console.log(
-            "Partidas jugadas:",
-            matchCount
-        );
-
-
-        if(matchCount % 1 === 0){
-
-            console.log(
-                "Intentando mostrar anuncio..."
-            );
-
-
-            showInterstitialAd();
-
-        }else{
-
-            console.log(
-                "Todavía no corresponde anuncio"
-            );
+            },700);
 
         }
 
 
-        if(msg.loser === myId){
+        // ==========================================
+        // STATE
+        // ==========================================
 
-            localStorage.setItem(
-                "matchResult",
-                "lose"
+        if(msg.type === "state"){
+
+            console.log(
+                "STATE RECIBIDO",
+                msg
             );
 
-        }else{
 
-            localStorage.setItem(
-                "matchResult",
-                "win"
-            );
+            for(
+                const p of msg.players
+            ){
+
+                console.log(
+                    p.id,
+                    p.invisible
+                );
+
+            }
+
+
+            state.players =
+                msg.players;
+
+
+            state.projectiles =
+                msg.projectiles;
+
+
+            state.portal =
+                msg.portal;
 
         }
 
-    }
 
-};
+        // ==========================================
+        // HIT
+        // ==========================================
+
+        if(msg.type === "hit"){
+
+            if(typeof createHitEffect === "function"){
+
+                createHitEffect(
+                    msg.x,
+                    msg.y
+                );
+
+            }else{
+
+                console.warn(
+                    "⚠️ createHitEffect no está disponible"
+                );
+
+            }
+
+        }
 
 
-// =====================================================
-// TOUCH JOYSTICK
-// =====================================================
+        // ==========================================
+        // GAME OVER
+        // ==========================================
 
-const joystick =
+        if(msg.type === "gameover"){
+
+            console.log(
+                "GAME OVER"
+            );
+
+
+            if(typeof stopBattleMusic === "function"){
+
+                stopBattleMusic();
+
+            }
+
+
+            matchCount++;
+
+
+            console.log(
+                "Partidas jugadas:",
+                matchCount
+            );
+
+
+            if(matchCount % 1 === 0){
+
+                console.log(
+                    "Intentando mostrar anuncio..."
+                );
+
+
+                if(typeof showInterstitialAd === "function"){
+
+                    showInterstitialAd();
+
+                }else{
+
+                    console.warn(
+                        "⚠️ showInterstitialAd no está disponible"
+                    );
+
+                }
+
+            }
+
+
+            if(msg.loser === myId){
+
+                localStorage.setItem(
+                    "matchResult",
+                    "lose"
+                );
+
+            }else{
+
+                localStorage.setItem(
+                    "matchResult",
+                    "win"
+                );
+
+            }
+
+        }
+
+    };
+
+
+    // =====================================================
+    // TOUCH JOYSTICK
+    // =====================================================
+
+    const joystick =
+        document.getElementById(
+            "joystick"
+        );
+
+
+    let touchActive = false;
+
+    let joystickActive = false;
+
+    let lastTap = 0;
+
+    let keys = {};
+
+
+    // =====================================================
+    // SHOOT
+    // =====================================================
+
     document.getElementById(
-        "joystick"
-    );
+        "shoot"
+    ).onclick = ()=>{
 
 
-let touchActive = false;
+        // ==========================================
+        // SONIDO
+        // ==========================================
 
-let joystickActive = false;
-
-let lastTap = 0;
-
-let keys = {};
+        sounds.shoot.currentTime = 0;
 
 
-// =====================================================
-// SHOOT
-// =====================================================
-
-document.getElementById(
-    "shoot"
-).onclick = ()=>{
+        sounds.shoot
+            .play()
+            .catch(()=>{});
 
 
-    // ==========================================
-    // SONIDO
-    // ==========================================
+        // ==========================================
+        // DISPARAR
+        // ==========================================
 
-    sounds.shoot.currentTime = 0;
+        ws.send(
+            JSON.stringify({
 
+                type: "input",
 
-    sounds.shoot
-        .play()
-        .catch(()=>{});
+                fire: true
 
+            })
+        );
 
-    // ==========================================
-    // DISPARAR
-    // ==========================================
-
-    ws.send(
-        JSON.stringify({
-
-            type: "input",
-
-            fire: true
-
-        })
-    );
-
-};
+    };
 
 
-// =====================================================
-// INVISIBLE
-// =====================================================
+    // =====================================================
+    // INVISIBLE
+    // =====================================================
 
-document.getElementById(
-    "invisible"
-).onclick = ()=>{
+    document.getElementById(
+        "invisible"
+    ).onclick = ()=>{
 
-    ws.send(
-        JSON.stringify({
+        ws.send(
+            JSON.stringify({
 
-            type: "invisible"
+                type: "invisible"
 
-        })
-    );
+            })
+        );
 
-};
+    };
 
 
 </script>
-
-
-</body>
-
-</html>

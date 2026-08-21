@@ -1,10 +1,40 @@
+//import "./back-button.js";
 //import { worlds } from "./worlds.js";
+
+// ===========================
+// JUGADOR TEMPORAL DE PRUEBA
+// ===========================
+
+if(!localStorage.getItem("player")){
+
+    localStorage.setItem("player", JSON.stringify({
+
+        id: "TEST_PLAYER",
+
+        username: "Ricardo",
+
+        country: "🇧🇷",
+
+        wins: 25,
+
+        losses: 8,
+
+        games: 33,
+
+        skin: "default"
+
+    }));
+
+}
+
 
 // MÚSICA DE PERFIL
 // ===========================
 const clickSound = new Audio("assets/audio/click.m4a");
 
 clickSound.volume = 0.4;
+
+
 //import { ScreenOrientation } from '@capacitor/screen-orientation';
 //async function lockLandscape(){
 
@@ -26,6 +56,8 @@ clickSound.volume = 0.4;
 
 
 //lockLandscape();
+
+
 const bgMusic = new Audio("assets/audio/profile.mp3");
 
 bgMusic.loop = true;
@@ -57,18 +89,38 @@ document.addEventListener("click", startMusic, { once:true });
 // CARGAR PERFIL
 // ===========================
 
-const savedPlayer = JSON.parse(localStorage.getItem("player"));
+const savedPlayer =
+    JSON.parse(localStorage.getItem("player"));
 
 
 if(savedPlayer){
 
     // Mostrar datos guardados inmediatamente
+
     document.getElementById("playerName").textContent =
         savedPlayer.username;
 
     document.querySelector(".flag").textContent =
         savedPlayer.country;
 
+
+    document.getElementById("wins").textContent =
+        savedPlayer.wins;
+
+    document.getElementById("losses").textContent =
+        savedPlayer.losses;
+
+    document.getElementById("games").textContent =
+        savedPlayer.games;
+
+    document.getElementById("ship").src =
+        "assets/ships/demo3d/ship_000.png";
+
+
+    /*
+    // ===========================
+    // DB REAL - TEMPORALMENTE DESACTIVADA
+    // ===========================
 
     fetch("https://space-duel-server.onrender.com/player/" + savedPlayer.id)
 
@@ -101,6 +153,7 @@ if(savedPlayer){
             console.log("Error cargando jugador:", error);
 
         });
+    */
 
 }
 
@@ -108,9 +161,11 @@ if(savedPlayer){
 // ===========================
 // JUGAR
 // ===========================
+
 document.getElementById("playBtn").onclick = () => {
 
     clickSound.currentTime = 0;
+
     clickSound.play();
 
     location.href = "matchmaking.html";
@@ -130,11 +185,17 @@ document.getElementById("skinsBtn").onclick = () => {
     clickSound.currentTime = 0;
 
     clickSound.play()
+
     .then(()=>{
+
         console.log("SONIDO REPRODUCIDO");
+
     })
+
     .catch(e=>{
+
         console.log("ERROR SONIDO:", e);
+
     });
 
     location.href="skins.html";
@@ -150,29 +211,48 @@ document.getElementById("skinsBtn").onclick = () => {
 document.getElementById("settingsBtn").onclick = () => {
 
     clickSound.currentTime = 0;
+
     clickSound.play();
 
     location.href = "settings.html";
 
 };
+
+
 const ship = document.getElementById("ship");
 
 const frames = [];
+
 for(let i = 0; i < 36; i++){
-    const angle = String(i * 10).padStart(3, "0");
-    frames.push(`assets/ships/demo3d/ship_${angle}.png`);
+
+    const angle =
+        String(i * 10).padStart(3, "0");
+
+    frames.push(
+        `assets/ships/demo3d/ship_${angle}.png`
+    );
+
 }
+
 
 let currentFrame = 0;
+
 let startX = 0;
 
+
 function updateShip(){
+
     ship.src = frames[currentFrame];
+
 }
 
+
 ship.addEventListener("pointerdown", e=>{
+
     startX = e.clientX;
+
 });
+
 
 window.addEventListener("pointermove", e=>{
 
@@ -180,31 +260,52 @@ window.addEventListener("pointermove", e=>{
 
     const dx = e.clientX - startX;
 
+
     if(Math.abs(dx) > 8){
 
         if(dx > 0){
 
-            currentFrame = (currentFrame + 1) % frames.length;
+            currentFrame =
+                (currentFrame + 1) %
+                frames.length;
 
         }else{
 
-            currentFrame = (currentFrame - 1 + frames.length) % frames.length;
+            currentFrame =
+                (currentFrame - 1 +
+                frames.length) %
+                frames.length;
 
         }
 
+
         updateShip();
+
         startX = e.clientX;
 
     }
 
 });
+
+
 //const selectedWorldId = localStorage.getItem("selectedWorld") || "space";
 
 //const selectedWorld = worlds[selectedWorldId];
 
-document.getElementById("selectedWorld").textContent = selectedWorld.name;
-const newsPopup = document.getElementById("newsPopup");
-const popupClose = document.getElementById("popupClose");
+
+// TEMPORALMENTE DESACTIVADO
+// porque selectedWorld está comentado
+
+//document.getElementById("selectedWorld").textContent =
+//    selectedWorld.name;
+
+
+const newsPopup =
+    document.getElementById("newsPopup");
+
+const popupClose =
+    document.getElementById("popupClose");
+
 
 if(newsPopup && popupClose){
 
@@ -217,14 +318,22 @@ if(newsPopup && popupClose){
     });
 
 }
+
+
 // =========================
 // MONEDAS
 // =========================
 
-const coinsBtn = document.getElementById("coinsBtn");
+const coinsBtn =
+    document.getElementById("coinsBtn");
 
-coinsBtn.addEventListener("click", () => {
 
-    console.log("Botón de monedas pulsado");
+if(coinsBtn){
 
-});
+    coinsBtn.addEventListener("click", () => {
+
+        console.log("Botón de monedas pulsado");
+
+    });
+
+}

@@ -1,7 +1,7 @@
 // ================= ASSETS =================
 
 const ship = new Image();
-ship.src = "assets/ships/naveee1.png";
+ship.src = "assets/ships/nave1.png";
 
 
 const portalImage = new Image();

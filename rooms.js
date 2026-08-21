@@ -18,6 +18,11 @@ function createRoom(a,b){
     const roomId =
     crypto.randomUUID();
 
+    console.log("🔥🔥 ROOM CREADA");
+console.log("ROOM:", roomId);
+console.log("ROOM PLAYERS:", room.players);
+console.log("SOCKETS:", Object.keys(room.sockets));
+
 
     const room = {
 

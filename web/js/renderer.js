@@ -1,15 +1,15 @@
 import {
     drawMap
 } from "./maps.js";
-//import {
-  //  WORLD_WIDTH,
-    //WORLD_HEIGHT
-//} from "./config.js";
+import {
+   WORLD_WIDTH,
+    WORLD_HEIGHT
+} from "./config.js";
 
-//import {
+import {
     canvas,
     ctx
-//} from "./canvas.js";
+} from "./canvas.js";
 
 import {
     state,
@@ -25,6 +25,11 @@ import {
 // ================= DRAW =================
 
 function draw(){
+    console.log("🎮 RENDER");
+console.log("🆔 myId:", myId);
+console.log("🚀 players:", state.players);
+console.log("🔥 projectiles:", state.projectiles);
+console.log("🚀 ship loaded:", ship.complete, ship.src);
 
     ctx.clearRect(
         0,
@@ -87,7 +92,10 @@ function draw(){
             innerWidth * 0.16,
             110
         );
-
+    console.log(
+    "RENDER PLAYERS:",
+    state.players
+);
 
     for(const p of state.players){
 

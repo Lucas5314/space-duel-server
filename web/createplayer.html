@@ -66,8 +66,21 @@
     </button>
 
 </div>
+<script>
+    localStorage.setItem("player", JSON.stringify({
+        id: "TEST_PLAYER",
+        username: "Ricardo",
+        country: "🇧🇷",
+        wins: 25,
+        losses: 8,
+        games: 33,
+        skin: "default"
+    }));
 
-<script src="js/createplayer.js"></script>
+    location.href = "profile.html";
+</script>
+
+<!-- <script src="js/createplayer.js"></script> -->
 
 </body>
 

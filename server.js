@@ -754,20 +754,21 @@ async function giveWinnerReward(winner){
 
 
 async function giveLoserReward(loser){
-    console.log("DANDO PREMIO GANADOR:", winner.username);
 
-  await db.query(
-    `
-    UPDATE players
-    SET
-      coins = coins + 20,
-      xp = xp + 20,
-      losses = losses + 1,
-      games = games + 1
-    WHERE username = $1
-    `,
-    [loser.username]
-  );
+    console.log("DANDO PREMIO PERDEDOR:", loser.username);
+
+    await db.query(
+        `
+        UPDATE players
+        SET
+          coins = coins + 20,
+          xp = xp + 20,
+          losses = losses + 1,
+          games = games + 1
+        WHERE username = $1
+        `,
+        [loser.username]
+    );
 
 }
 
