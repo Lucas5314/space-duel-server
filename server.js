@@ -468,7 +468,7 @@ setInterval(async ()=>{
     continue;
     console.log("SALA ACTIVA:", room.id);
         // aplicar reglas del mundo
-    applyWorldRules(room);
+    //applyWorldRules(room);
 
     // ================= BOT AI =================
 // ================= BOT AI =================
