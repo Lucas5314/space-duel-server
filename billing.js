@@ -3,7 +3,8 @@ import {
   PURCHASE_TYPE
 } from "@capgo/native-purchases";
 
-export async function comprarSkin(productoId){
+export async function comprarSkin() {
+  const productoId = "skin_nave_roja";
 
     try{
 

@@ -5,11 +5,511 @@ const WebSocket = require("ws");
 const crypto = require("crypto");
 const cors = require("cors");
 const BOT_NAMES = require("./botnames");
+const economy = require("./economy/coins");
+const skinEconomy = require("./economy/skins");
+const inventory = require("./economy/inventory");
+const googlePurchases = require("./economy/googlePurchases");
+const googlePlay = require("./economy/googlePlay");
+const googleTransactions = require("./economy/googleTransactions");
+
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.get("/api/player/:id/coins", async (req, res) => {
+
+    const playerId = Number(req.params.id);
+
+    if(!Number.isInteger(playerId)){
+        return res.json({
+            success:false,
+            error:"INVALID_PLAYER_ID"
+        });
+    }
+
+    try{
+
+        const coins = await economy.getCoins(playerId);
+
+        res.json({
+            success:true,
+            coins
+        });
+
+    }catch(error){
+
+        console.log("ERROR CONSULTANDO MONEDAS:", error);
+
+        res.json({
+            success:false,
+            error:error.message
+        });
+
+    }
+
+});
+// ==========================================
+// OBTENER CATÁLOGO DE SKINS
+// ==========================================
+
+app.get("/api/skins", (req, res) => {
+
+    try {
+
+        const skins = skinEconomy.getAllSkins();
+
+        res.json({
+            success: true,
+            skins
+        });
+
+    } catch (error) {
+
+        console.log("ERROR OBTENIENDO SKINS:", error);
+
+        res.status(500).json({
+            success: false,
+            error: "SKINS_ERROR"
+        });
+
+    }
+
+});
+
+
+// ==========================================
+// COMPRAR SKIN CON MONEDAS
+// ==========================================
+
+app.post("/api/skins/purchase", async (req, res) => {
+
+    const { playerId, skinId } = req.body;
+
+    if (!Number.isInteger(Number(playerId))) {
+
+        return res.status(400).json({
+            success: false,
+            error: "INVALID_PLAYER_ID"
+        });
+
+    }
+
+    if (typeof skinId !== "string" || skinId.length === 0) {
+
+        return res.status(400).json({
+            success: false,
+            error: "INVALID_SKIN_ID"
+        });
+
+    }
+
+    try {
+
+        const result = await skinEconomy.purchaseSkin(
+            Number(playerId),
+            skinId
+        );
+
+        res.json({
+            success: true,
+            purchase: result
+        });
+
+    } catch (error) {
+
+        console.log("ERROR COMPRANDO SKIN:", error);
+
+        if (error.message === "SKIN_NOT_FOUND") {
+            return res.status(404).json({
+                success: false,
+                error: "SKIN_NOT_FOUND"
+            });
+        }
+
+        if (error.message === "INSUFFICIENT_COINS") {
+            return res.status(409).json({
+                success: false,
+                error: "INSUFFICIENT_COINS"
+            });
+        }
+
+        if (error.message === "PLAYER_NOT_FOUND") {
+            return res.status(404).json({
+                success: false,
+                error: "PLAYER_NOT_FOUND"
+            });
+        }
+
+        res.status(500).json({
+            success: false,
+            error: "PURCHASE_ERROR"
+        });
+
+    }
+
+})
+// ==========================================
+// OBTENER INVENTARIO DE SKINS DEL JUGADOR
+// ==========================================
+
+app.get("/api/player/:id/skins", async (req, res) => {
+
+    const playerId = Number(req.params.id);
+
+    if (!Number.isInteger(playerId)) {
+
+        return res.status(400).json({
+            success: false,
+            error: "INVALID_PLAYER_ID"
+        });
+
+    }
+
+    try {
+
+        const skins = await inventory.getPlayerSkins(playerId);
+
+        const equipada = await inventory.getEquippedSkin(playerId);
+
+        res.json({
+            success: true,
+            skins,
+            equipada
+        });
+
+    } catch (error) {
+
+        console.log("ERROR OBTENIENDO INVENTARIO:", error);
+
+        if (error.message === "PLAYER_NOT_FOUND") {
+
+            return res.status(404).json({
+                success: false,
+                error: "PLAYER_NOT_FOUND"
+            });
+
+        }
+
+        res.status(500).json({
+            success: false,
+            error: "INVENTORY_ERROR"
+        });
+
+    }
+
+});
+
+
+// ==========================================
+// EQUIPAR SKIN
+// ==========================================
+
+app.post("/api/player/:id/skins/equip", async (req, res) => {
+
+    const playerId = Number(req.params.id);
+    const { skinId } = req.body;
+
+    if (!Number.isInteger(playerId)) {
+
+        return res.status(400).json({
+            success: false,
+            error: "INVALID_PLAYER_ID"
+        });
+
+    }
+
+    if (typeof skinId !== "string" || skinId.length === 0) {
+
+        return res.status(400).json({
+            success: false,
+            error: "INVALID_SKIN_ID"
+        });
+
+    }
+
+    try {
+
+        // Verificar que la skin existe en nuestro catálogo
+        const skin = skinEconomy.getSkin(skinId);
+
+        if (!skin) {
+
+            return res.status(404).json({
+                success: false,
+                error: "SKIN_NOT_FOUND"
+            });
+
+        }
+
+        // La función del inventario comprueba
+        // que el jugador realmente posee la skin.
+        const equipada = await inventory.equipSkin(
+            playerId,
+            skinId
+        );
+
+        res.json({
+            success: true,
+            equipada
+        });
+
+    } catch (error) {
+
+        console.log("ERROR EQUIPANDO SKIN:", error);
+
+        if (error.message === "SKIN_NOT_OWNED") {
+
+            return res.status(403).json({
+                success: false,
+                error: "SKIN_NOT_OWNED"
+            });
+
+        }
+
+        if (error.message === "PLAYER_NOT_FOUND") {
+
+            return res.status(404).json({
+                success: false,
+                error: "PLAYER_NOT_FOUND"
+            });
+
+        }
+
+        res.status(500).json({
+            success: false,
+            error: "EQUIP_ERROR"
+        });
+
+    }
+
+});
+
+// ======================================
+// GOOGLE PLAY - PROCESAR COMPRA
+// ======================================
+
+app.post("/api/purchases/google", async (req, res) => {
+
+    const {
+        playerId,
+        productId,
+        purchaseToken
+    } = req.body;
+
+
+    // -------------------------------
+    // VALIDAR PLAYER
+    // -------------------------------
+
+    const numericPlayerId = Number(playerId);
+
+    if (!Number.isInteger(numericPlayerId)) {
+
+        return res.status(400).json({
+            success: false,
+            error: "INVALID_PLAYER_ID"
+        });
+
+    }
+
+
+    // -------------------------------
+    // VALIDAR PRODUCTO
+    // -------------------------------
+
+    if (
+        typeof productId !== "string" ||
+        !googlePurchases.isValidProduct(productId)
+    ) {
+
+        return res.status(400).json({
+            success: false,
+            error: "INVALID_PRODUCT_ID"
+        });
+
+    }
+
+
+    // -------------------------------
+    // VALIDAR TOKEN
+    // -------------------------------
+
+    if (
+        typeof purchaseToken !== "string" ||
+        purchaseToken.length === 0
+    ) {
+
+        return res.status(400).json({
+            success: false,
+            error: "INVALID_PURCHASE_TOKEN"
+        });
+
+    }
+
+
+    try {
+
+        const pack =
+            googlePurchases.getCoinPack(productId);
+
+
+        console.log(
+            "🛒 COMPRA GOOGLE PLAY RECIBIDA:",
+            {
+                playerId: numericPlayerId,
+                productId,
+                coins: pack.coins
+            }
+        );
+
+
+        // -------------------------------
+        // VERIFICAR COMPRA CON GOOGLE
+        // -------------------------------
+
+        console.log(
+            "🔎 VERIFICANDO COMPRA CON GOOGLE PLAY..."
+        );
+
+        const purchase =
+            await googlePlay.getProductPurchase(
+                productId,
+                purchaseToken
+            );
+
+
+        console.log(
+            "📦 RESPUESTA GOOGLE PLAY:",
+            purchase
+        );
+
+
+        // -------------------------------
+        // COMPROBAR ESTADO
+        // 0 = PURCHASED
+        // -------------------------------
+
+        if (purchase.purchaseState !== 0) {
+
+            return res.status(409).json({
+                success: false,
+                error: "PURCHASE_NOT_COMPLETED",
+                purchaseState: purchase.purchaseState
+            });
+
+        }
+
+
+        // -------------------------------
+        // EVITAR DUPLICAR COMPRA
+        // -------------------------------
+
+        const alreadyUsed =
+            await googleTransactions.hasPurchaseToken(
+                purchaseToken
+            );
+
+
+        if (alreadyUsed) {
+
+            console.log(
+                "⚠️ PURCHASE TOKEN YA UTILIZADO"
+            );
+
+            return res.json({
+                success: true,
+                alreadyProcessed: true
+            });
+
+        }
+
+
+        // -------------------------------
+        // REGISTRAR COMPRA
+        // -------------------------------
+
+        const registered =
+            await googleTransactions.registerPurchase({
+                playerId: numericPlayerId,
+                productId,
+                purchaseToken,
+                coins: pack.coins
+            });
+
+
+        if (!registered.created) {
+
+            return res.json({
+                success: true,
+                alreadyProcessed: true
+            });
+
+        }
+
+
+        // -------------------------------
+        // DAR MONEDAS
+        // -------------------------------
+
+        const newBalance =
+            await economy.addCoins(
+                numericPlayerId,
+                pack.coins
+            );
+
+
+        console.log(
+            "🪙 MONEDAS ACREDITADAS:",
+            {
+                playerId: numericPlayerId,
+                coins: pack.coins,
+                newBalance
+            }
+        );
+
+
+        // -------------------------------
+        // CONSUMIR COMPRA
+        // -------------------------------
+
+        console.log(
+            "🔥 CONSUMIENDO COMPRA EN GOOGLE PLAY..."
+        );
+
+        await googlePlay.consumeProduct(
+            productId,
+            purchaseToken
+        );
+
+
+        console.log(
+            "✅ COMPRA GOOGLE COMPLETADA"
+        );
+
+
+        return res.json({
+            success: true,
+            coinsAdded: pack.coins,
+            balance: newBalance
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "❌ ERROR PROCESANDO COMPRA GOOGLE:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            error: "GOOGLE_PURCHASE_ERROR"
+        });
+
+    }
+
+});
 
 
  
