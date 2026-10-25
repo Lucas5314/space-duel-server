@@ -1,54 +1,91 @@
+// ========================================
+// LAUGH BATTLES
+// CHAT
+// ========================================
+
 const input = document.getElementById("messageInput");
 const button = document.getElementById("sendBtn");
 const messages = document.getElementById("messages");
+const form = document.getElementById("chatForm");
 
 
+// ========================================
+// ENVIAR MENSAJE
+// ========================================
 
-button.onclick = ()=>{
+function sendMessage() {
 
+    const text = input.value.trim();
 
-    let text = input.value.trim();
+    // No enviar mensajes vacíos
+    if (text === "") {
+        return;
+    }
 
-
-    if(text === "") return;
-
-
-
-    let div = document.createElement("div");
-
+    // Crear mensaje
+    const div = document.createElement("div");
 
     div.className = "message me";
 
+    // Mostrar texto sin interpretar HTML
+    div.textContent = text;
 
-    div.innerHTML = text;
-
-
-
+    // Agregar a la conversación
     messages.appendChild(div);
 
+    // Limpiar campo
+    input.value = "";
 
-
-    input.value="";
-
-
-
+    // Bajar automáticamente al último mensaje
     messages.scrollTop = messages.scrollHeight;
 
-
-};
-
-
-
+    // Mantener el campo listo para escribir
+    input.focus();
+}
 
 
-input.addEventListener("keydown",(e)=>{
+// ========================================
+// BOTÓN ENVIAR
+// ========================================
+
+button.addEventListener("click", (event) => {
+
+    event.preventDefault();
+
+    sendMessage();
+
+});
 
 
-    if(e.key==="Enter"){
+// ========================================
+// ENTER PARA ENVIAR
+// ========================================
 
-        button.click();
+input.addEventListener("keydown", (event) => {
+
+    if (event.key === "Enter" && !event.shiftKey) {
+
+        event.preventDefault();
+
+        sendMessage();
 
     }
 
-
 });
+
+
+// ========================================
+// EVITAR RECARGAR LA PÁGINA
+// ========================================
+
+if (form) {
+
+    form.addEventListener("submit", (event) => {
+
+        event.preventDefault();
+
+        sendMessage();
+
+    });
+
+}

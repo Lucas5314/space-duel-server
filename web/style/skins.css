@@ -1,673 +1,512 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
 
+/* =========================================
+   LAUGH BATTLES — TIENDA MÓVIL
+   Diseño optimizado para pantalla horizontal
+========================================= */
 
-body{
-
-    min-height:100vh;
-
-    background:
-    url("../assets/backgrounds/amarillooo.png")
-    center center / cover
-    no-repeat
-    fixed;
-
-    color:white;
-
-    font-family:Arial,Helvetica,sans-serif;
-
-    overflow-x:hidden;
-
-}
-
-
-/* Fondo de estrellas */
-
-#stars{
-
-    position:fixed;
-
-    inset:0;
-
-
-    background:
-    radial-gradient(circle,#ffffff 1px,transparent 1px);
-
-
-    background-size:45px 45px;
-
-
-    opacity:.18;
-
-
-    animation:moveStars 35s linear infinite;
-
-
-    z-index:-1;
-
-}
-
-
-
-@keyframes moveStars{
-
-    from{
-
-        transform:translateY(0);
-
-    }
-
-
-    to{
-
-        transform:translateY(45px);
-
-    }
-
-}
-
-
-
-
-
-/* HEADER */
-
-
-header{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-
-    padding:25px;
-
-}
-
-
-
-h1{
-
-    flex:1;
-
-    text-align:center;
-
-
-    font-size:42px;
-
-
-    text-shadow:
-
-    0 0 15px cyan,
-
-    0 0 35px blue;
-
-}
-
-
-
-
-
-#back{
-
-    background:none;
-
-    border:none;
-
-    cursor:pointer;
-
-    padding:0;
-
-    box-shadow:none;
-
-}
-#back img{
-
-    width:80px; /* ajusta el tamaño */
-
-    height:auto;
-
-    transition:.25s;
-
-}
-
-
-#back:hover img{
-
-    transform:scale(1.08);
-
-}
-
-
-
-
-
-
-/* TABLERO DE NAVES */
-
-
-#skinsContainer{
-
-
-    width:95%;
-
-
-    max-width:1300px;
-
-
-    margin:auto;
-
-
-    display:grid;
-
-
-    grid-template-columns:
-
-    repeat(5,1fr);
-
-
-
-    gap:3px;
-
-
-    padding:20px;
-
-
-}
-
-
-
-
-
-
-
-/* CELDAS */
-
-
-.card{
-
-
-    min-height:260px;
-
-
-    padding:20px;
-
-
-    text-align:center;
-
-
-    position:relative;
-
-
-    overflow:hidden;
-
-
-    border:2px solid rgba(255,255,255,.15);
-
-
-
-    display:flex;
-
-
-    flex-direction:column;
-
-
-    align-items:center;
-
-
-    justify-content:center;
-
-
-
-    transition:.35s;
-
-
-    animation:
-
-    appear .6s ease backwards;
-
-}
-
-
-
-
-/* COLORES DEL TABLERO */
-
-
-.card:nth-child(4n+1){
-
-    background:
-
-    linear-gradient(
-    135deg,
-    #102d56,
-    #174d91
-    );
-
-}
-
-
-
-.card:nth-child(4n+2){
-
-    background:
-
-    linear-gradient(
-    135deg,
-    #35145e,
-    #7020a0
-    );
-
-}
-
-
-
-.card:nth-child(4n+3){
-
-    background:
-
-    linear-gradient(
-    135deg,
-    #064d46,
-    #009688
-    );
-
-}
-
-
-
-.card:nth-child(4n+4){
-
-    background:
-
-    linear-gradient(
-    135deg,
-    #592000,
-    #b95d00
-    );
-
-}
-
-
-
-
-
-
-
-/* BRILLO */
-
-.card::before{
-
-
-    content:"";
-
-
-    position:absolute;
-
-
-    width:120%;
-
-
-    height:120%;
-
-
-    background:
-
-    radial-gradient(
-    circle,
-    rgba(255,255,255,.05),
-    transparent 60%
-    );
-
-
-
-    top:-70%;
-
-
-    left:-20%;
-
-
-    transition:.5s;
-
-
-}
-
-
-
-.card:hover::before{
-
-
-    top:-20%;
-
-
-}
-
-
-
-
-
-
-.card:hover{
-
-
-    transform:
-
-    translateY(-12px)
-
-    scale(1.03);
-
-
-    z-index:5;
-
-
-    box-shadow:
-
-
-    0 0 25px cyan,
-
-    0 0 50px rgba(0,200,255,.5);
-
-
-}
-
-
-
-
-
-
-
-/* NAVES */
-
-
-.card img{
-
-
-    width:110px;
-
-
-    height:110px;
-
-
-    object-fit:contain;
-
-
-
-    margin:15px 0;
-
-
-
-    filter:
-
-    drop-shadow(0 0 20px cyan);
-
-
-
-    transition:.4s;
-
-
-}
-
-
-
-
-.card:hover img{
-
-
-    transform:
-
-    scale(1.15)
-
-    rotate(-6deg);
-
-
-
-    filter:
-
-    drop-shadow(0 0 35px white);
-
-
-}
-
-
-
-
-
-
-.card h2{
-
-
-    font-size:22px;
-
-
-    margin-bottom:15px;
-
-
-    text-shadow:
-
-    0 0 10px black;
-
-
-}
-
-
-
-
-
-
-
-
-/* BOTON */
-
-
-.card button{
-
-
-    width:90%;
-
-
-    height:45px;
-
-
-    border:none;
-
-
-    border-radius:15px;
-
-
-    cursor:pointer;
-
-
-
-    background:
-
-    linear-gradient(
-    90deg,
-    #00eaff,
-    #006cff
-    );
-
-
-
-    color:white;
-
-
-
-    font-size:16px;
-
-
-    font-weight:bold;
-
-
-
-    box-shadow:
-
-    0 0 20px rgba(0,230,255,.6);
-
-
-
-    transition:.3s;
-
-
-}
-
-
-
-.card button:hover{
-
-
-    transform:
-
-    scale(1.08);
-
-
-
-    box-shadow:
-
-    0 0 35px cyan;
-
-
-}
-
-
-
-
-
-
-
-
-/* ANIMACION */
-
-.card:nth-child(1){animation-delay:.1s;}
-.card:nth-child(2){animation-delay:.2s;}
-.card:nth-child(3){animation-delay:.3s;}
-.card:nth-child(4){animation-delay:.4s;}
-.card:nth-child(5){animation-delay:.5s;}
-.card:nth-child(6){animation-delay:.6s;}
-.card:nth-child(7){animation-delay:.7s;}
-.card:nth-child(8){animation-delay:.8s;}
-.card:nth-child(9){animation-delay:.9s;}
-.card:nth-child(10){animation-delay:1s;}
-
-
-@keyframes appear{
-
-
-    from{
-
-        opacity:0;
-
-        transform:
-
-        translateY(40px);
-
-    }
-
-
-    to{
-
-        opacity:1;
-
-        transform:
-
-        translateY(0);
-
-    }
-
-}
-
-
-
-
-
-
-
-/* MOVIL */
-
-
-@media(max-width:900px){
-
-
-    #skinsContainer{
-
-        grid-template-columns:
-
-        repeat(3,1fr);
-
-    }
-
-
-}
-
-
-
-@media(max-width:600px){
-
-
-    h1{
-
-        font-size:30px;
-
-    }
-
-
-
-    #skinsContainer{
-
-
-        grid-template-columns:
-
-        repeat(2,1fr);
-
-        padding:10px;
-
-    }
-
-
-
-    .card{
-
-
-        min-height:220px;
-
-
-    }
-
-
-
-    .card img{
-
-
-        width:85px;
-
-        height:85px;
-
-    }
-
-
-}
-.rarityBadge{
-
-    width:90px;
-
-    height:auto;
-
-    margin:10px 0;
-
-}
-.skinsTitle {
+* {
     margin: 0;
     padding: 0;
-    display: flex;
-    align-items: center;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.skinsTitle img {
-    width: 150px;
-    height: auto;
-    display: block;
+html {
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
 }
+
+body {
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+
+    background:
+        url("../assets/backgrounds/amarillooo.png")
+        center center / cover no-repeat fixed;
+
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    overscroll-behavior-x: none;
+}
+
+/* =========================================
+   FONDO DE ESTRELLAS
+   Fijo: no se desplaza con las tarjetas
+========================================= */
+
+#stars {
+    position: fixed;
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle,
+            #ffffff 1px,
+            transparent 1px
+        );
+
+    background-size: 45px 45px;
+    opacity: 0.18;
+
+    animation: none;
+
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* =========================================
+   ENCABEZADO
+   BOTÓN ATRÁS Y TÍTULO ARRIBA
+========================================= */
+
+header {
+    position: relative;
+
+    width: 100%;
+    height: 100px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 8px 16px;
+}
+
+/* Botón volver */
+
+#back {
+    position: absolute;
+
+    left: 16px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 54px;
+    height: 54px;
+
+    padding: 0;
+
+    background: none;
+    border: none;
+    box-shadow: none;
+
+    cursor: pointer;
+    z-index: 10;
+
+    touch-action: manipulation;
+}
+
+#back img {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    transition: transform 0.15s ease;
+}
+
+#back:active img {
+    transform: scale(0.9);
+}
+
+/* Título de la tienda */
+
+.skinsTitle {
+    display: block;
+
+    width: auto;
+    height: 68px;
+
+    max-width: 55%;
+
+    object-fit: contain;
+
+    margin: 0;
+    padding: 0;
+}
+
+/* =========================================
+   TABLERO DE NAVES
+========================================= */
+
+#skinsContainer {
+    width: 100%;
+    max-width: 100%;
+
+    margin: 0 auto;
+
+    padding: 8px 12px 24px;
+
+    display: grid;
+
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+
+    gap: 10px;
+
+    align-items: stretch;
+}
+
+/* =========================================
+   TARJETAS
+========================================= */
+
+.card {
+    position: relative;
+
+    min-width: 0;
+    min-height: 235px;
+
+    padding: 12px 8px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: space-between;
+
+    text-align: center;
+
+    overflow: hidden;
+
+    border: 2px solid rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+
+    animation: appear 0.35s ease backwards;
+
+    isolation: isolate;
+}
+
+/* Colores */
+
+.card:nth-child(4n+1) {
+    background: linear-gradient(135deg, #102d56, #174d91);
+}
+
+.card:nth-child(4n+2) {
+    background: linear-gradient(135deg, #35145e, #7020a0);
+}
+
+.card:nth-child(4n+3) {
+    background: linear-gradient(135deg, #064d46, #009688);
+}
+
+.card:nth-child(4n+4) {
+    background: linear-gradient(135deg, #592000, #b95d00);
+}
+
+/* Brillo decorativo */
+
+.card::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background: radial-gradient(
+        circle at top,
+        rgba(255, 255, 255, 0.13),
+        transparent 70%
+    );
+
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* =========================================
+   NOMBRE DE LA SKIN
+========================================= */
+
+.card h2 {
+    width: 100%;
+
+    margin: 0;
+
+    font-size: 17px;
+    line-height: 1.2;
+
+    overflow-wrap: anywhere;
+
+    text-shadow: 0 2px 5px black;
+}
+
+/* =========================================
+   IMAGEN DE LA NAVE
+========================================= */
+
+.card > img:not(.rarityBadge) {
+    display: block;
+
+    width: 100%;
+    max-width: 105px;
+
+    height: 90px;
+
+    object-fit: contain;
+
+    margin: 8px auto;
+
+    filter: drop-shadow(0 0 10px rgba(0, 220, 255, 0.55));
+}
+
+/* =========================================
+   RAREZA
+========================================= */
+
+.rarityBadge {
+    display: block;
+
+    width: auto;
+    max-width: 90%;
+    height: auto;
+
+    max-height: 25px;
+
+    object-fit: contain;
+
+    margin: 4px auto;
+}
+
+/* =========================================
+   BOTONES
+========================================= */
+
+.card button {
+    width: 100%;
+    min-height: 38px;
+
+    padding: 6px 4px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: linear-gradient(90deg, #00cfe8, #006cff);
+
+    color: white;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    overflow-wrap: anywhere;
+
+    box-shadow: 0 3px 10px rgba(0, 200, 255, 0.25);
+
+    cursor: pointer;
+    touch-action: manipulation;
+
+    transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.card button:active {
+    transform: scale(0.96);
+    filter: brightness(1.15);
+}
+
+/* =========================================
+   ANIMACIÓN SUAVE
+========================================= */
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================
+   TELÉFONOS EN HORIZONTAL
+   Prioridad: aprovechar el ancho y la altura
+========================================= */
+
+@media (orientation: landscape) and (max-height: 500px) {
+
+    header {
+        height: 65px;
+        padding: 4px 12px;
+    }
+
+    #back {
+        left: 12px;
+
+        width: 42px;
+        height: 42px;
+    }
+
+    .skinsTitle {
+        height: 46px;
+        max-width: 50%;
+    }
+
+    #skinsContainer {
+        padding: 6px 10px 18px;
+
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+
+        gap: 8px;
+    }
+
+    .card {
+        min-height: 190px;
+
+        padding: 8px 6px;
+
+        border-radius: 10px;
+    }
+
+    .card h2 {
+        font-size: 14px;
+    }
+
+    .card > img:not(.rarityBadge) {
+        max-width: 75px;
+        height: 65px;
+
+        margin: 4px auto;
+    }
+
+    .rarityBadge {
+        max-height: 19px;
+        margin: 3px auto;
+    }
+
+    .card button {
+        min-height: 34px;
+
+        padding: 5px 3px;
+
+        font-size: 12px;
+        border-radius: 7px;
+    }
+}
+
+/* =========================================
+   TELÉFONOS MUY BAJOS EN HORIZONTAL
+========================================= */
+
+@media (orientation: landscape) and (max-height: 380px) {
+
+    header {
+        height: 54px;
+    }
+
+    #back {
+        width: 36px;
+        height: 36px;
+    }
+
+    .skinsTitle {
+        height: 38px;
+    }
+
+    #skinsContainer {
+        padding-top: 4px;
+        gap: 6px;
+    }
+
+    .card {
+        min-height: 165px;
+        padding: 6px 4px;
+    }
+
+    .card > img:not(.rarityBadge) {
+        height: 52px;
+        max-width: 60px;
+    }
+
+    .card h2 {
+        font-size: 12px;
+    }
+
+    .card button {
+        min-height: 30px;
+        font-size: 11px;
+    }
+}
+
+/* =========================================
+   TELÉFONOS ESTRECHOS
+========================================= */
+
+@media (max-width: 600px) and (orientation: portrait) {
+
+    header {
+        height: 76px;
+    }
+
+    #back {
+        width: 44px;
+        height: 44px;
+        left: 10px;
+    }
+
+    .skinsTitle {
+        height: 48px;
+    }
+
+    #skinsContainer {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .card {
+        min-height: 220px;
+    }
+
+    .card > img:not(.rarityBadge) {
+        height: 85px;
+    }
+}
+
+/* =========================================
+   EVITAR EFECTOS INNECESARIOS EN MÓVILES
+========================================= */
+
+@media (hover: none) {
+
+    .card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .card:hover img {
+        transform: none;
+    }
+
+    #back:hover img {
+        transform: none;
+    }
+}
+
+/* =========================================
+   REDUCIR ANIMACIONES SI EL SISTEMA LO PIDE
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+

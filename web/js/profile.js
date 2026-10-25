@@ -324,15 +324,76 @@ if(newsPopup && popupClose){
 // MONEDAS
 // =========================
 
-const coinsBtn =
-    document.getElementById("coinsBtn");
+const coinsBtn = document.getElementById("coinsBtn");
+
+if (!coinsBtn) {
+
+    console.error("❌ NO SE ENCONTRÓ coinsBtn");
+
+} else {
+
+    console.log("✅ coinsBtn encontrado");
+
+    coinsBtn.addEventListener("click", function () {
+
+        console.log("🪙 BOTÓN DE MONEDAS PULSADO");
+
+        clickSound.currentTime = 0;
+
+        clickSound.play().catch(() => {});
+
+        window.location.href = "./tienda.html";
+
+    });
+
+}
+// ===========================
+// EMOTE
+// ===========================
+
+const emoteBtn = document.getElementById("emoteBtn");
+const emoteVideo = document.getElementById("emoteVideo");
+
+if (emoteBtn && emoteVideo && ship) {
+
+    emoteBtn.addEventListener("click", () => {
+
+        console.log("🔥 EMOTE PULSADO");
+
+        // Sonido del botón
+        clickSound.currentTime = 0;
+        clickSound.play().catch(() => {});
+
+        // Ocultar nave
+        ship.style.visibility = "hidden";
+
+        // Mostrar video
+        emoteVideo.style.display = "block";
+
+        // Reiniciar video
+        emoteVideo.currentTime = 0;
+
+        // Reproducir
+        emoteVideo.play().catch(error => {
+
+            console.error(
+                "❌ Error reproduciendo emote:",
+                error
+            );
+
+        });
+
+    });
 
 
-if(coinsBtn){
+    // Cuando termina el video
+    emoteVideo.addEventListener("ended", () => {
 
-    coinsBtn.addEventListener("click", () => {
+        console.log("🎬 EMOTE TERMINÓ");
 
-        console.log("Botón de monedas pulsado");
+        emoteVideo.style.display = "none";
+
+        ship.style.visibility = "visible";
 
     });
 

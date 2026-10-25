@@ -3,34 +3,36 @@ RESET
 ========================= */
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  }
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 /* =========================
-BODY
+HTML / BODY
 ========================= */
 
 html,
 body {
-width: 100%;
-min-height: 100%;
-
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 body {
+    min-height: 100%;
+    width: 100%;
 
-min-height: 100dvh;
+    color: white;
 
-color: white;
+    font-family: Arial, Helvetica, sans-serif;
 
-font-family: Arial, Helvetica, sans-serif;
+    position: relative;
 
-overflow-x: hidden;
-overflow-y: auto;
-
-position: relative;
+    overscroll-behavior: none;
+    touch-action: pan-y;
 }
 
 /* =========================
@@ -38,21 +40,21 @@ FONDO PERSONALIZADO
 ========================= */
 
 #background {
-position: fixed;
+    position: fixed;
 
-inset: 0;
+    inset: 0;
 
-background-image:
-    url("../assets/backgrounds/settings.png");
+    width: 100%;
+    height: 100%;
 
-background-size: cover;
+    background-image:
+        url("../assets/backgrounds/settings.png");
 
-background-position: center;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 
-background-repeat: no-repeat;
-
-z-index: -1;
-
+    z-index: -1;
 }
 
 /* =========================
@@ -60,16 +62,17 @@ PANEL
 ========================= */
 
 .panel {
+    width: 100%;
+    max-width: 700px;
 
-width: 100%;
+    margin: 0 auto;
 
-max-width: 650px;
+    padding:
+        clamp(18px, 5vh, 45px)
+        clamp(18px, 4vw, 35px)
+        15px;
 
-margin: 0 auto;
-
-padding: 55px 25px 35px;
-
-
+    overflow: hidden;
 }
 
 /* =========================
@@ -77,33 +80,26 @@ TÍTULO PERSONALIZADO
 ========================= */
 
 .settingsTitle {
+    width: 100%;
 
-width: 100%;
+    margin: 0 0 clamp(10px, 2vh, 22px);
 
-margin: 0 0 25px;
+    padding: 0;
 
-padding: 0;
+    display: flex;
 
-display: flex;
-
-justify-content: center;
-
-align-items: center;
-
+    justify-content: center;
+    align-items: center;
 }
 
 .settingsTitle img {
+    width: clamp(150px, 24vw, 240px);
 
+    max-width: 80%;
 
-width: 250px;
+    height: auto;
 
-max-width: 80vw;
-
-height: auto;
-
-display: block;
-
-
+    display: block;
 }
 
 /* =========================
@@ -111,23 +107,26 @@ OPCIONES
 ========================= */
 
 .option {
+    width: 100%;
 
-width: 100%;
+    min-width: 0;
 
-min-height: 58px;
+    min-height: clamp(42px, 8vh, 58px);
 
-display: flex;
+    display: flex;
 
-justify-content: space-between;
+    justify-content: space-between;
+    align-items: center;
 
-align-items: center;
+    gap: 12px;
 
-gap: 20px;
+    padding:
+        clamp(5px, 1.2vh, 10px)
+        3px;
 
-padding: 12px 5px;
+    font-size: clamp(15px, 2.2vw, 20px);
 
-font-size: 20px;
-
+    overflow: hidden;
 }
 
 /* =========================
@@ -135,14 +134,19 @@ TEXTO DE OPCIONES
 ========================= */
 
 .option span {
+    display: flex;
 
+    align-items: center;
 
-display: flex;
+    min-width: 0;
 
-align-items: center;
+    max-width: 65%;
 
-min-width: 0;
+    white-space: nowrap;
 
+    overflow: hidden;
+
+    text-overflow: ellipsis;
 }
 
 /* =========================
@@ -150,30 +154,26 @@ DIVISORES
 ========================= */
 
 .divider {
+    width: 100%;
 
-width: 100%;
+    display: flex;
 
-display: flex;
+    justify-content: center;
+    align-items: center;
 
-justify-content: center;
+    margin: 1px 0;
 
-align-items: center;
-
-margin: 2px 0;
-
+    overflow: hidden;
 }
 
 .divider img {
+    width: 90%;
 
+    max-width: 500px;
 
-width: 90%;
+    height: auto;
 
-max-width: 500px;
-
-height: auto;
-
-display: block;
-
+    display: block;
 }
 
 /* =========================
@@ -181,34 +181,32 @@ SELECT
 ========================= */
 
 select {
+    flex-shrink: 0;
 
+    max-width: 38%;
 
-background: rgba(0, 0, 0, .25);
+    background: rgba(0, 0, 0, .25);
 
-color: white;
+    color: white;
 
-border: none;
+    border: none;
 
-outline: none;
+    outline: none;
 
-border-radius: 8px;
+    border-radius: 8px;
 
-padding: 7px 10px;
+    padding:
+        6px
+        9px;
 
-font-size: 17px;
+    font-size: clamp(14px, 1.9vw, 17px);
 
-cursor: pointer;
-
+    cursor: pointer;
 }
 
 select option {
-
-
-background: #08111d;
-
-color: white;
-
-
+    background: #08111d;
+    color: white;
 }
 
 /* =========================
@@ -216,75 +214,60 @@ SWITCH
 ========================= */
 
 .switch {
-position: relative;
+    position: relative;
 
-flex-shrink: 0;
+    flex-shrink: 0;
 
-width: 56px;
-
-height: 30px;
-
+    width: clamp(48px, 7vw, 56px);
+    height: clamp(26px, 4vw, 30px);
 }
 
 .switch input {
-
-
-display: none;
-
-
+    display: none;
 }
 
 .slider {
+    position: absolute;
 
+    inset: 0;
 
-position: absolute;
+    background: #3a4655;
 
-inset: 0;
+    border-radius: 50px;
 
-background: #3a4655;
-
-border-radius: 50px;
-
-transition: .25s;
-
-
+    transition: .25s;
 }
 
 .slider::before {
+    content: "";
 
-content: "";
+    position: absolute;
 
-position: absolute;
+    width: clamp(19px, 3vw, 22px);
+    height: clamp(19px, 3vw, 22px);
 
-width: 22px;
+    left: 4px;
+    top: 50%;
 
-height: 22px;
+    transform: translateY(-50%);
 
-left: 4px;
+    border-radius: 50%;
 
-top: 4px;
+    background: white;
 
-border-radius: 50%;
-
-background: white;
-
-transition: .25s;
-
-
+    transition: .25s;
 }
 
 input:checked + .slider {
-
-
-background: #00c8ff;
-
+    background: #00c8ff;
 }
 
 input:checked + .slider::before {
-
-
-transform: translateX(26px);
-
+    transform:
+        translateX(
+            clamp(22px, 3.5vw, 26px)
+        )
+        translateY(-50%);
 }
 
 /* =========================
@@ -292,257 +275,263 @@ VERSIÓN
 ========================= */
 
 .version {
+    margin-top: clamp(5px, 1.5vh, 14px);
 
+    text-align: center;
 
-margin-top: 18px;
+    opacity: .45;
 
-text-align: center;
-
-opacity: .45;
-
-font-size: 13px;
-
-
+    font-size: clamp(10px, 1.5vw, 13px);
 }
 
 /* =========================
 BOTÓN VOLVER
 ========================= */
 
+/* =========================
+BOTÓN VOLVER
+ARRIBA A LA IZQUIERDA
+========================= */
+
 #back {
+    position: absolute;
 
-display: flex;
+    top: 14px;
+    left: 14px;
 
-justify-content: center;
+    width: auto;
 
-align-items: center;
+    margin: 0;
+    padding: 0;
 
-width: 100%;
+    display: flex;
 
-margin: 18px auto 0;
+    justify-content: center;
+    align-items: center;
 
-padding: 0;
+    background: transparent;
 
-background: transparent;
+    border: none;
 
-border: none;
+    cursor: pointer;
 
-cursor: pointer;
-
+    z-index: 10;
 }
 
 #back img {
+    width: 65px;
 
-width: 135px;
+    max-width: none;
 
-max-width: 45vw;
+    height: auto;
 
-height: auto;
+    display: block;
 
-display: block;
-
-transition: transform .2s ease;
-
-
+    transition: transform .2s ease;
 }
 
 #back:hover img {
-
-
-transform: scale(1.04);
-
-
+    transform: scale(1.04);
 }
 
 #back:active img {
-
-
-transform: scale(.96);
-
-
+    transform: scale(.92);
 }
 
 /* =========================
-MÓVIL
+CELULAR HORIZONTAL
 ========================= */
 
-@media (max-width: 600px) {
+@media (orientation: landscape) and (max-height: 600px) {
 
+    html,
+    body {
+        width: 100%;
+        height: 100%;
 
-.panel {
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
 
-    max-width: 500px;
+    .panel {
+        width: 100%;
 
-    padding: 35px 18px 25px;
+        max-width: 680px;
 
+        padding:
+            10px
+            clamp(20px, 6vw, 50px)
+            8px;
+    }
+
+    .settingsTitle {
+        margin-bottom: 6px;
+    }
+
+    .settingsTitle img {
+        width: clamp(130px, 22vw, 190px);
+    }
+
+    .option {
+        min-height: 36px;
+
+        padding:
+            3px
+            2px;
+
+        font-size: clamp(14px, 2.5vw, 17px);
+
+        gap: 10px;
+    }
+
+    .divider {
+        margin: 0;
+    }
+
+    .divider img {
+        width: 85%;
+
+        max-height: 8px;
+
+        object-fit: contain;
+    }
+
+    select {
+        font-size: 14px;
+
+        padding:
+            5px
+            8px;
+
+        border-radius: 6px;
+    }
+
+    .switch {
+        width: 48px;
+        height: 26px;
+    }
+
+    .slider::before {
+        width: 19px;
+        height: 19px;
+
+        left: 4px;
+    }
+
+    input:checked + .slider::before {
+        transform:
+            translateX(22px)
+            translateY(-50%);
+    }
+
+    .version {
+        margin-top: 3px;
+
+        font-size: 10px;
+    }
+
+    #back {
+        margin-top: 4px;
+    }
+
+    #back img {
+        width: 82px;
+    }
 }
 
+/* =========================
+CELULARES MUY BAJOS
+========================= */
 
-.settingsTitle {
+@media (orientation: landscape) and (max-height: 430px) {
 
-    margin-bottom: 18px;
+    .panel {
+        padding:
+            5px
+            clamp(15px, 5vw, 40px)
+            4px;
+    }
 
+    .settingsTitle {
+        margin-bottom: 3px;
+    }
+
+    .settingsTitle img {
+        width: 125px;
+    }
+
+    .option {
+        min-height: 31px;
+
+        padding:
+            2px
+            1px;
+
+        font-size: 13px;
+    }
+
+    .divider img {
+        max-height: 6px;
+    }
+
+    select {
+        font-size: 12px;
+
+        padding:
+            3px
+            6px;
+    }
+
+    .switch {
+        width: 44px;
+        height: 23px;
+    }
+
+    .slider::before {
+        width: 17px;
+        height: 17px;
+
+        left: 3px;
+    }
+
+    input:checked + .slider::before {
+        transform:
+            translateX(20px)
+            translateY(-50%);
+    }
+
+    .version {
+        font-size: 9px;
+
+        margin-top: 1px;
+    }
+
+    #back {
+        margin-top: 2px;
+    }
+
+    #back img {
+        width: 70px;
+    }
 }
 
+/* =========================
+SEGURIDAD CONTRA DESBORDAMIENTO
+========================= */
 
-.settingsTitle img {
-
-    width: 210px;
-
+img,
+video,
+canvas,
+select,
+button,
+input {
+    max-width: 100%;
 }
 
-
-.option {
-
-    min-height: 50px;
-
-    padding: 9px 3px;
-
-    font-size: 18px;
-
-}
-
-
+.panel,
+.option,
+.settingsTitle,
 .divider {
-
-    margin: 1px 0;
-
-}
-
-
-.divider img {
-
-    width: 95%;
-
-}
-
-
-.switch {
-
-    width: 52px;
-
-    height: 28px;
-
-}
-
-
-.slider::before {
-
-    width: 20px;
-
-    height: 20px;
-
-}
-
-
-input:checked + .slider::before {
-
-    transform: translateX(24px);
-
-}
-
-
-select {
-
-    font-size: 16px;
-
-    padding: 6px 8px;
-
-}
-
-
-.version {
-
-    margin-top: 12px;
-
-    font-size: 12px;
-
-}
-
-
-#back {
-
-    margin-top: 14px;
-
-}
-
-
-#back img {
-
-    width: 115px;
-
-}
-
-
-}
-
-/* =========================
-PANTALLAS MUY BAJAS
-(MÓVIL HORIZONTAL)
-========================= */
-
-@media (max-height: 500px) {
-
-.panel {
-
-    padding-top: 18px;
-
-    padding-bottom: 15px;
-
-}
-
-
-.settingsTitle {
-
-    margin-bottom: 10px;
-
-}
-
-
-.settingsTitle img {
-
-    width: 170px;
-
-}
-
-
-.option {
-
-    min-height: 42px;
-
-    padding: 5px 3px;
-
-    font-size: 16px;
-
-}
-
-
-.divider img {
-
-    max-height: 10px;
-
-    object-fit: contain;
-
-}
-
-
-.version {
-
-    margin-top: 6px;
-
-}
-
-
-#back {
-
-    margin-top: 8px;
-
-}
-
-
-#back img {
-
-    width: 90px;
-
-}
+    min-width: 0;
+    max-width: 100%;
 }

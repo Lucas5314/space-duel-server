@@ -245,3 +245,35 @@ body{
     }
 
 }
+#noInternetModal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+}
+
+#noInternetModal.show {
+    display: flex;
+}
+
+.noInternetBox {
+    width: 80%;
+    max-width: 350px;
+    padding: 25px;
+    background: #151525;
+    border-radius: 15px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+}
+
+.noInternetBox h2 {
+    margin-top: 0;
+}
+
+.noInternetBox p {
+    margin: 8px 0;
+}

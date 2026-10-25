@@ -1,802 +1,551 @@
-/* =========================
-RESET
-========================= */
+/* ========================================
+   RESET
+======================================== */
 
 * {
-
-  box-sizing: border-box;
-
-  margin: 0;
-
-  padding: 0;
-
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-/* =========================
-BODY
-========================= */
+
+/* ========================================
+   PANTALLA
+======================================== */
 
 html,
 body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 
-width: 100%;
-height: 100%;
-
-overflow: hidden;
-
-font-family: Arial, Helvetica, sans-serif;
-
-color: white;
-
+    font-family: Arial, Helvetica, sans-serif;
+    color: #ffffff;
 }
 
 body {
-
-background:
-    radial-gradient(
-        circle at top,
-        #4b38b8,
-        #10142d
-    );
-
-display: flex;
-
-justify-content: center;
-
-align-items: center;
-
-
+    background:
+        radial-gradient(
+            ellipse at 75% 50%,
+            #202b4a 0%,
+            #111827 55%,
+            #090d17 100%
+        );
 }
 
-/* =========================
-CONTENEDOR
-========================= */
+
+/* ========================================
+   CONTENEDOR PRINCIPAL
+======================================== */
 
 .container {
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
 
-width: 94vw;
+    padding: 10px;
 
-height: 92vh;
-
-max-width: 1100px;
-
-display: flex;
-
-flex-direction: column;
-
+    overflow: hidden;
 }
 
-/* =========================
-CABECERA
-========================= */
 
-header {
+/* ========================================
+   DISTRIBUCIÓN HORIZONTAL
 
-text-align: center;
-
-flex-shrink: 0;
-
-
-}
-
-header h1 {
-
-
-font-size: clamp(25px, 4vw, 38px);
-
-margin: 5px 0 3px;
-
-
-}
-
-header p {
-
-
-opacity: .75;
-
-font-size: clamp(13px, 2vw, 16px);
-
-margin-bottom: 15px;
-
-
-}
-
-/* =========================
-LAYOUT DEL CHAT
-========================= */
+   AMIGOS: 32 %
+   CHAT:   68 %
+======================================== */
 
 .chat-layout {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
 
+    display: grid;
 
-flex: 1;
+    grid-template-columns:
+        minmax(0, 32fr)
+        minmax(0, 68fr);
 
-min-height: 0;
-
-display: grid;
-
-grid-template-columns: 250px 1fr;
-
-gap: 15px;
-
-
+    gap: 10px;
 }
 
-/* =========================
-PANEL DE AMIGOS
-========================= */
+
+/* ========================================
+   PANEL DE AMIGOS
+======================================== */
 
 .friends-panel {
+    min-width: 0;
+    min-height: 0;
 
+    display: flex;
+    flex-direction: column;
 
-min-height: 0;
+    overflow: hidden;
 
-background:
-    rgba(255,255,255,.10);
+    background: rgba(7, 12, 24, 0.72);
 
-border:
-
-    1px solid
-    rgba(255,255,255,.12);
-
-border-radius: 22px;
-
-box-shadow:
-    0 0 30px rgba(0,0,0,.35);
-
-backdrop-filter: blur(12px);
-
-overflow: hidden;
-
-display: flex;
-
-flex-direction: column;
-
-
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
 }
 
-/* =========================
-TÍTULO AMIGOS
-========================= */
 
-.friends-title {
-
-
-padding: 17px;
-
-background:
-    rgba(0,0,0,.22);
-
-border-bottom:
-    1px solid
-    rgba(255,255,255,.08);
-
-
-}
-
-.friends-title h2 {
-
-font-size: 20px;
-
-text-align: left;
-
-
-}
-
-/* =========================
-LISTA
-========================= */
+/* ========================================
+   LISTA DE AMIGOS
+======================================== */
 
 .friends-list {
+    flex: 1;
+    min-height: 0;
 
+    padding: 6px;
 
-flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
 
-min-height: 0;
-
-overflow-y: auto;
-
-padding: 8px;
-
-
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
-/* =========================
-AMIGO
-========================= */
+
+/* ========================================
+   ELEMENTO DE AMIGO
+======================================== */
 
 .friend-item {
+    width: 100%;
+    min-width: 0;
+    min-height: 54px;
 
+    padding: 9px 12px;
 
-width: 100%;
+    display: flex;
+    align-items: center;
 
-min-height: 65px;
+    border: none;
+    border-radius: 7px;
 
-display: flex;
+    background: transparent;
 
-align-items: center;
+    color: #e7ecf5;
+    text-align: left;
 
-gap: 12px;
+    cursor: pointer;
 
-padding: 10px;
-
-margin-bottom: 6px;
-
-border: none;
-
-border-radius: 15px;
-
-background: transparent;
-
-color: white;
-
-text-align: left;
-
-cursor: pointer;
-
-transition:
-    background .2s ease,
-    transform .15s ease;
-
-
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
 }
 
 .friend-item:hover {
-
-
-background:
-    rgba(255,255,255,.08);
-
-
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .friend-item:active {
-
-transform: scale(.98);
-
-
+    background: rgba(255, 255, 255, 0.09);
 }
+
 
 /* AMIGO SELECCIONADO */
 
 .friend-item.active {
+    background: rgba(255, 207, 51, 0.10);
 
-background:
-    rgba(255,207,51,.16);
+    box-shadow:
+        inset 3px 0 0 #ffcf33;
 
-box-shadow:
-    inset 3px 0 0 #ffcf33;
-
-
+    color: #ffffff;
 }
 
-/* =========================
-AVATAR
-========================= */
 
-.friend-avatar {
-
-
-width: 42px;
-
-height: 42px;
-
-flex-shrink: 0;
-
-display: flex;
-
-justify-content: center;
-
-align-items: center;
-
-border-radius: 50%;
-
-background:
-    rgba(255,255,255,.12);
-
-font-size: 21px;
-
-
-}
-
-/* =========================
-INFORMACIÓN
-========================= */
+/* ========================================
+   INFORMACIÓN DEL AMIGO
+======================================== */
 
 .friend-info {
+    min-width: 0;
+    width: 100%;
 
-
-min-width: 0;
-
-display: flex;
-
-flex-direction: column;
-
-gap: 4px;
-
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .friend-info strong {
+    overflow: hidden;
 
+    font-size: 14px;
+    font-weight: 600;
 
-font-size: 15px;
-
-white-space: nowrap;
-
-overflow: hidden;
-
-text-overflow: ellipsis;
-
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .friend-info span {
-
-font-size: 12px;
-
-
+    font-size: 11px;
+    white-space: nowrap;
 }
 
-/* ONLINE */
+
+/* ========================================
+   ESTADO DE CONEXIÓN
+======================================== */
 
 .online {
-color: #4cff88;
-
-
+    color: #55dc91;
 }
-
-/* OFFLINE */
 
 .offline {
-
-color: rgba(255,255,255,.45);
-
+    color: #7e8798;
 }
 
-/* =========================
-CHAT
-========================= */
+
+/* ========================================
+   BOTÓN VOLVER
+======================================== */
+
+.back-btn {
+    flex-shrink: 0;
+
+    width: 100%;
+    min-height: 40px;
+
+    padding: 8px;
+
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+
+    background: rgba(0, 0, 0, 0.15);
+
+    color: #aeb8ca;
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+.back-btn:active {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+
+/* ========================================
+   CONVERSACIÓN
+======================================== */
 
 .chat-box {
+    min-width: 0;
+    min-height: 0;
 
-min-width: 0;
+    display: flex;
+    flex-direction: column;
 
-min-height: 0;
+    overflow: hidden;
 
-background:
-    rgba(255,255,255,.10);
+    background: rgba(7, 12, 24, 0.72);
 
-border:
-    1px solid
-    rgba(255,255,255,.12);
-
-border-radius: 25px;
-
-padding: 12px;
-
-box-shadow:
-    0 0 30px rgba(0,0,0,.4);
-
-backdrop-filter: blur(12px);
-
-display: flex;
-
-flex-direction: column;
-
-overflow: hidden;
-
-
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
 }
 
-/* =========================
-CABECERA DEL CHAT
-========================= */
+
+/* ========================================
+   CABECERA COMPACTA
+
+   SOLO NOMBRE Y ESTADO
+======================================== */
 
 .chat-header {
+    flex-shrink: 0;
 
-flex-shrink: 0;
+    min-height: 48px;
 
-padding: 13px 16px;
+    padding: 9px 14px;
 
-border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 
-background:
-    rgba(0,0,0,.25);
+    background: rgba(255, 255, 255, 0.025);
 
-font-size: 20px;
-
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .chat-header strong {
+    overflow: hidden;
 
-display: block;
+    font-size: 14px;
+    font-weight: 600;
 
-
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .chat-header span {
+    flex-shrink: 0;
 
-
-display: block;
-
-margin-top: 4px;
-
-font-size: 12px;
-
-font-weight: normal;
-
-
+    font-size: 11px;
+    font-weight: normal;
 }
 
-/* =========================
-MENSAJES
-========================= */
+
+/* ========================================
+   ÁREA DE MENSAJES
+======================================== */
 
 .messages {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
 
+    padding: 14px;
 
-flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 
-min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
 
-overflow-y: auto;
-
-padding: 15px 5px;
-
-display: flex;
-
-flex-direction: column;
-
-gap: 10px;
-
-
+    overscroll-behavior: contain;
 }
 
-/* =========================
-MENSAJE
-========================= */
+
+/* ========================================
+   MENSAJES
+======================================== */
 
 .message {
+    max-width: 75%;
 
+    padding: 9px 12px;
 
-max-width: 75%;
+    border-radius: 9px;
 
-padding: 11px 15px;
+    font-size: 13px;
+    line-height: 1.4;
 
-border-radius: 18px;
-
-font-size: 15px;
-
-word-wrap: break-word;
-
-line-height: 1.35;
-
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
 }
+
 
 /* MENSAJE DEL AMIGO */
 
-.friend {
+.message.friend {
+    align-self: flex-start;
 
+    background: #273247;
+    color: #f0f3f8;
 
-align-self: flex-start;
-
-background: white;
-
-color: #222;
-
-border-bottom-left-radius: 5px;
-
-
+    border-bottom-left-radius: 2px;
 }
+
 
 /* MENSAJE PROPIO */
 
-.me {
+.message.me {
+    align-self: flex-end;
 
+    background: #ffcf33;
+    color: #302506;
 
-align-self: flex-end;
-
-background: #ffcf33;
-
-color: #382500;
-
-border-bottom-right-radius: 5px;
-
-
+    border-bottom-right-radius: 2px;
 }
 
-/* =========================
-ESCRIBIR
-========================= */
+
+/* ========================================
+   ÁREA PARA ESCRIBIR
+======================================== */
 
 .write-area {
+    flex-shrink: 0;
 
-flex-shrink: 0;
+    width: 100%;
+    min-width: 0;
 
-display: flex;
+    padding: 10px;
 
-gap: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
-padding-top: 10px;
+    background: rgba(0, 0, 0, 0.16);
 
-
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+
+/* CAMPO DE TEXTO */
+
 #messageInput {
+    flex: 1;
+    min-width: 0;
 
+    height: 40px;
 
-flex: 1;
+    padding: 0 12px;
 
-min-width: 0;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 7px;
 
-height: 44px;
+    outline: none;
 
-padding: 0 15px;
+    background: #151e30;
+    color: #ffffff;
 
-border: none;
-
-border-radius: 22px;
-
-outline: none;
-
-background: rgba(255,255,255,.95);
-
-color: #222;
-
-font-size: 15px;
-
-
+    font-family: inherit;
+    font-size: 13px;
 }
 
 #messageInput::placeholder {
-
-color: #777;
-
-
+    color: #8792a6;
 }
 
+#messageInput:focus {
+    border-color: rgba(255, 207, 51, 0.65);
+}
+
+
+/* BOTÓN ENVIAR */
+
 #sendBtn {
+    flex-shrink: 0;
 
+    height: 40px;
 
-flex-shrink: 0;
+    padding: 0 16px;
 
-height: 44px;
+    border: none;
+    border-radius: 7px;
 
-padding: 0 18px;
+    background: #ffcf33;
+    color: #302506;
 
-border: none;
+    font-size: 12px;
+    font-weight: bold;
 
-border-radius: 22px;
-
-background: #ffcf33;
-
-color: #382500;
-
-font-weight: bold;
-
-cursor: pointer;
-
-transition: transform .15s ease;
-
-
+    cursor: pointer;
 }
 
 #sendBtn:active {
-
-
-transform: scale(.95);
-
-
+    filter: brightness(0.9);
 }
 
-/* =========================
-VOLVER
-========================= */
 
-.back-btn {
-
-
-align-self: center;
-
-flex-shrink: 0;
-
-margin-top: 10px;
-
-background: none;
-
-border: none;
-
-color: white;
-
-font-size: 16px;
-
-cursor: pointer;
-
-opacity: .8;
-
-
-}
-
-.back-btn:hover {
-
-opacity: 1;
-
-
-}
-
-/* =========================
-SCROLL
-========================= */
+/* ========================================
+   BARRAS DE DESPLAZAMIENTO
+======================================== */
 
 .friends-list::-webkit-scrollbar,
 .messages::-webkit-scrollbar {
-
-
-width: 5px;
-
-
+    width: 4px;
 }
 
 .friends-list::-webkit-scrollbar-thumb,
 .messages::-webkit-scrollbar-thumb {
-
-
-background:
-    rgba(255,255,255,.18);
-
-border-radius: 10px;
-
-
-}
-
-/* =========================
-MÓVIL
-========================= */
-
-@media (max-width: 700px) {
-
-.container {
-
-    width: 96vw;
-
-    height: 94vh;
-
+    background: rgba(255, 255, 255, 0.17);
+    border-radius: 4px;
 }
 
 
-.chat-layout {
+/* ========================================
+   MÓVILES EN HORIZONTAL
+======================================== */
 
-    grid-template-columns: 170px 1fr;
+@media (orientation: landscape) and (max-height: 500px) {
 
-    gap: 8px;
+    .container {
+        padding: 6px;
+    }
 
+    .chat-layout {
+        gap: 6px;
+    }
+
+    .friends-panel,
+    .chat-box {
+        border-radius: 8px;
+    }
+
+    .friends-list {
+        padding: 4px;
+    }
+
+    .friend-item {
+        min-height: 42px;
+        padding: 6px 9px;
+    }
+
+    .friend-info {
+        gap: 3px;
+    }
+
+    .friend-info strong {
+        font-size: 12px;
+    }
+
+    .friend-info span {
+        font-size: 10px;
+    }
+
+    .back-btn {
+        min-height: 32px;
+        padding: 5px;
+    }
+
+    .chat-header {
+        min-height: 38px;
+        padding: 6px 11px;
+        gap: 8px;
+    }
+
+    .chat-header strong {
+        font-size: 12px;
+    }
+
+    .chat-header span {
+        font-size: 10px;
+    }
+
+    .messages {
+        padding: 9px 11px;
+        gap: 7px;
+    }
+
+    .message {
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+
+    .write-area {
+        padding: 6px;
+        gap: 6px;
+    }
+
+    #messageInput,
+    #sendBtn {
+        height: 34px;
+        font-size: 12px;
+    }
+
+    #messageInput {
+        padding: 0 9px;
+    }
+
+    #sendBtn {
+        padding: 0 12px;
+    }
 }
 
 
-.friends-title {
-
-    padding: 13px;
-
-}
-
-
-.friends-title h2 {
-
-    font-size: 17px;
-
-}
-
-
-.friend-item {
-
-    min-height: 58px;
-
-    padding: 7px;
-
-    gap: 8px;
-
-}
-
-
-.friend-avatar {
-
-    width: 35px;
-
-    height: 35px;
-
-    font-size: 17px;
-
-}
-
-
-.friend-info strong {
-
-    font-size: 13px;
-
-}
-
-
-.friend-info span {
-
-    font-size: 10px;
-
-}
-
-
-.chat-header {
-
-    font-size: 17px;
-
-}
-
-
-.message {
-
-    max-width: 85%;
-
-    font-size: 14px;
-
-}
-
-
-#sendBtn {
-
-    padding: 0 13px;
-
-}
-
-
-}
-
-/* =========================
-MÓVIL MUY PEQUEÑO
-========================= */
-
-@media (max-width: 480px) {
-
-
-.chat-layout {
-
-    grid-template-columns: 125px 1fr;
-
-}
-
-
-.friend-avatar {
-
-    display: none;
-
-}
-
-
-.friend-item {
-
-    padding-left: 8px;
-
-}
-
-
-.friend-info strong {
-
-    font-size: 12px;
-
-}
-
-
-.friend-info span {
-
-    font-size: 9px;
-
-}
-
-
-#sendBtn {
-
-    font-size: 0;
-
-    width: 44px;
-
-    padding: 0;
-
-}
-
-
+/* ========================================
+   ACCESIBILIDAD
+======================================== */
+
+button:focus-visible,
+input:focus-visible {
+    outline: 2px solid #ffcf33;
+    outline-offset: 2px;
 }

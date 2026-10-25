@@ -1048,3 +1048,52 @@ body::before{
     transform:scale(1.15);
 
 }
+/* =========================
+   EMOTE
+========================= */
+
+#emoteVideo{
+
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:clamp(180px,30vw,320px);
+
+    height:auto;
+
+    object-fit:contain;
+
+    display:none;
+
+    z-index:10;
+
+    pointer-events:none;
+
+}
+.emoteBtn{
+
+    position:absolute;
+
+    left:50%;
+    top:calc(50% + 190px);
+
+    transform:translateX(-50%);
+
+    width:42px;
+    height:42px;
+
+    border:none;
+
+    background:transparent;
+
+    font-size:24px;
+
+    cursor:pointer;
+
+    z-index:30;
+
+}

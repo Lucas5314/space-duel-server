@@ -15,7 +15,9 @@
 
 
 <body>
-    <button id="coinsBtn">
+   <button
+    id="coinsBtn"
+    onclick="location.href='tienda.html'">
 
     <img
         id="coinIcon"
@@ -30,7 +32,6 @@
         alt="+">
 
 </button>
-
     <div id="selectedWorld"></div>
 
 <!-- ========================= -->
@@ -83,109 +84,58 @@
     <!-- PERFIL -->
     <!-- ========================= -->
 
-    <div class="profileCard">
-
-    <div class="playerInfo">
-
-        <div class="playerRow">
-
-            <h2 id="playerName">
-                Ricardo
-            </h2>
-
-            <span class="flag">
-                🇵🇾 PY
-            </span>
-
-        </div>
-
-
-        <div class="miniStats">
-
-            <div class="stat statWins">
-
-                <span>🟢 V</span>
-
-                <strong id="wins">
-                    0
-                </strong>
-
-            </div>
-
-
-            <div class="stat statLosses">
-
-                <span>🔴 D</span>
-
-                <strong id="losses">
-                    0
-                </strong>
-
-            </div>
-
-
-            <div class="stat statStreak">
-
-                <span>🔥</span>
-
-                <strong id="streak">
-                    0
-                </strong>
-
-            </div>
-
-
-            <div class="stat statGames">
-
-                <span>🎮</span>
-
-                <strong id="games">
-                    0
-                </strong>
-
-            </div>
-
+        
         </div>
 
     </div>
-
+<button id="emoteBtn" class="emoteBtn">
+    😊
+</button>
 </div>
 
 
     <!-- ========================= -->
-    <!-- NAVE -->
+    <!-- personaje -->
     <!-- ========================= -->
 
-    <div class="shipContainer">
+   <div class="shipContainer">
 
+    <video 
+        id="shipEnergy"
+        autoplay
+        loop
+        muted
+        playsinline>
+
+        <source src="assets/ui/ship-energy.webm" type="video/webm">
+
+    </video>
+
+    <video 
+        id="shipBase"
+        autoplay
+        loop
+        muted
+        playsinline>
+
+        <source src="assets/ui/ship-base.webm" type="video/webm">
+
+    </video>
+
+    <img 
+        id="ship"
+        src="assets/ships/naveee1.png" 
+        alt="Perfil">
         <video
-            id="shipEnergy"
-            autoplay
-            loop
-            muted
-            playsinline>
+    id="emoteVideo"
+    src="assets/emotes/default.mp4"
+    muted
+    playsinline
+    preload="auto">
+</video>
 
-            <source src="assets/ui/ship-energy.webm" type="video/webm">
+</div>
 
-        </video>
-
-        <video
-            id="shipBase"
-            autoplay
-            loop
-            muted
-            playsinline>
-
-            <source src="assets/ui/ship-base.webm" type="video/webm">
-
-        </video>
-
-        <img
-            id="ship"
-            src="assets/ships/naveee1.png"
-            alt="Perfil">
-
-    </div>
 
 
     <!-- ========================= -->
@@ -198,13 +148,6 @@
             class="levelIcon"
             src="assets/ui/icons/level.png">
 
-        <span>
-            Nivel 1
-        </span>
-
-        <div class="xpBar">
-            <div class="xp"></div>
-        </div>
 
     </div>
 
@@ -243,6 +186,7 @@
 </div>========================== -->
 
 <script type="module" src="js/profile.js"></script>
+<script type="module" src="js/back.js"></script>
 
 </body>
 

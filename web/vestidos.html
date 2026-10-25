@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Laught Battles — Vestidor</title>
+  <link rel="stylesheet" href="vestidos.css">
+</head>
+<body>
+  <main class="app">
+    <section class="preview">
+      <div class="topline">
+        <div class="brand">LAUGHT <b>BATTLES</b></div>
+        <div class="pill">VESTIDOR · 01</div>
+      </div>
+
+      <div class="avatar-wrap">
+        <div class="floor"></div>
+
+        <div class="turn-controls" role="group" aria-label="Girar personaje">
+          <button class="turn active" data-view="front">Frente</button>
+          <button class="turn" data-view="side">Costado</button>
+          <button class="turn" data-view="back">Espalda</button>
+        </div>
+
+        <svg class="avatar" viewBox="0 0 300 500" role="img"
+             aria-label="Vista previa del personaje">
+          <defs>
+            <linearGradient id="skin" x2="0" y2="1">
+              <stop stop-color="#e7b58b"/>
+              <stop offset="1" stop-color="#bd805e"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Vista frontal -->
+          <g id="frontView">
+            <path d="M105 443 Q89 450 83 466 Q82 476 128 476 L147 469 143 448Z"
+                  fill="#292b32"/>
+            <path d="M164 443 Q153 452 155 466 Q159 476 207 476
+                     Q220 470 204 457 L185 444Z" fill="#292b32"/>
+            <path d="M83 471Q101 476 128 473L145 469M158 470Q181 476 210 471"
+                  fill="none" stroke="#d9d9d5" stroke-width="3"/>
+
+            <path id="avatarPants"
+                  d="M105 278 L192 278 L185 370 L184 449
+                     Q173 458 154 449 L145 354 L132 449
+                     Q117 458 101 448 L103 366Z"
+                  fill="#586fd0"/>
+            <path d="M147 290L147 357" stroke="#263579" stroke-width="4"/>
+
+            <path id="avatarShirt"
+                  d="M102 142 Q116 129 131 126 L169 126
+                     Q188 131 201 146 L225 218 L199 229
+                     L188 198 L193 290 Q149 305 102 290
+                     L109 198 L96 230 L72 219 L93 155Z"
+                  fill="#ed6d45"/>
+            <path d="M133 128Q148 143 169 128" fill="none"
+                  stroke="#ffffff77" stroke-width="4"/>
+
+            <path d="M134 104L134 133Q150 148 168 132L165 101Z"
+                  fill="url(#skin)"/>
+            <ellipse cx="150" cy="74" rx="47" ry="55" fill="url(#skin)"/>
+            <path d="M105 72Q100 22 148 20Q190 19 198 55L190 45
+                     Q174 57 150 52Q127 47 106 65Z" fill="#393039"/>
+            <path d="M111 77Q115 70 127 76M171 76Q183 70 190 77"
+                  fill="none" stroke="#442f30" stroke-width="4"
+                  stroke-linecap="round"/>
+            <ellipse cx="123" cy="86" rx="4" ry="5" fill="#17191f"/>
+            <ellipse cx="178" cy="86" rx="4" ry="5" fill="#17191f"/>
+            <path d="M141 105Q151 111 162 104" fill="none"
+                  stroke="#753e3e" stroke-width="3" stroke-linecap="round"/>
+
+            <g id="capLayer" style="display:none">
+              <path d="M103 60Q115 15 155 18Q189 18 199 61L189 69
+                       Q152 50 111 70Z" fill="#c7f36b"/>
+              <path d="M104 59Q143 45 197 61Q183 74 108 72Z"
+                    fill="#8ba83e"/>
+            </g>
+          </g>
+
+          <!-- Vista de costado -->
+          <g id="sideView" class="alt-view">
+            <path id="shirtSide"
+                  d="M128 133Q145 123 167 134L178 156L168 214L171 286
+                     Q150 299 122 286L128 210L116 222L105 216L121 156Z"
+                  fill="#ed6d45"/>
+            <path id="pantsSide"
+                  d="M133 282L173 282L168 367L171 448Q157 456 144 447
+                     L139 357L132 448Q120 455 108 447L115 363Z"
+                  fill="#586fd0"/>
+            <path d="M130 441Q119 453 115 467Q115 475 153 474L164 466L159 447Z"
+                  fill="#292b32"/>
+            <path d="M131 108L134 133Q151 143 166 132L165 104Z"
+                  fill="url(#skin)"/>
+            <path d="M133 35Q169 26 183 54L179 91Q170 118 148 120
+                     Q132 115 126 91L127 55Z" fill="url(#skin)"/>
+            <path d="M126 63Q124 24 158 21Q181 24 187 50L178 55
+                     Q159 43 129 58Z" fill="#393039"/>
+            <path d="M173 78L179 80" stroke="#17191f" stroke-width="4"
+                  stroke-linecap="round"/>
+          </g>
+
+          <!-- Vista de espalda -->
+          <g id="backView" class="alt-view">
+            <path id="shirtBack"
+                  d="M102 142Q117 129 132 126L168 126Q188 131 201 146
+                     L225 218L199 229L188 198L193 290Q149 305 102 290
+                     L109 198L96 230L72 219L93 155Z"
+                  fill="#ed6d45"/>
+            <path id="pantsBack"
+                  d="M105 278L192 278L185 370L184 449Q173 458 154 449
+                     L145 354L132 449Q117 458 101 448L103 366Z"
+                  fill="#586fd0"/>
+            <path d="M105 443Q89 450 83 466Q82 476 128 476L147 469L143 448Z"
+                  fill="#292b32"/>
+            <path d="M164 443Q153 452 155 466Q159 476 207 476
+                     Q220 470 204 457L185 444Z" fill="#292b32"/>
+            <path d="M134 104L134 133Q150 148 168 132L165 101Z"
+                  fill="url(#skin)"/>
+            <ellipse cx="150" cy="74" rx="47" ry="55" fill="url(#skin)"/>
+            <path d="M105 72Q100 22 148 20Q190 19 198 55L190 45
+                     Q174 57 150 52Q127 47 106 65Z" fill="#393039"/>
+            <path d="M117 70Q150 81 183 70" fill="none"
+                  stroke="#bd805e" stroke-width="4"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="preview-caption">
+        <div>
+          <div class="player-name">Tu personaje</div>
+          <div class="player-sub">Vista previa en tiempo real</div>
+        </div>
+        <div class="look-tag" id="lookTag">LOOK 01</div>
+      </div>
+    </section>
+
+    <section class="wardrobe">
+      <div class="head">
+        <div>
+          <div class="eyebrow">Personalización</div>
+          <h1>Arma tu estilo</h1>
+          <p>Elige tus cosméticos y mira cómo le quedan.</p>
+        </div>
+        <button class="close" title="Cerrar">×</button>
+      </div>
+
+      <nav class="categories" id="categories"></nav>
+      <div class="items-header">
+        <strong id="sectionTitle">Camisetas</strong>
+        <span id="count"></span>
+      </div>
+      <div class="grid" id="items"></div>
+
+      <div class="footer">
+        <div class="equipped">Equipado: <b id="equipped"></b></div>
+        <div class="actions">
+          <button class="reset" id="reset">Reiniciar</button>
+          <button class="save" id="save">Guardar look</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+  <script src="vestidos.js"></script>
+</body>
+</html>
