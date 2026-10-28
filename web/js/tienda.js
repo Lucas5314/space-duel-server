@@ -40,7 +40,7 @@ const playerId =
 // =========================
 
 const PRODUCT_IDS = [
-    "coins_300",
+    "skin_nave_roja", // <-- Cambiado de "coins_300" al ID real de Google Play
     "coins_600",
     "coins_1200"
 ];
@@ -55,6 +55,8 @@ const coinsAmount =
 
 const buyButtons =
     document.querySelectorAll(".buyButton");
+    let billingReady = false;
+const availableProductIds = new Set();
 
 const backBtn =
     document.getElementById("backBtn");
@@ -192,6 +194,8 @@ async function cargarProductos() {
 
         products.forEach(product => {
 
+            availableProductIds.add(product.identifier);
+
             const button =
                 document.querySelector(
                     `[data-product="${product.identifier}"]`
@@ -233,6 +237,10 @@ async function comprarMonedas(productId) {
     );
 
     try {
+        if (!billingReady || !availableProductIds.has(productId)) {
+    console.error("Billing no está listo o Google Play no encontró el producto.");
+    return;
+}
 
         // -------------------------
         // VALIDAR PLAYER
@@ -447,7 +455,9 @@ async function comprarMonedas(productId) {
 
         buyButtons.forEach(button => {
 
-            button.disabled = false;
+            button.disabled =
+    !billingReady ||
+    !availableProductIds.has(button.dataset.product);
 
         });
     }
@@ -463,7 +473,7 @@ buyButtons.forEach(button => {
     // IMPORTANTE:
     // Durante esta prueba NO los bloqueamos.
 
-    button.disabled = false;
+    button.disabled = true;
 
 
     button.addEventListener(
@@ -517,6 +527,7 @@ async function iniciarTienda() {
     const disponible =
         await comprobarGooglePlay();
 
+
     console.log(
         "🔥 BILLING DISPONIBLE:",
         disponible
@@ -530,6 +541,7 @@ async function iniciarTienda() {
 
         return;
     }
+    billingReady = true;
 
     await cargarProductos();
 }

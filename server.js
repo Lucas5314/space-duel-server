@@ -49,6 +49,160 @@ app.get("/api/player/:id/coins", async (req, res) => {
     }
 
 });
+// ======================================
+// GOOGLE PLAY - PROCESAR COMPRA
+// ======================================
+
+// ======================================
+// GOOGLE PLAY - PROCESAR COMPRA
+// ======================================
+
+app.post("/api/purchases/google", async (req, res) => {
+    const {
+        playerId,
+        productId,
+        purchaseToken
+    } = req.body;
+
+    // -------------------------------
+    // 1. VALIDAR PLAYER ID
+    // -------------------------------
+    const numericPlayerId = Number(playerId);
+
+    if (!Number.isInteger(numericPlayerId)) {
+        return res.status(400).json({
+            success: false,
+            error: "INVALID_PLAYER_ID"
+        });
+    }
+
+    // -------------------------------
+    // 2. VALIDAR PRODUCTO
+    // -------------------------------
+    if (
+        typeof productId !== "string" ||
+        !googlePurchases.isValidProduct(productId)
+    ) {
+        return res.status(400).json({
+            success: false,
+            error: "INVALID_PRODUCT_ID"
+        });
+    }
+
+    // -------------------------------
+    // 3. VALIDAR TOKEN
+    // -------------------------------
+    if (
+        typeof purchaseToken !== "string" ||
+        purchaseToken.length === 0
+    ) {
+        return res.status(400).json({
+            success: false,
+            error: "INVALID_PURCHASE_TOKEN"
+        });
+    }
+
+    try {
+        const pack = googlePurchases.getCoinPack(productId);
+
+        console.log(
+            "🛒 COMPRA GOOGLE PLAY RECIBIDA:",
+            {
+                playerId: numericPlayerId,
+                productId,
+                coins: pack.coins
+            }
+        );
+
+        // -------------------------------
+        // 4. VERIFICAR COMPRA CON GOOGLE
+        // -------------------------------
+        console.log("🔎 VERIFICANDO COMPRA CON GOOGLE PLAY...");
+
+        const purchase = await googlePlay.getProductPurchase(
+            productId,
+            purchaseToken
+        );
+
+        console.log("📦 RESPUESTA GOOGLE PLAY:", purchase);
+
+        // purchaseState: 0 = Comprado, 1 = Cancelado, 2 = Pendiente
+        if (!purchase || purchase.purchaseState !== 0) {
+            return res.status(409).json({
+                success: false,
+                error: "PURCHASE_NOT_COMPLETED",
+                purchaseState: purchase ? purchase.purchaseState : "UNKNOWN"
+            });
+        }
+
+        // -------------------------------
+        // 5. REGISTRAR EN LA BD (ANTI-FRAUDE)
+        // -------------------------------
+        const registered = await googleTransactions.registerPurchase({
+            playerId: numericPlayerId,
+            productId,
+            purchaseToken,
+            coins: pack.coins
+        });
+
+        if (!registered.created) {
+            console.log("⚠️ PURCHASE TOKEN YA UTILIZADO O DUPLICADO");
+            return res.status(400).json({
+                success: false,
+                error: "TOKEN_ALREADY_USED"
+            });
+        }
+
+        // -------------------------------
+        // 6. ACREDITAR MONEDAS AL JUGADOR
+        // -------------------------------
+        const newBalance = await economy.addCoins(
+            numericPlayerId,
+            pack.coins
+        );
+
+        console.log(
+            "🪙 MONEDAS ACREDITADAS:",
+            {
+                playerId: numericPlayerId,
+                coins: pack.coins,
+                newBalance
+            }
+        );
+
+        // -------------------------------
+        // 7. CONSUMIR EL PRODUCTO EN GOOGLE PLAY
+        // -------------------------------
+        console.log("🔥 CONSUMIENDO COMPRA EN GOOGLE PLAY...");
+
+        await googlePlay.consumeProduct(
+            productId,
+            purchaseToken
+        );
+
+        console.log("✅ COMPRA GOOGLE COMPLETADA Y CONSUMIDA");
+
+        // -------------------------------
+        // 8. RESPONDER AL CLIENTE
+        // -------------------------------
+        return res.json({
+            success: true,
+            coins: newBalance,
+            message: "¡Compra procesada con éxito!"
+        });
+
+    } catch (error) {
+        console.error(
+            "❌ ERROR PROCESANDO COMPRA GOOGLE:",
+            error
+        );
+
+        return res.status(500).json({
+            success: false,
+            error: error.message || "GOOGLE_PURCHASE_ERROR"
+        });
+    }
+});
 // ==========================================
 // OBTENER CATÁLOGO DE SKINS
 // ==========================================

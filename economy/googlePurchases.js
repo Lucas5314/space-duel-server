@@ -4,7 +4,7 @@
 
 const COIN_PACKS = {
 
-    coins_300: {
+    skin_nave_roja: {
         coins: 300
     },
 
