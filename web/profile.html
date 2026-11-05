@@ -2,191 +2,159 @@
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Perfil</title>
-    
-
     <link rel="stylesheet" href="style/profile.css">
+    <style>
+        /* ========================================= */
+        /* APARICIÓN PURA Y NUEVOS ELEMENTOS         */
+        /* ========================================= */
+        
+        @keyframes fadeInOnly {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
 
+        /* 1. Iconos de la izquierda (aparecen de arriba a abajo) */
+        .sidebarButtons button {
+            opacity: 0;
+            animation: fadeInOnly 0.3s ease forwards;
+        }
+        .sidebarButtons button:nth-child(1) { animation-delay: 0.1s; }
+        .sidebarButtons button:nth-child(2) { animation-delay: 0.2s; }
+        .sidebarButtons button:nth-child(3) { animation-delay: 0.3s; }
+        .sidebarButtons button:nth-child(4) { animation-delay: 0.4s; }
+        .sidebarButtons button:nth-child(5) { animation-delay: 0.5s; }
+
+        /* 2. El botón flotante */
+        .emoteBtn {
+            opacity: 0;
+            animation: fadeInOnly 0.4s ease forwards;
+            animation-delay: 0.6s;
+        }
+
+        /* 3. El personaje (ahora con cursor interactivo) */
+        .shipContainer {
+            opacity: 0;
+            animation: fadeInOnly 0.5s ease forwards;
+            animation-delay: 0.8s;
+            cursor: pointer; /* Indica que se puede presionar */
+            transition: transform 0.2s ease;
+        }
+        .shipContainer:active {
+            transform: scale(0.95); /* Pequeño efecto al tocarlo */
+        }
+
+        /* 4. Las monedas */
+        #coinsBtn {
+            opacity: 0;
+            animation: fadeInOnly 0.4s ease forwards;
+            animation-delay: 1.0s;
+        }
+
+        /* 5. Los botones de juego */
+        .menuButtons {
+            opacity: 0;
+            animation: fadeInOnly 0.4s ease forwards;
+            animation-delay: 1.2s;
+        }
+
+        /* ========================================= */
+        /* ETIQUETA DE NOMBRE EN ESQUINA SUPERIOR DERECHA */
+        /* ========================================= */
+        .playerTagTopRight {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: #ffffff;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 1rem;
+            z-index: 20;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            animation: fadeInOnly 0.4s ease forwards;
+            animation-delay: 0.5s;
+        }
+    </style>
 </head>
 
-
 <body>
-   <button
-    id="coinsBtn"
-    onclick="location.href='tienda.html'">
 
-    <img
-        id="coinIcon"
-        src="assets/ui/coins.png"
-        alt="Monedas">
+    <!-- NOMBRE DE JUGADOR EN LA ESQUINA SUPERIOR DERECHA -->
+    <div id="playerTagTopRight" class="playerTagTopRight">
+        <span id="usernameDisplay">Cargando...</span>
+    </div>
 
-    <span id="coinsAmount">0</span>
+    <button id="coinsBtn" onclick="location.href='tienda.html'">
+        <img id="coinIcon" src="assets/ui/coins.png" alt="Monedas">
+        <span id="coinsAmount">0</span>
+        <img id="coinsPlus" src="assets/ui/icons/plus.png" alt="+">
+    </button>
 
-    <img
-        id="coinsPlus"
-        src="assets/ui/icons/plus.png"
-        alt="+">
-
-</button>
     <div id="selectedWorld"></div>
 
-<!-- ========================= -->
-<!-- FONDO DEL MUNDO -->
-<div id="profileBackground">
+    <!-- ========================= -->
+    <!-- FONDO DEL MUNDO -->
+    <!-- ========================= -->
+    <div id="profileBackground">
+        <div class="world active">
+            <img src="assets/worlds/fondo.png" alt="Fondo">
+        </div>
+    </div>
 
-    <div class="world active">
-
-    <img src="assets/worlds/fondo.png">
-
-</div>
-
-
-<div class="profile">
-
-    <!-- TODO EL RESTO DEL HTML AQUÍ -->
-
-</div>
     <!-- ========================= -->
     <!-- COLUMNA IZQUIERDA -->
     <!-- ========================= -->
-
-    <button
-        id="settingsBtn"
-        onclick="location.href='settings.html'">
-    </button>
-
-    <button
-        id="chatBtn"
-        onclick="location.href='chat.html'">
-    </button>
-
-    <button
-        id="inviteBtn"
-        onclick="location.href='invite.html'">
-    </button>
-
-    <button
-        id="skinsBtn"
-        onclick="location.href='skins.html'">
-    </button>
-
-    <button
-        id="rankingBtn"
-        onclick="location.href='ranking.html'">
-    </button>
-
-
-    <!-- ========================= -->
-    <!-- PERFIL -->
-    <!-- ========================= -->
-
-        
-        </div>
-
+    <div class="sidebarButtons">
+        <button id="settingsBtn" onclick="location.href='settings.html'"></button>
+        <button id="chatBtn" onclick="location.href='chat.html'"></button>
+        <button id="inviteBtn" onclick="location.href='invite.html'"></button>
+        <button id="skinsBtn" onclick="location.href='skins.html'"></button>
+        <button id="rankingBtn" onclick="location.href='ranking.html'"></button>
     </div>
-<button id="emoteBtn" class="emoteBtn">
-    😊
-</button>
-</div>
 
+    <button id="emoteBtn" class="emoteBtn">
+        😊
+    </button>
 
     <!-- ========================= -->
-    <!-- personaje -->
+    <!-- PERSONAJE (AHORA LLEVA A SKINS) -->
     <!-- ========================= -->
+    <div class="shipContainer" id="shipSkinLink" onclick="location.href='skins.html'">
+        <video id="shipBase" autoplay loop muted playsinline>
+            <source src="assets/ui/ship-base.webm" type="video/webm">
+        </video>
 
-   <div class="shipContainer">
+        <img id="ship" src="assets/ships/naveee1.png" alt="Perfil">
 
-    <video 
-        id="shipEnergy"
-        autoplay
-        loop
-        muted
-        playsinline>
-
-        <source src="assets/ui/ship-energy.webm" type="video/webm">
-
-    </video>
-
-    <video 
-        id="shipBase"
-        autoplay
-        loop
-        muted
-        playsinline>
-
-        <source src="assets/ui/ship-base.webm" type="video/webm">
-
-    </video>
-
-    <img 
-        id="ship"
-        src="assets/ships/naveee1.png" 
-        alt="Perfil">
-        <video
-    id="emoteVideo"
-    src="assets/emotes/default.mp4"
-    muted
-    playsinline
-    preload="auto">
-</video>
-
-</div>
-
-
+        <video id="emoteVideo" src="assets/emotes/default.mp4" muted playsinline preload="auto"></video>
+    </div>
 
     <!-- ========================= -->
     <!-- NIVEL -->
     <!-- ========================= -->
-
     <div class="level">
-
-        <img
-            class="levelIcon"
-            src="assets/ui/icons/level.png">
-
-
+        <img class="levelIcon" src="assets/ui/icons/level.png" alt="Nivel">
     </div>
 
-
     <!-- ========================= -->
-    <!-- PLAY -->
+    <!-- PLAY Y MUNDO -->
     <!-- ========================= -->
-
     <div class="menuButtons">
-        <button
-    id="worldBtn"
-    onclick="location.href='elegirmapa.html'">
-</button>
-
+        <button id="worldBtn" onclick="location.href='elegirmapa.html'"></button>
         <button id="playBtn"></button>
-
     </div>
 
-</div>
-<!-- =========================
-        NEWS POPUP
-========================== -->
-
-<!-- =========================<div id="newsPopup">
-
-    <div id="popupBackground"></div>
-
-    <div id="popupWindow">
-
-        <img id="popupImage" src="assets/events/news01.png">
-
-        <img id="popupClose" src="assets/ui/close.png">
-
-    </div>
-
-</div>========================== -->
-
-<script type="module" src="js/profile.js"></script>
-<script type="module" src="js/back.js"></script>
+    <!-- SCRIPTS -->
+    <script type="module" src="js/profile.js"></script>
+    <script type="module" src="js/back.js"></script>
 
 </body>
 

@@ -1,291 +1,36 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, user-scalable=no"
-    >
-
-    <title>SPACE TIP - Buscando rival</title>
-
-    <link
-        rel="stylesheet"
-        href="style/matchmaking.css"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>SPACE TIP - Eligiendo modo</title>
+    <link rel="stylesheet" href="style/matchmaking.css">
 </head>
-
-
 <body>
 
-
 <div id="background"></div>
-
 <div id="overlay"></div>
 
+<header class="game-header">
+    <h1>ELIGIENDO MODO</h1>
+</header>
 
 <div class="container">
-
-
-    <!-- =========================
-         PORTAL
-    ========================== -->
-
-    <video
-        id="portal"
-        autoplay
-        muted
-        loop
-        playsinline
-    >
-
-        <source
-            src="assets/videos/portal.mp4"
-            type="video/mp4"
-        >
-
+    <video id="portal" autoplay muted loop playsinline>
+        <source src="assets/videos/portal.mp4" type="video/mp4">
     </video>
 
-
-    <!-- =========================
-         ESCÁNER DE MUNDOS
-    ========================== -->
-
+    <!-- Grilla de 6 mapas en paisaje (3 columnas x 2 filas) -->
     <div class="worldScanner">
-
-
-        <div class="worldCard">
-
-            <img
-                src="assets/mapasaelegir/oeste.jpg"
-                alt="Viejo Oeste"
-            >
-
-        </div>
-
-
-        <div class="worldCard">
-
-            <img
-                src="assets/mapasaelegir/espacio.jpg"
-                alt="Espacio"
-            >
-
-        </div>
-
-
-        <div class="worldCard">
-
-            <img
-                src="assets/mapasaelegir/bosque.jpg"
-                alt="Bosque"
-            >
-
-        </div>
-
-
-        <div class="worldCard">
-
-            <img
-                src="assets/mapasaelegir/pirata.jpg"
-                alt="Isla Pirata"
-            >
-
-        </div>
-
-
-        <div class="worldCard">
-
-            <img
-                src="assets/mapasaelegir/hielo.jpg"
-                alt="Reino de Hielo"
-            >
-
-        </div>
-
-
+        <div class="worldCard"><img src="assets/mapasaelegir/oeste.jpg" alt="Viejo Oeste"></div>
+        <div class="worldCard"><img src="assets/mapasaelegir/espacio.jpg" alt="Espacio"></div>
+        <div class="worldCard"><img src="assets/mapasaelegir/bosque.jpg" alt="Bosque"></div>
+        <div class="worldCard"><img src="assets/mapasaelegir/pirata.jpg" alt="Isla Pirata"></div>
+        <div class="worldCard"><img src="assets/mapasaelegir/hielo.jpg" alt="Reino de Hielo"></div>
+        <div class="worldCard"><img src="assets/mapasaelegir/volcan.jpg" alt="Volcán"></div>
     </div>
-
-
-    <!-- =========================
-         TÍTULO
-    ========================== -->
-
-    <h1>
-
-        BUSCANDO PILOTO
-
-    </h1>
-
-
-    <!-- =========================
-         ESTADO DE CONEXIÓN
-    ========================== -->
-
-    <div class="connectionStatus">
-
-
-        <span id="connectionIcon">
-
-            🟢
-
-        </span>
-
-
-        <span id="connectionText">
-
-            Conectado
-
-        </span>
-
-
-    </div>
-
-
-    <!-- =========================
-         MENSAJE DINÁMICO
-    ========================== -->
-
-    <p id="status">
-
-        Escaneando la galaxia...
-
-    </p>
-
-
-    <!-- =========================
-         INFORMACIÓN DEL MATCHMAKING
-    ========================== -->
-
-    <div class="matchInfo">
-
-
-        <div class="infoRow">
-
-            <span>
-
-                🌎
-
-            </span>
-
-            <span id="region">
-
-                Sudamérica
-
-            </span>
-
-        </div>
-
-
-        <div class="infoRow">
-
-            <span>
-
-                👨‍🚀
-
-            </span>
-
-            <span id="playersOnline">
-
-                0 pilotos conectados
-
-            </span>
-
-        </div>
-
-
-        <div class="infoRow">
-
-            <span>
-
-                🎯
-
-            </span>
-
-            <span id="playersSearching">
-
-                0 buscando combate
-
-            </span>
-
-        </div>
-
-
-        <div class="infoRow">
-
-            <span>
-
-                ⏱
-
-            </span>
-
-            <span id="searchTime">
-
-                00:00
-
-            </span>
-
-        </div>
-
-
-        <div class="infoRow">
-
-            <span>
-
-                📶
-
-            </span>
-
-            <span id="ping">
-
-                -- ms
-
-            </span>
-
-        </div>
-
-
-    </div>
-
-
-    <!-- =========================
-         ANIMACIÓN DE CARGA
-    ========================== -->
-
-    <div class="loading">
-
-
-        <div class="dot"></div>
-
-        <div class="dot"></div>
-
-        <div class="dot"></div>
-
-
-    </div>
-
-
-    <!-- =========================
-         CANCELAR BÚSQUEDA
-    ========================== -->
-
-    <button id="cancel">
-
-        Cancelar
-
-    </button>
-
-
 </div>
 
-
 <script src="js/matchmaking.js"></script>
-
-
 </body>
-
 </html>

@@ -1,5 +1,15 @@
 {
-  "appId": "com.lucas.spacetip",
+  "appId": "com.lucas.spacetip.duel",
   "appName": "spacetips",
-  "webDir": "web"
+  "webDir": "web",
+  "plugins": {
+    "ScreenOrientation": {
+      "orientation": "landscape"
+    },
+    "GoogleAuth": {
+      "scopes": ["profile", "email"],
+      "serverClientId": "73289370828-9sq2pqa6vnk8ukki4bepa154hoke12eb.apps.googleusercontent.com",
+      "forceCodeForRefreshToken": true
+    }
+  }
 }

@@ -1,210 +1,124 @@
-//import { ScreenOrientation } from '@capacitor/screen-orientation';
+const GoogleAuth = window.Capacitor.Plugins.GoogleAuth;
 
-//async function lockLandscape(){
+// =========================
+// CONFIGURACIÓN
+// =========================
+const API_URL = "https://space-duel-server-1.onrender.com";
 
-    //try{
-
-        //await ScreenOrientation.lock({
-        //    orientation: "landscape"
-        //});
-
-//        console.log("Create Player bloqueado en horizontal");
-
-    //}catch(error){
-
-       // console.log("No se pudo bloquear la orientación:", error);
-
-//    }
-
-//}
-
-//lockLandscape();
-
+// Inicializar Google Auth
+try {
+    GoogleAuth.initialize({
+        clientId: '73289370828-9sq2pqa6vnk8ukki4bepa154hoke12eb.apps.googleusercontent.com',
+        scopes: ['profile', 'email'],
+        grantOfflineAccess: true,
+    });
+} catch (e) {
+    console.log("Google Auth ya inicializado o error:", e);
+}
 
 const nameInput = document.getElementById("name");
-const countrySelect = document.getElementById("country");
-const continueBtn = document.getElementById("continueBtn");
+const googleLoginBtn = document.getElementById("googleLoginBtn");
 const nameError = document.getElementById("nameError");
-
 
 // =========================
 // MENSAJE DE ERROR
 // =========================
 
-function showError(message){
-
-    nameError.textContent = message;
-
-    nameError.classList.add("show");
-
+function showError(message) {
+    if (nameError) {
+        nameError.textContent = message;
+        nameError.classList.add("show");
+    }
 }
 
-
-function hideError(){
-
-    nameError.textContent = "";
-
-    nameError.classList.remove("show");
-
+function hideError() {
+    if (nameError) {
+        nameError.textContent = "";
+        nameError.classList.remove("show");
+    }
 }
-
 
 // Quitar error al escribir
-
-nameInput.addEventListener("input", () => {
-
-    hideError();
-
-});
-
-
-// =========================
-// SI YA EXISTE EL JUGADOR
-// =========================
-
-if(localStorage.getItem("playerCreated") === "true"){
-
-    location.href = "profile.html";
-
+if (nameInput) {
+    nameInput.addEventListener("input", () => {
+        hideError();
+    });
 }
 
+/* 
+  SUSPICHOSO PAusADO: 
+  Si quieres forzar que siempre muestre la pantalla de registro para probar el diseño, 
+  comenta esta validación. 
+*/
+/*
+if (localStorage.getItem("playerCreated") === "true") {
+    location.href = "profile.html";
+}
+*/
 
 // =========================
-// CREAR JUGADOR
+// LOGIN / REGISTRO CON GOOGLE (Y APODO PERSONALIZADO)
 // =========================
 
-continueBtn.onclick = async () => {
+if (googleLoginBtn) {
+    googleLoginBtn.onclick = async () => {
+        hideError();
 
-    const name = nameInput.value.trim();
+        const customUsername = nameInput ? nameInput.value.trim() : "";
 
-
-    // Limpiar error anterior
-
-    hideError();
-
-
-    // =========================
-    // VALIDAR NOMBRE
-    // =========================
-
-    if(name.length < 3){
-
-        showError(
-            "El nombre debe tener al menos 3 caracteres."
-        );
-
-        nameInput.focus();
-
-        return;
-
-    }
-
-
-    const country = countrySelect.value;
-
-
-    // Evitar varios clics mientras carga
-
-    continueBtn.disabled = true;
-
-
-    try{
-
-        // =========================
-        // ENVIAR AL SERVIDOR
-        // =========================
-
-        const response = await fetch(
-            "https://space-duel-server.onrender.com/create-player",
-            {
-
-                method:"POST",
-
-                headers:{
-                    "Content-Type":"application/json"
-                },
-
-                body:JSON.stringify({
-
-                    username:name,
-
-                    country:country
-
-                })
-
-            }
-        );
-
-
-        const data = await response.json();
-
-
-        console.log(data);
-
-
-        // =========================
-        // JUGADOR CREADO
-        // =========================
-
-        if(data.success){
-
-            localStorage.setItem(
-                "player",
-                JSON.stringify(data.player)
-            );
-
-
-            localStorage.setItem(
-                "playerCreated",
-                "true"
-            );
-
-
-            location.href = "profile.html";
-
-
-        }else{
-
-            // =========================
-            // ERROR DEL SERVIDOR
-            // =========================
-
-            showError(
-                data.error || "No se pudo crear el jugador."
-            );
-
+        // Validar que el usuario haya escrito un apodo
+        if (customUsername.length < 3) {
+            showError("El nombre de usuario debe tener al menos 3 caracteres.");
+            if (nameInput) nameInput.focus();
+            return;
         }
 
+        googleLoginBtn.disabled = true; // Evitar doble clic
 
-    }catch(error){
+        try {
+            const googleUser = await GoogleAuth.signIn();
+            console.log("Usuario Google obtenido:", googleUser);
 
-        console.log(error);
+            // Enviamos el apodo personalizado + los datos de Google
+            const response = await fetch(`${API_URL}/api/auth/google`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: googleUser.email,
+                    username: customUsername,
+                    idToken: googleUser.authentication?.idToken
+                })
+            });
 
+            const data = await response.json();
 
-        showError(
-            "No se pudo conectar con el servidor."
-        );
+            if (data.success) {
+                localStorage.setItem("player", JSON.stringify(data.player));
+                localStorage.setItem("playerCreated", "true");
+                location.href = "profile.html";
+            } else {
+                showError(data.error || "No se pudo iniciar sesión con Google.");
+            }
 
-    }
-
-
-    // Volver a activar botón
-
-    continueBtn.disabled = false;
-
-};
-
+        } catch (error) {
+            console.error("Error en Google Sign-In:", error);
+            showError("Error al conectar con Google.");
+        } finally {
+            googleLoginBtn.disabled = false;
+        }
+    };
+}
 
 // =========================
-// ENTER
+// ENTER EN EL TECLADO
 // =========================
 
-nameInput.addEventListener("keydown", e => {
-
-    if(e.key === "Enter"){
-
-        continueBtn.click();
-
-    }
-
-});
+if (nameInput) {
+    nameInput.addEventListener("keydown", e => {
+        if (e.key === "Enter" && googleLoginBtn) {
+            googleLoginBtn.click();
+        }
+    });
+}

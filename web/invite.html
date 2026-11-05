@@ -2,109 +2,59 @@
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Space Tip - Invitar</title>
-
     <link rel="stylesheet" href="style/invite.css">
-
 </head>
-
 
 <body>
 
+    <!-- AVISO SI GIRAN EL CELULAR A VERTICAL EN NAVEGADOR -->
+    <div id="rotate-warning">
+        <div class="rotate-content">
+            📱 Gira tu celular en horizontal para jugar
+        </div>
+    </div>
 
-<div class="container">
+    <!-- CONTENEDOR PRINCIPAL DEL JUEGO -->
+    <div class="container" id="game-app">
 
+        <!-- TÍTULO PERSONALIZADO -->
+        <header>
+            <img class="tituloInvite" src="assets/invite/titulo-invitar.png" alt="Invitar a batalla">
+            <img class="subtituloInvite" src="assets/invite/subtitulo-invitar.png" alt="Ahora puedes invitar a amigos a batallas personalizadas">
+        </header>
 
-    <!-- TÍTULO PERSONALIZADO -->
+        <!-- PANEL -->
+        <section class="invite-box">
+            <div class="search-area">
 
-    <header>
+                <!-- CAMPO -->
+                <div class="input-wrapper">
+                    <img class="marcoInput" src="assets/invite/marco-input.png" alt="">
+                    <input id="playerName" type="text" placeholder="Nombre del jugador">
+                </div>
 
-        <img
-            class="tituloInvite"
-            src="assets/invite/titulo-invitar.png"
-            alt="Invitar a batalla"
-        >
-
-        <img
-            class="subtituloInvite"
-            src="assets/invite/subtitulo-invitar.png"
-            alt="Ahora puedes invitar a amigos a batallas personalizadas"
-        >
-
-    </header>
-
-
-    <!-- PANEL -->
-
-    <section class="invite-box">
-
-
-        <div class="search-area">
-
-
-            <!-- CAMPO -->
-
-            <div class="input-wrapper">
-
-                <img
-                    class="marcoInput"
-                    src="assets/invite/marco-input.png"
-                    alt=""
-                >
-
-                <input
-                    id="playerName"
-                    type="text"
-                    placeholder="Nombre del jugador"
-                >
+                <!-- BOTÓN -->
+                <button id="inviteBtn">
+                    <img src="assets/invite/boton-invitar.png" alt="Invitar">
+                </button>
 
             </div>
 
+            <div id="status"></div>
+        </section>
 
-            <!-- BOTÓN -->
+        <!-- VOLVER -->
+        <button class="back-btn" onclick="location.href='profile.html'">
+            <img src="assets/invite/boton-volver.png" alt="Volver">
+        </button>
 
-            <button id="inviteBtn">
+    </div>
 
-                <img
-                    src="assets/invite/boton-invitar.png"
-                    alt="Invitar"
-                >
-
-            </button>
-
-
-        </div>
-
-
-        <div id="status"></div>
-
-
-    </section>
-
-
-    <!-- VOLVER -->
-
-    <button
-        class="back-btn"
-        onclick="location.href='profile.html'"
-    >
-
-        <img
-            src="assets/invite/boton-volver.png"
-            alt="Volver"
-        >
-
-    </button>
-
-
-</div>
-
-
-<script src="js/invite.js"></script>
+    <!-- SCRIPT COMO MÓDULO PARA USAR CAPACITOR -->
+    <script type="module" src="js/invite.js"></script>
 
 </body>
 

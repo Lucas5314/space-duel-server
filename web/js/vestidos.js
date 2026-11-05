@@ -1,150 +1,156 @@
-const wardrobe = {
-  Camisetas: [
-    { name: "Camiseta fuego", color: "#ed6d45", meta: "Rara · Tormenta" },
-    { name: "Camiseta neón", color: "#b7ef57", meta: "Épica · Neón" },
-    { name: "Sudadera violeta", color: "#9368dc", meta: "Rara · Urbana" },
-    { name: "Chaqueta hielo", color: "#79c8e9", meta: "Épica · Ártica" },
-    { name: "Camiseta clásica", color: "#e6e5dc", meta: "Común · Básica" },
-    { name: "Jersey ganador", color: "#e55473", meta: "Legendaria · Liga" }
-  ],
-  Pantalones: [
-    { name: "Pantalón azul", color: "#586fd0", meta: "Rara · Tormenta" },
-    { name: "Cargo oscuro", color: "#535a50", meta: "Épica · Urbana" },
-    { name: "Pantalón neón", color: "#a8d848", meta: "Rara · Neón" },
-    { name: "Vaqueros claros", color: "#76a8d2", meta: "Común · Básica" },
-    { name: "Pantalón magma", color: "#df5a3f", meta: "Épica · Fuego" },
-    { name: "Pantalón sombra", color: "#383b47", meta: "Legendaria · Liga" }
-  ],
-  Calzado: [
-    { name: "Zapatillas clásicas", color: "#e5e4dd", meta: "Común · Básica" },
-    { name: "Botas magma", color: "#ed7045", meta: "Épica · Fuego" },
-    { name: "Runner neón", color: "#b7ef57", meta: "Rara · Neón" },
-    { name: "Botas tácticas", color: "#555c51", meta: "Rara · Urbana" },
-    { name: "Zapatillas hielo", color: "#7ec8e9", meta: "Épica · Ártica" },
-    { name: "Botas campeón", color: "#d6ae54", meta: "Legendaria · Liga" }
-  ],
-  Accesorios: [
-    { name: "Gorra lima", color: "#c7f36b", meta: "Rara · Neón" },
-    { name: "Aro dorado", color: "#e1bc62", meta: "Épica · Oro" },
-    { name: "Visor violeta", color: "#aa71ea", meta: "Rara · Urbana" },
-    { name: "Halo hielo", color: "#85d9ee", meta: "Legendaria · Ártica" },
-    { name: "Gafas rojas", color: "#ed6464", meta: "Épica · Fuego" },
-    { name: "Amuleto azul", color: "#5d9bea", meta: "Rara · Tormenta" }
-  ]
-};
+import { ScreenOrientation } from '@capacitor/screen-orientation';
 
-let category = "Camisetas";
-const selections = {
-  Camisetas: 0,
-  Pantalones: 0,
-  Calzado: 0,
-  Accesorios: -1
-};
+// ===========================
+// CONFIGURACIÓN Y SESIÓN
+// ===========================
+const API_URL = "https://space-duel-server-1.onrender.com";
+
+const savedPlayer = JSON.parse(localStorage.getItem("player")) || {};
+const playerId = Number(savedPlayer.id) || Number(localStorage.getItem("playerId")) || 0;
+
+if (!playerId) {
+    console.warn("⚠️ No hay sesión activa, redirigiendo a createplayer...");
+    location.href = "createplayer.html";
+}
+
+// ===========================
+// BLOQUEO DE ORIENTACIÓN (CAPACITOR)
+// ===========================
+async function lockLandscape() {
+    try {
+        await ScreenOrientation.lock({ orientation: 'landscape' });
+        console.log("Hangar bloqueado en horizontal");
+    } catch (error) {
+        console.log("Modo navegador web (sin Capacitor nativo)");
+    }
+}
+lockLandscape();
+
+// ===========================
+// CATÁLOGO OFICIAL DE NAVES (Sincronizado con skins.js)
+// ===========================
+const navesDisponibles = [
+    { id: "nave1", name: "Nave Azul", image: "assets/ships/naveee1.png" },
+    { id: "nave2", name: "Nave Roja", image: "assets/ships/nave2.png" },
+    { id: "nave3", name: "Nave Dorada", image: "assets/ships/naveee1.png" },
+    { id: "nave4", name: "Nave Galaxia", image: "assets/ships/naveee1.png" },
+    { id: "nave5", name: "Nave Eclipse", image: "assets/ships/naveee1.png" },
+    { id: "nave6", name: "Nave Fénix", image: "assets/ships/naveee1.png" },
+    { id: "nave7", name: "Nave Plasma", image: "assets/ships/naveee1.png" },
+    { id: "nave8", name: "Nave Nebulosa", image: "assets/ships/naveee1.png" },
+    { id: "nave9", name: "Nave Cometa", image: "assets/ships/naveee1.png" },
+    { id: "nave10", name: "Nave Aurora", image: "assets/ships/naveee1.png" }
+];
+
+let skinsPoseidas = ["nave1"]; // La nave base siempre la tiene
+let skinEquipada = savedPlayer.currentSkin || "nave1";
 
 const categories = document.querySelector("#categories");
 const items = document.querySelector("#items");
+const avatarSprite = document.querySelector("#avatarSprite");
+const toast = document.querySelector("#toast");
 
 function render() {
-  categories.innerHTML = Object.keys(wardrobe).map(name =>
-    `<button class="cat ${name === category ? "active" : ""}" data-cat="${name}">${name}</button>`
-  ).join("");
+    if (!items) return;
 
-  document.querySelector("#sectionTitle").textContent = category;
-  document.querySelector("#count").textContent =
-    `${wardrobe[category].length} artículos`;
+    // Filtrar únicamente las naves que el jugador posee en su inventario
+    const navesFiltradas = navesDisponibles.filter(nave => 
+        nave.id === "nave1" || skinsPoseidas.includes(nave.id)
+    );
 
-  items.innerHTML = wardrobe[category].map((item, index) => {
-    const type = category === "Camisetas" ? "shirt"
-      : category === "Pantalones" ? "pants"
-      : category === "Calzado" ? "shoes"
-      : "accessories";
+    // Renderizar la cuadrícula con las naves compradas/poseídas
+    items.innerHTML = navesFiltradas.map((nave) => {
+        const estaEquipada = nave.id === skinEquipada;
+        return `
+            <button class="item ${estaEquipada ? "selected" : ""}" data-skinid="${nave.id}">
+                <span class="check">${estaEquipada ? "✓" : ""}</span>
+                <span class="thumb">
+                    <img src="${nave.image}" alt="${nave.name}">
+                </span>
+                <span class="item-name">${nave.name}</span>
+            </button>`;
+    }).join("");
 
-    return `
-      <button class="item ${selections[category] === index ? "selected" : ""}"
-              data-index="${index}">
-        <span class="check">✓</span>
-        <span class="thumb">
-          <span class="mini ${type}" style="--c:${item.color}"></span>
-        </span>
-        <span class="item-name">${item.name}</span>
-        <span class="item-meta">${item.meta}</span>
-      </button>`;
-  }).join("");
-
-  document.querySelector("#equipped").textContent =
-    Object.keys(wardrobe)
-      .filter(name => selections[name] >= 0)
-      .map(name => wardrobe[name][selections[name]].name)
-      .join(" · ") || "Nada equipado";
-
-  const shirt = wardrobe.Camisetas[selections.Camisetas];
-  const pants = wardrobe.Pantalones[selections.Pantalones];
-
-  document.querySelector("#avatarShirt").setAttribute("fill", shirt.color);
-  document.querySelector("#shirtSide").setAttribute("fill", shirt.color);
-  document.querySelector("#shirtBack").setAttribute("fill", shirt.color);
-  document.querySelector("#avatarPants").setAttribute("fill", pants.color);
-  document.querySelector("#pantsSide").setAttribute("fill", pants.color);
-  document.querySelector("#pantsBack").setAttribute("fill", pants.color);
-
-  document.querySelector("#capLayer").style.display =
-    selections.Accesorios === 0 ? "" : "none";
-
-  document.querySelector("#lookTag").textContent =
-    `LOOK ${String(1 + Object.values(selections).filter(value => value >= 0).length).padStart(2, "0")}`;
+    // Actualizar la vista previa de la nave en pantalla
+    const activeShip = navesDisponibles.find(n => n.id === skinEquipada);
+    if (activeShip && avatarSprite) {
+        avatarSprite.src = activeShip.image;
+    }
 }
 
-const views = {
-  front: document.querySelector("#frontView"),
-  side: document.querySelector("#sideView"),
-  back: document.querySelector("#backView")
-};
-
-document.querySelector(".turn-controls").addEventListener("click", event => {
-  const button = event.target.closest("[data-view]");
-  if (!button) return;
-
-  Object.entries(views).forEach(([name, element]) => {
-    element.style.display = name === button.dataset.view ? "inline" : "none";
-  });
-
-  document.querySelectorAll(".turn").forEach(turn => {
-    turn.classList.toggle("active", turn === button);
-  });
-});
-
-categories.addEventListener("click", event => {
-  const button = event.target.closest("[data-cat]");
-  if (!button) return;
-  category = button.dataset.cat;
-  render();
-});
-
-items.addEventListener("click", event => {
-  const button = event.target.closest("[data-index]");
-  if (!button) return;
-  selections[category] = Number(button.dataset.index);
-  render();
-});
-
-document.querySelector("#reset").addEventListener("click", () => {
-  selections.Camisetas = 0;
-  selections.Pantalones = 0;
-  selections.Calzado = 0;
-  selections.Accesorios = -1;
-  render();
-  notify("Look reiniciado");
-});
-
-document.querySelector("#save").addEventListener("click", () => {
-  notify("¡Look guardado!");
-});
-
-function notify(message) {
-  const toast = document.querySelector("#toast");
-  toast.textContent = message;
-  toast.classList.add("show");
-  setTimeout(() => toast.classList.remove("show"), 1800);
+// ===========================
+// CARGAR INVENTARIO DESDE RENDER
+// ===========================
+async function cargarInventario() {
+    try {
+        const response = await fetch(`${API_URL}/api/player/${playerId}/skins`);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+                skinsPoseidas = Array.isArray(data.skins) ? data.skins : ["nave1"];
+                if (data.equipada) {
+                    skinEquipada = data.equipada;
+                    savedPlayer.currentSkin = skinEquipada;
+                    localStorage.setItem("player", JSON.stringify(savedPlayer));
+                }
+            }
+        }
+        render();
+    } catch (error) {
+        console.error("Error cargando inventario en guardar/vestuario:", error);
+        render();
+    }
 }
 
-render();
+// ===========================
+// SELECCIONAR / EQUIPAR NAVE
+// ===========================
+items.addEventListener("click", async event => {
+    const button = event.target.closest("[data-skinid]");
+    if (!button) return;
+
+    const selectedSkinId = button.dataset.skinid;
+    if (selectedSkinId === skinEquipada) return;
+
+    try {
+        // Enviar la petición de equipar al servidor en Render
+        const response = await fetch(`${API_URL}/api/player/${playerId}/skins/equip`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ skinId: selectedSkinId })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            skinEquipada = selectedSkinId;
+
+            // Actualizar caché local para que el perfil cargue esta nave de inmediato
+            savedPlayer.currentSkin = skinEquipada;
+            localStorage.setItem("player", JSON.stringify(savedPlayer));
+
+            render();
+
+            if (toast) {
+                toast.textContent = "¡Nave equipada!";
+                toast.classList.add("show");
+                setTimeout(() => toast.classList.remove("show"), 1500);
+            }
+        } else {
+            alert("No se pudo equipar la nave.");
+        }
+    } catch (error) {
+        console.error("Error al equipar nave:", error);
+    }
+});
+
+// Guardar look o salir
+const saveBtn = document.querySelector("#saveBtn");
+if (saveBtn) {
+    saveBtn.addEventListener("click", () => {
+        location.href = "profile.html";
+    });
+}
+
+// Inicializar
+cargarInventario();

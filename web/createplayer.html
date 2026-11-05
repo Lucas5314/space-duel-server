@@ -2,85 +2,44 @@
 <html lang="es">
 
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Crear Piloto</title>
-
-<link rel="stylesheet" href="style/createplayer.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Usuario - Spacetips</title>
+    <link rel="stylesheet" href="style/createplayer.css">
 </head>
 
 <body>
 
-<div id="background"></div>
+    <!-- Ya no necesitamos el div de fondo aquí -->
 
-<div class="container">
+    <div class="container">
 
+        <img src="assets/ui/bienvenido.png" alt="Bienvenido">
 
+        <!-- SOLO NOMBRE DE USUARIO -->
+        <div class="group">
+            <label>Nombre de Usuario</label>
+            <input
+                id="name"
+                type="text"
+                maxlength="16"
+                placeholder="Escribe tu apodo"
+                autocomplete="off"
+            >
+        </div>
 
+        <div id="nameError"></div>
 
-       <img src="assets/ui/bienvenido.png" alt="Bienvenido">
-
-
-    <div class="group">
-
-    <label>Nombre</label>
-
-    <input
-        id="name"
-        type="text"
-        maxlength="16"
-        placeholder="Escribe tu nombre"
-    >
-
-    <div id="nameError"></div>
-
-</div>
-
-    <div class="group">
-
-        <label>País</label>
-
-        <select id="country">
-
-            <option value="Paraguay">🇵🇾 Paraguay</option>
-            <option value="Brasil">🇧🇷 Brasil</option>
-            <option value="Argentina">🇦🇷 Argentina</option>
-            <option value="Uruguay">🇺🇾 Uruguay</option>
-            <option value="Chile">🇨🇱 Chile</option>
-            <option value="Bolivia">🇧🇴 Bolivia</option>
-            <option value="Perú">🇵🇪 Perú</option>
-            <option value="Colombia">🇨🇴 Colombia</option>
-            <option value="México">🇲🇽 México</option>
-            <option value="España">🇪🇸 España</option>
-            <option value="Estados Unidos">🇺🇸 Estados Unidos</option>
-
-        </select>
+        <!-- BOTÓN DE GOOGLE SIGN-IN -->
+        <button id="googleLoginBtn" class="google-btn">
+            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" />
+            <span>Crear cuenta con Google</span>
+        </button>
 
     </div>
 
-    <button id="continueBtn">
-
-    </button>
-
-</div>
-<script>
-    localStorage.setItem("player", JSON.stringify({
-        id: "TEST_PLAYER",
-        username: "Ricardo",
-        country: "🇧🇷",
-        wins: 25,
-        losses: 8,
-        games: 33,
-        skin: "default"
-    }));
-
-    location.href = "profile.html";
-</script>
-
-<!-- <script src="js/createplayer.js"></script> -->
+    <!-- Script con tipo módulo para Capacitor -->
+    <script type="module" src="js/createplayer.js"></script>
 
 </body>
 

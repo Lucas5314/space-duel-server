@@ -1,80 +1,66 @@
 /* =========================
-   RESET
+   RESET Y BLOQUEO DE PANTALLA
 ========================= */
 
 * {
-
     box-sizing: border-box;
-
 }
 
-
-/* =========================
-   BODY
-========================= */
-
-body {
-
+html, body {
+    width: 100vw;
+    height: 100vh;
     margin: 0;
-
-    min-height: 100vh;
-
+    padding: 0;
+    overflow: hidden;
+    position: fixed;
     font-family: Arial, sans-serif;
-
-   background-image:
-        url("../assets/backgrounds/amarillooo.png");
-
+    background-image: url("../assets/backgrounds/amarillooo.png");
+    background-size: cover;
+    background-position: center;
     color: white;
-
     display: flex;
-
     justify-content: center;
-
     align-items: center;
-
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 
 /* =========================
-   CONTENEDOR
+   CONTENEDOR GENERAL
 ========================= */
 
 .container {
-
     width: 90%;
-
-    max-width: 500px;
-
+    max-width: 650px; /* Un poco más ancho para aprovechar el formato horizontal */
     text-align: center;
-
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 
 /* =========================
-   TITULO
+   TITULO Y SUBTITULO (Imágenes)
 ========================= */
 
-header h1 {
-
-    font-size: 34px;
-
+header {
     margin-bottom: 10px;
-
 }
 
+.tituloInvite {
+    max-width: 250px;
+    height: auto;
+    display: block;
+    margin: 0 auto 5px auto;
+}
 
-/* =========================
-   SUBTITULO
-========================= */
-
-header p {
-
-    font-size: 18px;
-
-    opacity: .9;
-
-    line-height: 1.4;
-
+.subtituloInvite {
+    max-width: 380px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
 }
 
 
@@ -83,67 +69,55 @@ header p {
 ========================= */
 
 .invite-box {
-
-    margin-top: 35px;
-
-    padding: 35px 25px;
-
-    background:
-        rgba(255,255,255,0.12);
-
-    border-radius: 25px;
-
-    box-shadow:
-        0 0 30px rgba(0,0,0,.4);
-
+    margin-top: 20px;
+    padding: 25px 20px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, .4);
+    width: 100%;
 }
 
 
 /* =========================
-   AREA DE BUSQUEDA
+   AREA DE BUSQUEDA (En horizontal)
 ========================= */
 
 .search-area {
-
     display: flex;
-
-    flex-direction: column;
-
-    gap: 20px;
-
+    flex-direction: row; /* Elementos lado a lado para aprovechar el espacio horizontal */
+    align-items: center;
+    gap: 15px;
+    width: 100%;
 }
 
+.input-wrapper {
+    flex: 1; /* El input ocupa todo el espacio disponible */
+    position: relative;
+    display: flex;
+    align-items: center;
+}
 
-/* =========================
-   CAMPO DE TEXTO
-========================= */
+/* Marco de imagen opcional o input directo */
+.marcoInput {
+    width: 100%;
+    height: auto;
+    display: block;
+}
 
 input {
-
     width: 100%;
-
-    padding: 16px;
-
-    border-radius: 20px;
-
+    padding: 14px 16px;
+    border-radius: 15px;
     border: none;
-
     outline: none;
-
-    font-size: 18px;
-
+    font-size: 16px;
     text-align: center;
-
-    background:
-        rgba(255,255,255,.9);
-
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
 }
 
-
 input::placeholder {
-
     color: #777;
-
 }
 
 
@@ -152,80 +126,44 @@ input::placeholder {
 ========================= */
 
 #inviteBtn {
-
     display: block;
-
-    width: 140px;
-
-    margin: 0 auto;
-
+    width: 130px;
     padding: 0;
-
     border: none;
-
     outline: none;
-
     background: transparent;
-
     box-shadow: none;
-
     cursor: pointer;
-
     appearance: none;
-
     -webkit-appearance: none;
-
+    flex-shrink: 0;
 }
-
 
 /* PNG DEL BOTON */
-
 #inviteBtn img {
-
     display: block;
-
     width: 100%;
-
     height: auto;
-
     border: none;
-
     background: transparent;
-
-    transition:
-        transform .25s ease;
-
+    transition: transform .25s ease;
 }
-
 
 /* EFECTO AL PASAR EL MOUSE */
-
 #inviteBtn:hover img {
-
     transform: scale(1.06);
-
 }
-
 
 /* EFECTO AL PRESIONAR */
-
 #inviteBtn:active img {
-
     transform: scale(.94);
-
 }
 
-
 /* BOTON DESACTIVADO */
-
 #inviteBtn:disabled {
-
     opacity: .7;
-
     cursor: not-allowed;
-
     background: transparent;
-
 }
 
 
@@ -234,13 +172,9 @@ input::placeholder {
 ========================= */
 
 #status {
-
-    margin-top: 25px;
-
-    font-size: 18px;
-
-    min-height: 30px;
-
+    margin-top: 15px;
+    font-size: 16px;
+    min-height: 20px;
 }
 
 
@@ -249,33 +183,56 @@ input::placeholder {
 ========================= */
 
 .back-btn {
-
-    margin-top: 30px;
-
+    margin-top: 20px;
     background: transparent;
-
     border: none;
-
     color: white;
-
-    font-size: 18px;
-
     cursor: pointer;
-
+    padding: 0;
 }
 
+.back-btn img {
+    width: 110px;
+    height: auto;
+    display: block;
+}
 
 /* EFECTO VOLVER */
-
 .back-btn:hover {
-
     transform: scale(1.05);
+}
 
+.back-btn:active {
+    transform: scale(.95);
 }
 
 
-.back-btn:active {
+/* =========================
+   AVISO DE ROTACIÓN (Navegadores móviles en vertical)
+========================= */
 
-    transform: scale(.95);
+#rotate-warning {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #0b0b0f;
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 20px;
+}
 
+@media screen and (orientation: portrait) {
+    #rotate-warning {
+        display: flex;
+    }
+    .container {
+        display: none !important;
+    }
 }
