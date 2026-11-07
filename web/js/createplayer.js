@@ -1,30 +1,59 @@
-const GoogleAuth = window.Capacitor.Plugins.GoogleAuth;
+
+import { SocialLogin } from '@capgo/capacitor-social-login';
+// Despertar el servidor de Render al cargar la vista de login
+window.addEventListener("DOMContentLoaded", () => {
+    fetch(`${API_URL}/`)
+        .then(() => console.log("Servidor despertado con éxito."))
+        .catch(() => console.log("Despertando backend..."));
+});
 
 // =========================
 // CONFIGURACIÓN
 // =========================
+
 const API_URL = "https://space-duel-server-1.onrender.com";
 
-// Inicializar Google Auth
-try {
-    GoogleAuth.initialize({
-        clientId: '73289370828-9sq2pqa6vnk8ukki4bepa154hoke12eb.apps.googleusercontent.com',
-        scopes: ['profile', 'email'],
-        grantOfflineAccess: true,
-    });
-} catch (e) {
-    console.log("Google Auth ya inicializado o error:", e);
-}
+const WEB_CLIENT_ID =
+    "73289370828-9sq2pqa6vnk8ukki4bepa154hoke12eb.apps.googleusercontent.com";
 
 const nameInput = document.getElementById("name");
 const googleLoginBtn = document.getElementById("googleLoginBtn");
 const nameError = document.getElementById("nameError");
 
 // =========================
-// MENSAJE DE ERROR
+// INICIALIZAR GOOGLE LOGIN
+// =========================
+
+let googleInitialization = null;
+
+function initializeGoogle() {
+
+    if (!googleInitialization) {
+
+        googleInitialization = SocialLogin.initialize({
+            google: {
+                webClientId: WEB_CLIENT_ID,
+                mode: 'online'
+            }
+        }).catch(error => {
+
+            googleInitialization = null;
+
+            console.error("Error inicializando Google:", error);
+
+            throw error;
+        });
+    }
+
+    return googleInitialization;
+}
+
+// =========================
+// MENSAJES DE ERROR
 // =========================
 
 function showError(message) {
+
     if (nameError) {
         nameError.textContent = message;
         nameError.classList.add("show");
@@ -32,6 +61,7 @@ function showError(message) {
 }
 
 function hideError() {
+
     if (nameError) {
         nameError.textContent = "";
         nameError.classList.remove("show");
@@ -39,74 +69,141 @@ function hideError() {
 }
 
 // Quitar error al escribir
+
 if (nameInput) {
+
     nameInput.addEventListener("input", () => {
         hideError();
     });
 }
 
-/* 
-  SUSPICHOSO PAusADO: 
-  Si quieres forzar que siempre muestre la pantalla de registro para probar el diseño, 
-  comenta esta validación. 
-*/
-/*
-if (localStorage.getItem("playerCreated") === "true") {
-    location.href = "profile.html";
-}
-*/
-
 // =========================
-// LOGIN / REGISTRO CON GOOGLE (Y APODO PERSONALIZADO)
+// LOGIN / REGISTRO CON GOOGLE
 // =========================
 
 if (googleLoginBtn) {
+
     googleLoginBtn.onclick = async () => {
+
         hideError();
 
-        const customUsername = nameInput ? nameInput.value.trim() : "";
+        const customUsername = nameInput
+            ? nameInput.value.trim()
+            : "";
 
-        // Validar que el usuario haya escrito un apodo
+        // Validar apodo
+
         if (customUsername.length < 3) {
-            showError("El nombre de usuario debe tener al menos 3 caracteres.");
+
+            showError(
+                "El nombre de usuario debe tener al menos 3 caracteres."
+            );
+
             if (nameInput) nameInput.focus();
+
             return;
         }
 
-        googleLoginBtn.disabled = true; // Evitar doble clic
+        googleLoginBtn.disabled = true;
 
         try {
-            const googleUser = await GoogleAuth.signIn();
-            console.log("Usuario Google obtenido:", googleUser);
 
-            // Enviamos el apodo personalizado + los datos de Google
-            const response = await fetch(`${API_URL}/api/auth/google`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    email: googleUser.email,
-                    username: customUsername,
-                    idToken: googleUser.authentication?.idToken
-                })
+            // Inicializar plugin
+
+            await initializeGoogle();
+
+            // Iniciar sesión con Google
+
+            const login = await SocialLogin.login({
+                provider: 'google',
+                options: {
+                    scopes: ['email', 'profile']
+                }
             });
+
+            console.log("Respuesta de Google:", login);
+
+            // Obtener información
+
+            const googleUser = login.result;
+
+            if (!googleUser || googleUser.responseType !== 'online') {
+                throw new Error("Respuesta de Google no válida.");
+            }
+
+            const email = googleUser.profile?.email;
+            const idToken = googleUser.idToken;
+
+            if (!email || !idToken) {
+                throw new Error(
+                    "Google no devolvió el correo o el token de identificación."
+                );
+            }
+
+            // =========================
+            // ENVIAR DATOS A RENDER
+            // =========================
+
+            const response = await fetch(
+                `${API_URL}/api/auth/google`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        email: email,
+
+                        username: customUsername,
+
+                        idToken: idToken
+
+                    })
+                }
+            );
 
             const data = await response.json();
 
-            if (data.success) {
-                localStorage.setItem("player", JSON.stringify(data.player));
-                localStorage.setItem("playerCreated", "true");
-                location.href = "profile.html";
-            } else {
-                showError(data.error || "No se pudo iniciar sesión con Google.");
+            if (!response.ok || !data.success) {
+
+                throw new Error(
+                    data.error || "No se pudo registrar el jugador."
+                );
             }
 
+            // =========================
+            // GUARDAR JUGADOR
+            // =========================
+
+            localStorage.setItem(
+                "player",
+                JSON.stringify(data.player)
+            );
+
+            localStorage.setItem(
+                "playerCreated",
+                "true"
+            );
+
+            // Ir al perfil
+
+            location.href = "profile.html";
+
         } catch (error) {
-            console.error("Error en Google Sign-In:", error);
-            showError("Error al conectar con Google.");
+
+            console.error("Error en Google Login:", error);
+
+            showError(
+                error.message || "Error al conectar con Google."
+            );
+
         } finally {
+
             googleLoginBtn.disabled = false;
+
         }
     };
 }
@@ -116,9 +213,21 @@ if (googleLoginBtn) {
 // =========================
 
 if (nameInput) {
+
     nameInput.addEventListener("keydown", e => {
+
         if (e.key === "Enter" && googleLoginBtn) {
             googleLoginBtn.click();
         }
+
     });
+
 }
+
+// =========================
+// INICIALIZACIÓN TEMPRANA
+// =========================
+
+initializeGoogle().catch(error => {
+    console.error("No se pudo preparar Google Login:", error);
+});
