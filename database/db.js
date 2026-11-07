@@ -2,6 +2,8 @@ const { Pool } = require("pg");
 
 const useSSL = process.env.DB_SSL === "true";
 
+console.log("DATABASE HOST:", new URL(process.env.DATABASE_URL).hostname);
+
 const db = new Pool({
     connectionString: process.env.DATABASE_URL,
 
