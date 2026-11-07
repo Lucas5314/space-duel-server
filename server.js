@@ -11,12 +11,189 @@ const inventory = require("./economy/inventory");
 const googlePurchases = require("./economy/googlePurchases");
 const googlePlay = require("./economy/googlePlay");
 const googleTransactions = require("./economy/googleTransactions");
+const { OAuth2Client } = require("google-auth-library");
+
+const googleClient = new OAuth2Client();
+
+const GOOGLE_WEB_CLIENT_ID =
+    "73289370828-9sq2pqa6vnk8ukki4bepa154hoke12eb.apps.googleusercontent.com";
 
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+// ======================================
+// GOOGLE LOGIN - LAUGH BATTLES
+// ======================================
+
+app.post("/api/auth/google", async (req, res) => {
+
+    try {
+
+        const { idToken, username } = req.body;
+
+        // 1. VALIDAR DATOS
+
+        if (!idToken || !username) {
+
+            return res.status(400).json({
+                success: false,
+                error: "Faltan datos de autenticación."
+            });
+
+        }
+
+        const cleanUsername = username.trim();
+
+        if (cleanUsername.length < 3 || cleanUsername.length > 20) {
+
+            return res.status(400).json({
+                success: false,
+                error: "Nombre de usuario inválido."
+            });
+
+        }
+
+        // 2. VERIFICAR TOKEN CON GOOGLE
+
+        const ticket = await googleClient.verifyIdToken({
+
+            idToken: idToken,
+
+            audience: GOOGLE_WEB_CLIENT_ID
+
+        });
+
+        const payload = ticket.getPayload();
+
+        if (!payload || !payload.email || !payload.sub || payload.email_verified !== true) {
+
+            return res.status(401).json({
+                success: false,
+                error: "La identidad de Google no es válida."
+            });
+
+        }
+
+        const googleId = payload.sub;
+        const email = payload.email.toLowerCase();
+
+        // 3. BUSCAR POR GOOGLE ID
+
+        const googlePlayer = await db.query(
+
+            `SELECT * FROM players
+             WHERE google_id = $1
+             LIMIT 1`,
+
+            [googleId]
+
+        );
+
+        if (googlePlayer.rows.length > 0) {
+
+            const player = googlePlayer.rows[0];
+
+            if (player.email.toLowerCase() !== email) {
+
+                return res.status(409).json({
+                    success: false,
+                    error: "La cuenta de Google no coincide con el correo registrado."
+                });
+
+            }
+
+            return res.json({
+                success: true,
+                isNewPlayer: false,
+                player: player
+            });
+
+        }
+
+        // 4. BUSCAR POR EMAIL
+
+        const emailPlayer = await db.query(
+
+            `SELECT * FROM players
+             WHERE email = $1
+             LIMIT 1`,
+
+            [email]
+
+        );
+
+        if (emailPlayer.rows.length > 0) {
+
+            const player = emailPlayer.rows[0];
+
+            // No permitir vincular una cuenta Google diferente.
+
+            if (player.google_id !== googleId) {
+
+                return res.status(409).json({
+                    success: false,
+                    error: "Este correo ya está vinculado a otra cuenta."
+                });
+
+            }
+
+            return res.json({
+                success: true,
+                isNewPlayer: false,
+                player: player
+            });
+
+        }
+
+        // 5. CREAR JUGADOR NUEVO
+
+        const result = await db.query(
+
+            `INSERT INTO players
+            (
+                google_id,
+                email,
+                username
+            )
+            VALUES ($1, $2, $3)
+            RETURNING *`,
+
+            [
+                googleId,
+                email,
+                cleanUsername
+            ]
+
+        );
+
+        const player = result.rows[0];
+
+        console.log("NUEVO JUGADOR GOOGLE:", player.username);
+
+        return res.json({
+
+            success: true,
+            isNewPlayer: true,
+            player: player
+
+        });
+
+    } catch (error) {
+
+        console.error("ERROR GOOGLE LOGIN:", error);
+
+        return res.status(500).json({
+
+            success: false,
+            error: "Error al autenticar con Google."
+
+        });
+
+    }
+
+});
 app.get("/api/player/:id/coins", async (req, res) => {
 
     const playerId = Number(req.params.id);
