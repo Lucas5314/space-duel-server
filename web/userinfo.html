@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Laugh Battles - User Info</title>
+
+    <link rel="stylesheet" href="style/userinfo.css">
+</head>
+
+<body>
+
+    <main class="profileInfo">
+
+        <!-- MITAD IZQUIERDA: ESTADÍSTICAS -->
+
+        <section class="statsSection">
+
+            <h1>PLAYER DATA</h1>
+
+            <div class="statsGrid">
+
+                <div class="stat">
+                    <span class="statLabel">PARTIDAS</span>
+                    <span id="games" class="statValue">0</span>
+                </div>
+
+                <div class="stat">
+                    <span class="statLabel">VICTORIAS</span>
+                    <span id="wins" class="statValue">0</span>
+                </div>
+
+                <div class="stat">
+                    <span class="statLabel">DERROTAS</span>
+                    <span id="losses" class="statValue">0</span>
+                </div>
+
+                <div class="stat">
+                    <span class="statLabel">NIVEL</span>
+                    <span id="level" class="statValue">1</span>
+                </div>
+
+            </div>
+
+            <div class="playerId">
+                <span>ID DE JUGADOR</span>
+                <strong id="playerId">---</strong>
+            </div>
+
+        </section>
+
+
+        <!-- MITAD DERECHA: FICHA DEL JUGADOR -->
+
+        <section class="identitySection">
+
+            <div class="identityCard">
+
+                <span class="identityLabel">LAUGH BATTLES</span>
+
+                <div class="identityDecoration"></div>
+
+                <h2 id="username">JUGADOR</h2>
+
+                <span class="identitySubtitle">PLAYER PROFILE</span>
+
+                <div class="identityBottom">
+                    <span>PILOTO</span>
+                    <span id="cardLevel">LV. 1</span>
+                </div>
+
+            </div>
+
+        </section>
+
+        <button id="backBtn" class="backBtn">
+            VOLVER
+        </button>
+
+    </main>
+
+    <script type="module" src="js/userinfo.js"></script>
+
+</body>
+
+</html>

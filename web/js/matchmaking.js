@@ -7,14 +7,9 @@ const music = new Audio("assets/audio/matchmaking.mp3");
 music.loop = true;
 music.volume = 0.4;
 
-
-// Iniciar la música en la primera interacción
-
 document.addEventListener("click", () => {
-
-    music.play().catch(err => console.log(err));
-
-}, { once:true });
+    music.play().catch(() => {});
+}, { once: true });
 
 
 // ===========================
@@ -24,244 +19,126 @@ document.addEventListener("click", () => {
 const status = document.getElementById("status");
 const cancel = document.getElementById("cancel");
 
-const connectionText = document.getElementById("connectionText");
-const connectionIcon = document.getElementById("connectionIcon");
-
-const searchTime = document.getElementById("searchTime");
-const ping = document.getElementById("ping");
-
-const region = document.getElementById("region");
-
-const playersOnline = document.getElementById("playersOnline");
-const playersSearching = document.getElementById("playersSearching");
-
 
 // ===========================
 // MENSAJES
 // ===========================
 
 const messages = [
-
-    "Escaneando la galaxia...",
+    "Escaneando mundos...",
     "Buscando pilotos...",
     "Analizando señales...",
     "Abriendo portal...",
     "Preparando combate..."
-
 ];
 
 let messageIndex = 0;
 
-
-setInterval(() => {
-
-    messageIndex++;
-
-    if(messageIndex >= messages.length){
-
-        messageIndex = 0;
-
-    }
-
-    status.textContent = messages[messageIndex];
-
-},2500);
-
-
-// ===========================
-// TEMPORIZADOR
-// ===========================
-
-let seconds = 0;
-
-
-setInterval(() => {
-
-    seconds++;
-
-    const min =
-        String(Math.floor(seconds / 60))
-        .padStart(2,"0");
-
-    const sec =
-        String(seconds % 60)
-        .padStart(2,"0");
-
-    searchTime.textContent =
-        `${min}:${sec}`;
-
-},1000);
-
-
-// ===========================
-// DATOS TEMPORALES
-// ===========================
-
-region.textContent =
-    "Sudamérica";
-
-playersOnline.textContent =
-    "12 pilotos conectados";
-
-playersSearching.textContent =
-    "3 buscando combate";
-
-
-// ===========================
-// PING SIMULADO
-// ===========================
-
-setInterval(() => {
-
-    const value =
-        Math.floor(Math.random()*18)+28;
-
-    ping.textContent =
-        value + " ms";
-
-},1500);
-
-
-// ===========================
-// ESTADO DE CONEXIÓN
-// ===========================
-
-connectionText.textContent =
-    "Conectado";
-
-connectionIcon.textContent =
-    "🟢";
+if (status) {
+    setInterval(() => {
+        messageIndex = (messageIndex + 1) % messages.length;
+        status.textContent = messages[messageIndex];
+    }, 2500);
+}
 
 
 // ===========================
 // CANCELAR
 // ===========================
 
-cancel.onclick = () => {
+if (cancel) {
+    cancel.addEventListener("click", () => {
+        music.pause();
+        music.currentTime = 0;
 
-    music.pause();
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.close();
+        }
 
-    music.currentTime = 0;
-
-    location.href =
-        "profile.html";
-
-};
+        location.href = "profile.html";
+    });
+}
 
 
 // ===========================
 // WEBSOCKET
 // ===========================
 
+const player = JSON.parse(localStorage.getItem("player"));
+
 const ws = new WebSocket(
     "wss://space-duel-server-1.onrender.com"
 );
 
+ws.onopen = () => {
 
-ws.onmessage = e => {
+    console.log("Conectado al matchmaking");
 
-    const msg =
-        JSON.parse(e.data);
+    ws.send(JSON.stringify({
+        type: "play",
+        username: player?.username,
+        playerId: player?.id
+    }));
 
+};
 
-    console.log(
-        "Matchmaking recibió:",
-        msg
-    );
+ws.onmessage = (e) => {
 
+    const msg = JSON.parse(e.data);
 
-    if(msg.type === "matchFound"){
+    console.log("Matchmaking recibió:", msg);
 
-        status.textContent =
-            "¡Piloto encontrado!";
+    if (msg.type === "matchFound") {
 
+        if (status) {
+            status.textContent = "¡Piloto encontrado!";
+        }
 
         music.pause();
-
         music.currentTime = 0;
 
-
         setTimeout(() => {
-
-            location.href =
-                "game.html";
-
-        },1500);
+            location.href = "game.html";
+        }, 1500);
 
     }
 
 };
 
+ws.onerror = (error) => {
+    console.error("Error WebSocket:", error);
+};
 
-ws.onopen = () => {
-
-    const player = JSON.parse(
-        localStorage.getItem("player")
-    );
-
-
-    ws.send(JSON.stringify({
-
-        type:"play",
-
-        username:
-            player?.username
-
-    }));
-
+ws.onclose = () => {
+    console.log("Conexión matchmaking cerrada");
 };
 
 
-// =======================================================
+// ===========================
 // ESCÁNER VISUAL DE MUNDOS
-// =======================================================
+// ===========================
 
 const mundos = [
-
     "assets/mapasaelegir/oeste.jpg",
-
     "assets/mapasaelegir/espacio.jpg",
-
     "assets/mapasaelegir/bosque.jpg",
-
     "assets/mapasaelegir/pirata.jpg",
-
     "assets/mapasaelegir/hielo.jpg",
-
     "assets/mapasaelegir/volcan.jpg"
-
 ];
 
-
-const tarjetas =
-    document.querySelectorAll(
-        ".worldCard img"
-    );
-
-
-// Cada tarjeta comienza
-// en una posición diferente
+const tarjetas = document.querySelectorAll(".worldCard img");
 
 tarjetas.forEach((imagen, indice) => {
 
     let posicion = indice;
 
-
     setInterval(() => {
 
-        posicion++;
+        posicion = (posicion + 1) % mundos.length;
 
+        imagen.src = mundos[posicion];
 
-        if(posicion >= mundos.length){
-
-            posicion = 0;
-
-        }
-
-
-        imagen.src =
-            mundos[posicion];
-
-    },180 + (indice * 70));
+    }, 180 + (indice * 70));
 
 });

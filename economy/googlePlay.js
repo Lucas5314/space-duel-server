@@ -18,7 +18,6 @@ const androidPublisher = google.androidpublisher({
     auth
 });
 
-
 async function getProductPurchase(productId, purchaseToken) {
 
     const response =
@@ -30,7 +29,6 @@ async function getProductPurchase(productId, purchaseToken) {
 
     return response.data;
 }
-
 
 async function consumeProduct(productId, purchaseToken) {
 
@@ -44,8 +42,24 @@ async function consumeProduct(productId, purchaseToken) {
     return response.data;
 }
 
+// ======================================
+// CONFIRMAR COMPRA NO CONSUMIBLE
+// ======================================
+
+async function acknowledgeProduct(productId, purchaseToken) {
+
+    const response =
+        await androidPublisher.purchases.products.acknowledge({
+            packageName: PACKAGE_NAME,
+            productId,
+            token: purchaseToken
+        });
+
+    return response.data;
+}
 
 module.exports = {
     getProductPurchase,
-    consumeProduct
+    consumeProduct,
+    acknowledgeProduct
 };

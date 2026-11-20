@@ -1,3 +1,23 @@
+/* Oculta cualquier icono de reproducción nativo de los navegadores móviles */
+video::-webkit-media-controls {
+    display: none !important;
+}
+video::-webkit-media-controls-panel {
+    display: none !important;
+}
+video::-webkit-media-controls-play-button {
+    display: none !important;
+}
+video::-webkit-media-controls-start-playback-button {
+    display: none !important;
+}
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
 *{
     margin:0;
     padding:0;
@@ -433,22 +453,22 @@ body::before{
    BOTONES PERSONALIZADOS
 ========================= */
 
-.menuButtons{
+.menuButtons {
 
-    position:absolute;
+    position: fixed;
 
-    right:20px;
-    bottom:20px;
+    right: 0;
+    bottom: -6px;
 
-    display:flex;
+    display: flex;
 
-    flex-direction:column;
+    flex-direction: column;
 
-    align-items:flex-end;
+    align-items: flex-end;
 
-    gap:12px;
+    gap: 8px;
 
-    z-index:20;
+    z-index: 20;
 
 }
 
@@ -536,100 +556,64 @@ body::before{
 }
 
 
+/* ================================= */
 /* BOTONES LATERALES */
+/* ================================= */
 
-#settingsBtn,
-#chatBtn,
-#inviteBtn,
-#skinsBtn,
-#rankingBtn{
+.sidebarButtons {
+    position: fixed;
 
-    position:absolute;
+    left: 5px;
+    top: 12px;
 
-    width:60px;
-    height:60px;
 
-    border:none;
-    background-color:transparent;
-    background-size:contain;
-    background-repeat:no-repeat;
-    background-position:center;
+    display: flex;
+    flex-direction: column;
 
-    cursor:pointer;
+    gap: 4px;
 
-    z-index:50;
-
+    z-index: 50;
 }
 
+.sidebarButtons button {
 
-/* IMÁGENES */
+    position: relative;
 
-#settingsBtn{
+    width: 48px;
+    height: 48px;
 
-    background-image:url("../assets/icons/settings.png");
+    flex-shrink: 0;
 
+    border: none;
+    background-color: transparent;
+
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    cursor: pointer;
 }
 
-#chatBtn{
+/* ICONOS */
 
-    background-image:url("../assets/icons/chat.png");
-
+#settingsBtn {
+    background-image: url("../assets/icons/settings.png");
 }
 
-#inviteBtn{
-
-    background-image:url("../assets/icons/invite.png");
-
+#chatBtn {
+    background-image: url("../assets/icons/chat.png");
 }
 
-#skinsBtn{
-
-    background-image:url("../assets/icons/skins.png");
-
+#inviteBtn {
+    background-image: url("../assets/icons/invite.png");
 }
 
-#rankingBtn{
-
-    background-image:url("../assets/icons/ranking.png");
-
+#skinsBtn {
+    background-image: url("../assets/icons/skins.png");
 }
 
-
-/* POSICIONES */
-
-#settingsBtn{
-
-    left:20px;
-    top:20px;
-
-}
-
-#chatBtn{
-
-    left:20px;
-    top:95px;
-
-}
-
-#inviteBtn{
-
-    left:20px;
-    top:170px;
-
-}
-
-#skinsBtn{
-
-    left:20px;
-    top:245px;
-
-}
-
-#rankingBtn{
-
-    left:20px;
-    top:320px;
-
+#rankingBtn {
+    background-image: url("../assets/icons/ranking.png");
 }
 /* ========================= */
 /* FONDOS DEL PERFIL */
@@ -638,66 +622,48 @@ body::before{
 /* ========================= */
 /* FONDO DEL PERFIL */
 /* ========================= */
-
 /* ========================= */
 /* FONDO DEL PERFIL */
 /* ========================= */
 
-#profileBackground{
-
-    position:fixed;
-
-    inset:0;
-
-    width:100%;
-    height:100%;
-
-    z-index:0;
-
-    overflow:hidden;
-
+#profileBackground {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    overflow: hidden;
+    background: #000;
 }
 
-.world{
-
-    position:fixed;
-
-    top:0;
-    left:0;
-
-    width:100vw;
-    height:100vh;
-
-    z-index:0;
-
+.world {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease;
 }
 
-
-.world img{
-
-    width:100%;
-    height:100%;
-
-    object-fit:cover;
-
-    display:block;
-
+.world.active {
+    opacity: 1;
 }
 
-
-.profile{
-
-    position:relative;
-
-    z-index:2;
-
+.world video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    display: block;
 }
 
-
-.world.active{
-
-    opacity:1;
-
+.profile {
+    position: relative;
+    z-index: 2;
 }
 
 
@@ -816,12 +782,10 @@ body::before{
     }
 
 }
-.profileCard{
-
-    position:absolute;
-
-    top:20px;
-    right:20px;
+.profileCard {
+    position: fixed;
+    top: 0;
+    right: 0;
 
     width:420px;
     height:180px;
@@ -1096,4 +1060,44 @@ body::before{
 
     z-index:30;
 
+}
+/* ========================================= */
+/* ETIQUETA DE NOMBRE EN ESQUINA SUPERIOR DERECHA */
+/* ========================================= */
+.playerTagTopRight {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 16px;
+    border-radius: 20px;
+    color: #ffffff;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 1rem;
+    z-index: 100; /* Incrementado para estar por encima de todo */
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    animation: fadeInOnly 0.4s ease forwards;
+    animation-delay: 0.5s;
+    pointer-events: auto !important; /* Fuerza a recibir clics */
+}
+
+.userInfoCard {
+    background: transparent;
+    border: none;
+    color: #00d4ff;
+    font-weight: bold;
+    cursor: pointer;
+    pointer-events: auto !important; /* Fuerza a recibir clics */
+    position: relative;
+    z-index: 101;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.userInfoCard:hover {
+    transform: scale(1.05);
+    filter: brightness(1.2);
 }

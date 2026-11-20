@@ -1,0 +1,294 @@
+/* Oculta cualquier icono de reproducción nativo de los navegadores móviles */
+video::-webkit-media-controls {
+    display: none !important;
+}
+video::-webkit-media-controls-panel {
+    display: none !important;
+}
+video::-webkit-media-controls-play-button {
+    display: none !important;
+}
+video::-webkit-media-controls-start-playback-button {
+    display: none !important;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    background: #101018;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+.profileInfo {
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+
+    background:
+        radial-gradient(circle at 20% 50%, #28283c, #101018 75%);
+}
+
+/* ================================= */
+/* MITAD IZQUIERDA */
+/* ================================= */
+
+.statsSection {
+    width: 52%;
+    height: 100%;
+
+    padding: 7% 8% 5% 6%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    background: rgba(255,255,255,0.025);
+
+    clip-path: polygon(
+        0 0,
+        100% 0,
+        88% 100%,
+        0 100%
+    );
+}
+
+.statsSection h1 {
+    font-size: clamp(20px, 3vw, 38px);
+    letter-spacing: 4px;
+    margin-bottom: 35px;
+
+    color: #ffc247;
+
+    text-shadow: 2px 3px 0 #000;
+}
+
+/* ================================= */
+/* ESTADÍSTICAS */
+/* ================================= */
+
+.statsGrid {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 30px 35px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.statLabel {
+    font-size: clamp(10px, 1.3vw, 15px);
+    letter-spacing: 2px;
+    color: #9292a8;
+    font-weight: bold;
+}
+
+.statValue {
+    font-size: clamp(24px, 3vw, 38px);
+    font-weight: 900;
+    color: white;
+
+    text-shadow: 2px 3px 0 #000;
+}
+
+/* ================================= */
+/* ID */
+/* ================================= */
+
+.playerId {
+    margin-top: 35px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.playerId span {
+    color: #9292a8;
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+.playerId strong {
+    font-size: 17px;
+    color: #ffc247;
+}
+
+/* ================================= */
+/* MITAD DERECHA */
+/* ================================= */
+
+.identitySection {
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    width: 48%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 5% 6% 5% 5%;
+}
+
+/* ================================= */
+/* FICHA DEL JUGADOR */
+/* ================================= */
+
+.identityCard {
+    position: relative;
+
+    width: 100%;
+    height: 85%;
+
+    max-width: 470px;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+
+    border: 2px solid rgba(255,194,71,0.65);
+
+    background:
+        linear-gradient(
+            145deg,
+            #333044,
+            #171723 65%,
+            #29202b
+        );
+
+    clip-path: polygon(
+        0 8%,
+        12% 0,
+        100% 0,
+        100% 92%,
+        88% 100%,
+        0 100%
+    );
+}
+
+.identityLabel {
+    position: absolute;
+
+    top: 12%;
+
+    font-size: 13px;
+    letter-spacing: 5px;
+
+    color: #ffc247;
+}
+
+.identityDecoration {
+    width: 110px;
+    height: 110px;
+
+    border: 3px solid #ffc247;
+    border-radius: 50%;
+
+    margin-bottom: 25px;
+
+    background:
+        radial-gradient(circle, #55506b, #171723);
+}
+
+.identityCard h2 {
+    max-width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    font-size: clamp(20px, 3vw, 35px);
+
+    font-weight: 900;
+    letter-spacing: 2px;
+
+    text-shadow: 3px 3px 0 #000;
+}
+
+.identitySubtitle {
+    margin-top: 10px;
+
+    color: #aaaabd;
+
+    letter-spacing: 4px;
+    font-size: 11px;
+}
+
+.identityBottom {
+    position: absolute;
+
+    bottom: 12%;
+
+    width: 75%;
+
+    display: flex;
+    justify-content: space-between;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    color: #ffc247;
+}
+
+/* ================================= */
+/* VOLVER */
+/* ================================= */
+
+.backBtn {
+    position: absolute;
+
+    bottom: 15px;
+    left: 20px;
+
+    border: none;
+    background: transparent;
+
+    color: white;
+
+    font-weight: bold;
+    font-size: 13px;
+
+    letter-spacing: 2px;
+}
+
+/* ================================= */
+/* HORIZONTAL */
+/* ================================= */
+
+@media (orientation: portrait) {
+    body {
+        transform: rotate(90deg);
+        transform-origin: top left;
+
+        width: 100vh;
+        height: 100vw;
+
+        position: absolute;
+        top: 0;
+        left: 100vw;
+    }
+}

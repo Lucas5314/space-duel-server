@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -87,10 +88,22 @@
 
 <body>
 
-    <!-- NOMBRE DE JUGADOR EN LA ESQUINA SUPERIOR DERECHA -->
-    <div id="playerTagTopRight" class="playerTagTopRight">
-        <span id="usernameDisplay">Cargando...</span>
-    </div>
+    <!-- PERFIL DEL JUGADOR -->
+<div id="playerTagTopRight" class="playerTagTopRight">
+
+    <!-- Nombre de la cuenta -->
+    <span id="usernameDisplay" class="playerUsername">
+        Cargando...
+    </span>
+
+    <!-- Ficha para acceder a la información -->
+    <button id="userInfoCard" class="userInfoCard">
+
+        <span>MI PERFIL</span>
+
+    </button>
+
+</div>
 
     <button id="coinsBtn" onclick="location.href='tienda.html'">
         <img id="coinIcon" src="assets/ui/coins.png" alt="Monedas">
@@ -105,7 +118,9 @@
     <!-- ========================= -->
     <div id="profileBackground">
         <div class="world active">
-            <img src="assets/worlds/fondo.png" alt="Fondo">
+            <video autoplay loop muted playsinline>
+                <source src="assets/worlds/fondo.mp4" type="video/mp4">
+            </video>
         </div>
     </div>
 
@@ -137,12 +152,6 @@
         <video id="emoteVideo" src="assets/emotes/default.mp4" muted playsinline preload="auto"></video>
     </div>
 
-    <!-- ========================= -->
-    <!-- NIVEL -->
-    <!-- ========================= -->
-    <div class="level">
-        <img class="levelIcon" src="assets/ui/icons/level.png" alt="Nivel">
-    </div>
 
     <!-- ========================= -->
     <!-- PLAY Y MUNDO -->

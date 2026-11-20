@@ -8,6 +8,8 @@
     "build:createplayer": "esbuild web/js/createplayer.js --bundle --format=esm --platform=browser --outfile=web/js/createplayer.bundle.js"
   },
   "dependencies": {
+    "@babylonjs/core": "^9.35.0",
+    "@babylonjs/loaders": "^9.35.0",
     "@capacitor-community/admob": "^8.0.0",
     "@capacitor/android": "^8.5.2",
     "@capacitor/app": "^8.1.1",
