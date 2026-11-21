@@ -56,6 +56,26 @@ if (player) {
 }
 
 // =================================
+// SALIR DE SESIÓN
+// =================================
+
+const logoutBtn = document.getElementById("logoutBtn");
+
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("player");
+        localStorage.removeItem("playerCreated");
+        localStorage.removeItem("idToken");
+
+        if (window.AndroidInterface && typeof window.AndroidInterface.signOutGoogle === "function") {
+            window.AndroidInterface.signOutGoogle();
+        }
+
+        location.href = "createplayer.html";
+    });
+}
+
+// =================================
 // VOLVER
 // =================================
 

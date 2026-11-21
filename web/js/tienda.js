@@ -45,6 +45,13 @@ const PRODUCT_IDS = [
     "coins_1200"
 ];
 
+// Todos los productos entregan monedas, así que son consumibles para poder recomprarlos
+const CONSUMABLE_IDS = new Set([
+    "skin_nave_roja",
+    "coins_600",
+    "coins_1200"
+]);
+
 
 // =========================
 // ELEMENTOS
@@ -175,13 +182,14 @@ async function comprarMonedas(productId) {
         clickSound.currentTime = 0;
         clickSound.play().catch(() => {});
 
-        console.log("🔥 Iniciando compra:", productId);
+        const isConsumable = CONSUMABLE_IDS.has(productId);
+        console.log("🔥 Iniciando compra:", productId, "| isConsumable:", isConsumable);
 
         const transaction = await NativePurchases.purchaseProduct({
             productIdentifier: productId,
             productType: PURCHASE_TYPE.INAPP,
             quantity: 1,
-            isConsumable: false,
+            isConsumable: isConsumable,
             autoAcknowledgePurchases: false
         });
 
