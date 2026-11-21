@@ -143,25 +143,14 @@ let loaded = 0;
 
 function updateBar() {
     const p = Math.floor((loaded / assets.length) * 100);
-    
-    // Actualiza la barra de progreso visual (ancho en %)
     if (progress) progress.style.width = p + "%";
+    if (percent) percent.textContent = p + "%";
 
-    // Redondea el porcentaje al múltiplo de 5 más cercano (ej: 12 -> 10, 14 -> 15)
-    const roundedP = Math.round(p / 5) * 5;
-    
-    // Cambia la imagen del número personalizado dinámicamente
-    if (percent) {
-        percent.src = `assets/ui/numbers/${roundedP}.png`;
-    }
-
-    // Actualiza el texto de carga según el progreso
     const msgIndex = Math.min(Math.floor((p / 100) * messages.length), messages.length - 1);
     if (loadingText) {
         loadingText.textContent = messages[msgIndex];
     }
 
-    // Al finalizar la carga, redirige según el estado del jugador
     if (loaded >= assets.length) {
         setTimeout(() => {
             music.pause();

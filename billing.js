@@ -6,51 +6,77 @@ import {
 export async function comprarSkin() {
   const productoId = "skin_nave_roja";
 
-    try{
+  try {
 
-        const { isBillingSupported } =
-        await NativePurchases.isBillingSupported();
+    const { isBillingSupported } =
+      await NativePurchases.isBillingSupported();
 
-        if(!isBillingSupported){
+    if (!isBillingSupported) {
 
-            alert("Este dispositivo no soporta compras.");
+      alert("Este dispositivo no soporta compras.");
 
-            return;
-
-        }
-
-        const { product } =
-        await NativePurchases.getProduct({
-
-            productIdentifier: productoId,
-
-            productType: PURCHASE_TYPE.INAPP
-
-        });
-
-        const compra =
-        await NativePurchases.purchaseProduct({
-
-            productIdentifier: productoId,
-
-            productType: PURCHASE_TYPE.INAPP,
-
-            quantity:1
-
-        });
-
-        console.log(compra);
-
-        alert("¡Compra realizada!");
+      return;
 
     }
 
-    catch(err){
+    const { product } =
+      await NativePurchases.getProduct({
 
-        console.error(err);
+        productIdentifier: productoId,
 
-        alert("Compra cancelada o falló.");
+        productType: PURCHASE_TYPE.INAPP
 
+      });
+
+    const compra =
+      await NativePurchases.purchaseProduct({
+
+        productIdentifier: productoId,
+
+        productType: PURCHASE_TYPE.INAPP,
+
+        quantity: 1
+
+      });
+
+    console.log(compra);
+
+    const playerId = Number(localStorage.getItem("playerId"));
+    const purchaseToken =
+      compra?.purchaseToken ||
+      compra?.token ||
+      compra?.transactionId ||
+      "";
+
+    const response = await fetch("https://space-duel-server-1.onrender.com/api/purchases/google", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        playerId,
+        productId: productoId,
+        purchaseToken
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      alert("Error al acreditar: " + (result.error || response.status));
+      return;
     }
+
+    alert("¡Compra realizada!");
+
+  }
+
+  catch (err) {
+
+    console.error(err);
+
+    alert("Compra cancelada o falló.");
+
+  }
 
 }

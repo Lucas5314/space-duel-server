@@ -347,18 +347,18 @@ app.post("/api/purchases/google", async (req, res) => {
             }
         );
 
-        // -------------------------------
-        // 7. CONSUMIR EL PRODUCTO EN GOOGLE PLAY
-        // -------------------------------
-        console.log("🔥 CONSUMIENDO COMPRA EN GOOGLE PLAY...");
+       // -------------------------------
+// 7. CONFIRMAR COMPRA EN GOOGLE PLAY
+// -------------------------------
 
-        await googlePlay.consumeProduct(
-            productId,
-            purchaseToken
-        );
+console.log("🔥 CONFIRMANDO COMPRA EN GOOGLE PLAY...");
 
-        console.log("✅ COMPRA GOOGLE COMPLETADA Y CONSUMIDA");
+await googlePlay.acknowledgeProduct(
+    productId,
+    purchaseToken
+);
 
+console.log("✅ COMPRA GOOGLE CONFIRMADA");
         // -------------------------------
         // 8. RESPONDER AL CLIENTE
         // -------------------------------

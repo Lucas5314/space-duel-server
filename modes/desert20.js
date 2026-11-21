@@ -831,27 +831,27 @@ function getState(room){
             ),
 
 
-        projectiles:
-            room.projectiles.map(
-                projectile => ({
+       projectiles:
+    room.projectiles.map(
+        projectile => ({
 
-                    id:
-                        projectile.id,
+            id:
+                projectile.id,
 
-                    owner:
-                        projectile.owner,
+            owner:
+                projectile.owner,
 
-                    x:
-                        projectile.x,
+            x:
+                projectile.x,
 
-                    z:
-                        projectile.z,
+            z:
+                projectile.z,
 
-                    rotation:
-                        projectile.rotation
+            rotation:
+                projectile.rotation
 
-                })
-            ),
+        })
+    ),
 
 
         events:
