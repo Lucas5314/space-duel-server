@@ -329,9 +329,20 @@ app.post("/api/purchases/google", async (req, res) => {
                 error: "TOKEN_ALREADY_USED"
             });
         }
+// -------------------------------
+        // 6. CONSUMIR COMPRA EN GOOGLE PLAY
+        // -------------------------------
+        console.log("🔥 CONSUMIENDO COMPRA EN GOOGLE PLAY...");
+
+        await googlePlay.consumeProduct(
+            productId,
+            purchaseToken
+        );
+
+        console.log("✅ COMPRA GOOGLE CONSUMIDA");
 
         // -------------------------------
-        // 6. ACREDITAR MONEDAS AL JUGADOR
+        // 7. ACREDITAR MONEDAS AL JUGADOR
         // -------------------------------
         const newBalance = await economy.addCoins(
             numericPlayerId,
@@ -346,20 +357,6 @@ app.post("/api/purchases/google", async (req, res) => {
                 newBalance
             }
         );
-
-       // -------------------------------
-// -------------------------------
-        // 7. CONSUMIR COMPRA EN GOOGLE PLAY
-        // -------------------------------
-        console.log("🔥 CONSUMIENDO COMPRA EN GOOGLE PLAY...");
-
-        await googlePlay.consumeProduct(
-            productId,
-            purchaseToken
-        );
-
-        console.log("✅ COMPRA GOOGLE CONSUMIDA");
-        // -------------------------------
         // 8. RESPONDER AL CLIENTE
         // -------------------------------
         return res.json({

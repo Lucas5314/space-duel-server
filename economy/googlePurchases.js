@@ -4,11 +4,7 @@
 
 const COIN_PACKS = {
 
-    skin_nave_roja: {
-        coins: 300
-    },
-
-    coins_600: {
+    "600": {
         coins: 600
     },
 

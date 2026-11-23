@@ -40,16 +40,12 @@ if (!playerId) {
 // =========================
 
 const PRODUCT_IDS = [
-    "skin_nave_roja", 
-    "coins_600",
-    "coins_1200"
+    "600"
 ];
 
 // Todos los productos entregan monedas, así que son consumibles para poder recomprarlos
 const CONSUMABLE_IDS = new Set([
-    "skin_nave_roja",
-    "coins_600",
-    "coins_1200"
+    "600"
 ]);
 
 

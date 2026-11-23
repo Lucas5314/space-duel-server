@@ -23,45 +23,30 @@ function obtenerPlayerId() {
   return null;
 }
 
-export async function comprarSkin() {
-  const productoId = "skin_nave_roja";
+export async function comprarMonedas600() {
+  const productoId = "600";
 
   try {
-
     const { isBillingSupported } =
       await NativePurchases.isBillingSupported();
 
     if (!isBillingSupported) {
-
       alert("Este dispositivo no soporta compras.");
-
       return;
-
     }
 
-    const { product } =
-      await NativePurchases.getProduct({
+    await NativePurchases.getProduct({
+      productIdentifier: productoId,
+      productType: PURCHASE_TYPE.INAPP
+    });
 
-        productIdentifier: productoId,
-
-        productType: PURCHASE_TYPE.INAPP
-
-      });
-
-    const compra =
-      await NativePurchases.purchaseProduct({
-
-        productIdentifier: productoId,
-
-        productType: PURCHASE_TYPE.INAPP,
-
-        quantity: 1,
-
-        isConsumable: true,
-
-        autoAcknowledgePurchases: false
-
-      });
+    const compra = await NativePurchases.purchaseProduct({
+      productIdentifier: productoId,
+      productType: PURCHASE_TYPE.INAPP,
+      quantity: 1,
+      isConsumable: true,
+      autoAcknowledgePurchases: false
+    });
 
     console.log(compra);
 
@@ -76,6 +61,11 @@ export async function comprarSkin() {
       compra?.token ||
       compra?.transactionId ||
       "";
+
+    if (!purchaseToken) {
+      alert("No se recibió el token de compra de Google.");
+      return;
+    }
 
     const response = await fetch("https://space-duel-server-1.onrender.com/api/purchases/google", {
       method: "POST",
@@ -107,15 +97,8 @@ export async function comprarSkin() {
     }
 
     alert("¡Compra realizada!");
-
-  }
-
-  catch (err) {
-
+  } catch (err) {
     console.error(err);
-
     alert("Compra cancelada o falló.");
-
   }
-
 }
