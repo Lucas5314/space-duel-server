@@ -23,7 +23,7 @@ clickSound.volume = 0.4;
 // =========================
 
 const API_URL = "https://space-duel-server-1.onrender.com";
-const PENDING_PURCHASE_KEY = "pending_google_purchase_602";
+const PENDING_PURCHASE_KEY = "pending_google_purchase_603";
 
 const savedPlayer = JSON.parse(localStorage.getItem("player"));
 const playerId = savedPlayer ? Number(savedPlayer.id) : null;
@@ -38,11 +38,11 @@ if (!playerId) {
 // =========================
 
 const PRODUCT_IDS = [
-    "602"
+    "603"
 ];
 
 const CONSUMABLE_IDS = new Set([
-    "602"
+    "603"
 ]);
 
 // =========================
@@ -235,6 +235,7 @@ async function recuperarComprasPendientes(mostrarAlertaSiAplica = false) {
               : [];
 
         console.log("📦 Compras encontradas en Play:", JSON.stringify(purchases));
+        alert("GET_PURCHASES:\n\n" + JSON.stringify(purchases, null, 2));
 
         let procesadaAlguna = false;
 
@@ -312,6 +313,20 @@ async function comprarMonedas(productId) {
             isConsumable: isConsumable,
             autoAcknowledgePurchases: false
         });
+        // MOSTRAR RESPUESTA REAL DE GOOGLE PLAY
+console.log("🔥 OBJETO COMPLETO:", transaction);
+
+alert(
+    "RESPUESTA DE GOOGLE PLAY:\n\n" +
+    JSON.stringify(transaction, null, 2)
+);
+
+// COMPROBAR LOS CAMPOS
+alert(
+    "purchaseToken: " + transaction?.purchaseToken +
+    "\ntoken: " + transaction?.token +
+    "\ntransactionIdentifier: " + transaction?.transactionIdentifier
+);
 
         console.log("✅ TRANSACCIÓN RECIBIDA:", JSON.stringify(transaction));
 

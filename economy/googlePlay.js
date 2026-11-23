@@ -17,9 +17,22 @@ const androidPublisher = google.androidpublisher({
     version: "v3",
     auth
 });
+console.log("🔥 GOOGLE PLAY CONFIG:");
+console.log("PACKAGE NAME:", PACKAGE_NAME);
+console.log(
+    "SERVICE ACCOUNT EMAIL:",
+    !!process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
+);
+console.log(
+    "PRIVATE KEY:",
+    !!process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY
+);
 
 async function getProductPurchase(productId, purchaseToken) {
-
+console.log("🔥 VERIFICANDO PARÁMETROS:");
+console.log("PACKAGE:", PACKAGE_NAME);
+console.log("PRODUCT:", productId);
+console.log("TOKEN RECIBIDO:", !!purchaseToken);
     const response =
         await androidPublisher.purchases.products.get({
             packageName: PACKAGE_NAME,
