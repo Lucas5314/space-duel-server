@@ -23,6 +23,7 @@ clickSound.volume = 0.4;
 // =========================
 
 const API_URL = "https://space-duel-server-1.onrender.com";
+const PENDING_PURCHASE_KEY = "pending_google_purchase_602";
 
 const savedPlayer = JSON.parse(localStorage.getItem("player"));
 const playerId = savedPlayer ? Number(savedPlayer.id) : null;
@@ -37,11 +38,11 @@ if (!playerId) {
 // =========================
 
 const PRODUCT_IDS = [
-    "600"
+    "602"
 ];
 
 const CONSUMABLE_IDS = new Set([
-    "600"
+    "602"
 ]);
 
 // =========================
@@ -52,6 +53,7 @@ const coinsAmount = document.getElementById("coinsAmount");
 const buyButtons = document.querySelectorAll(".buyButton");
 let billingReady = false;
 let purchaseInProgress = false;
+let syncInFlight = null;
 const availableProductIds = new Set();
 
 const backBtn = document.getElementById("backBtn");
@@ -151,6 +153,119 @@ async function cargarProductos() {
 }
 
 // =========================
+// VALIDAR Y CONSUMIR COMPRA
+// =========================
+
+async function procesarTokenEnBackendYConsumir(productId, purchaseToken) {
+    if (!purchaseToken) {
+        throw new Error("GOOGLE_PURCHASE_TOKEN_MISSING");
+    }
+
+    console.log("🔥 Enviando compra al servidor en Render...", { productId, playerId });
+
+    const response = await fetch(`${API_URL}/api/purchases/google`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            playerId: playerId,
+            productId: productId,
+            purchaseToken: purchaseToken
+        })
+    });
+
+    const data = await response.json();
+    console.log("🔥 Respuesta del servidor:", JSON.stringify(data));
+
+    if (!response.ok || !data.success) {
+        throw new Error(data.error || "PURCHASE_VALIDATION_FAILED");
+    }
+
+    const isConsumable = CONSUMABLE_IDS.has(productId);
+    if (isConsumable && typeof NativePurchases.consumePurchase === "function") {
+        try {
+            await NativePurchases.consumePurchase({ purchaseToken });
+            console.log("✅ Compra consumida en Google Play:", productId);
+        } catch (consumeErr) {
+            console.warn("⚠️ No se pudo consumir desde el cliente:", consumeErr);
+        }
+    }
+
+    localStorage.removeItem(PENDING_PURCHASE_KEY);
+
+    if (typeof data.coins === "number") {
+        if (coinsAmount) coinsAmount.textContent = data.coins;
+        if (savedPlayer) {
+            savedPlayer.coins = data.coins;
+            localStorage.setItem("player", JSON.stringify(savedPlayer));
+        }
+    } else {
+        await cargarMonedas();
+    }
+
+    return data;
+}
+
+async function recuperarComprasPendientes(mostrarAlertaSiAplica = false) {
+    if (!Number.isInteger(playerId)) return false;
+
+    const getPurchasesFn =
+        typeof NativePurchases.getPurchases === "function"
+            ? NativePurchases.getPurchases.bind(NativePurchases)
+            : typeof NativePurchases.queryPurchases === "function"
+              ? NativePurchases.queryPurchases.bind(NativePurchases)
+              : null;
+
+    if (!getPurchasesFn) {
+        console.warn("⚠️ El plugin no expone getPurchases / queryPurchases.");
+        return false;
+    }
+
+    try {
+        console.log("🔍 Revisando compras existentes/pendientes en Google Play...");
+        const res = await getPurchasesFn({
+            productType: PURCHASE_TYPE.INAPP
+        });
+
+        const purchases = Array.isArray(res?.purchases)
+            ? res.purchases
+            : Array.isArray(res)
+              ? res
+              : [];
+
+        console.log("📦 Compras encontradas en Play:", JSON.stringify(purchases));
+
+        let procesadaAlguna = false;
+
+        for (const p of purchases) {
+            const prodId = String(p?.productIdentifier || p?.productId || p?.sku || "");
+            const token = p?.purchaseToken || p?.token;
+            const state = p?.purchaseState;
+
+            if (!PRODUCT_IDS.includes(prodId) || !token) continue;
+
+            if (state === 1 || state === "PENDING" || state === "pending") {
+                console.log("⏳ Compra aún pendiente en Google Play:", prodId);
+                continue;
+            }
+
+            await procesarTokenEnBackendYConsumir(prodId, token);
+            procesadaAlguna = true;
+        }
+
+        if (procesadaAlguna && mostrarAlertaSiAplica) {
+            alert("¡Compra acreditada y monedas actualizadas!");
+        }
+
+        return procesadaAlguna;
+    } catch (err) {
+        console.warn("⚠️ Error revisando compras pendientes:", err?.message || err);
+        return false;
+    }
+}
+
+// =========================
 // COMPRAR MONEDAS
 // =========================
 
@@ -182,6 +297,11 @@ async function comprarMonedas(productId) {
         clickSound.currentTime = 0;
         clickSound.play().catch(() => {});
 
+        localStorage.setItem(
+            PENDING_PURCHASE_KEY,
+            JSON.stringify({ productId, playerId, ts: Date.now() })
+        );
+
         const isConsumable = CONSUMABLE_IDS.has(productId);
         console.log("🔥 Iniciando compra:", productId, "| isConsumable:", isConsumable);
 
@@ -196,62 +316,29 @@ async function comprarMonedas(productId) {
         console.log("✅ TRANSACCIÓN RECIBIDA:", JSON.stringify(transaction));
 
         const purchaseToken = transaction?.purchaseToken || transaction?.token;
-        if (!purchaseToken) {
-            throw new Error("GOOGLE_PURCHASE_TOKEN_MISSING");
-        }
-
-        console.log("🔥 Enviando compra al servidor en Render...");
-
-        const response = await fetch(`${API_URL}/api/purchases/google`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                playerId: playerId,
-                productId: productId,
-                purchaseToken: purchaseToken
-            })
-        });
-
-        const data = await response.json();
-        console.log("🔥 Respuesta del servidor:", JSON.stringify(data));
-
-        if (!response.ok || !data.success) {
-            throw new Error(data.error || "PURCHASE_VALIDATION_FAILED");
-        }
-
-        // Si el plugin expone consumePurchase, consumimos para liberar el SKU consumible
-        if (isConsumable && typeof NativePurchases.consumePurchase === "function") {
-            try {
-                await NativePurchases.consumePurchase({ purchaseToken });
-                console.log("✅ Compra consumida en Google Play.");
-            } catch (consumeErr) {
-                console.warn("⚠️ No se pudo consumir desde el cliente:", consumeErr);
-            }
-        }
-
-        if (typeof data.coins === "number") {
-            if (coinsAmount) coinsAmount.textContent = data.coins;
-            if (savedPlayer) {
-                savedPlayer.coins = data.coins;
-                localStorage.setItem("player", JSON.stringify(savedPlayer));
-            }
-        } else {
-            await cargarMonedas();
-        }
+        await procesarTokenEnBackendYConsumir(productId, purchaseToken);
 
         alert("¡Compra realizada correctamente!");
 
     } catch (error) {
-        console.error("❌ ERROR EN LA COMPRA:", error?.message || error);
+        const msg = String(error?.message || error || "");
+        console.error("❌ ERROR EN LA COMPRA:", msg);
 
-        if (error?.message === "USER_CANCELED") {
+        if (msg.includes("USER_CANCELED")) {
+            localStorage.removeItem(PENDING_PURCHASE_KEY);
             console.log("Compra cancelada.");
             return;
         }
 
-        alert(`No se pudo completar la compra (${error?.message || "ERROR"}).`);
+        if (msg.includes("ITEM_ALREADY_OWNED") || msg.includes("7")) {
+            console.log("♻️ Detectado ITEM_ALREADY_OWNED, intentando recuperar y consumir compra...");
+            const recuperada = await recuperarComprasPendientes(true);
+            if (recuperada) {
+                return;
+            }
+        }
+
+        alert(`No se pudo completar la compra (${msg || "ERROR"}).`);
 
     } finally {
         purchaseInProgress = false;
@@ -285,6 +372,42 @@ if (backBtn) {
 }
 
 // =========================
+// RE-SINCRONIZACIÓN AL VOLVER
+// =========================
+
+async function sincronizarAlVolver(mostrarAlerta = true) {
+    if (syncInFlight) return syncInFlight;
+
+    syncInFlight = (async () => {
+        try {
+            console.log("🔄 App volvió al frente, re-sincronizando tienda...");
+            await cargarMonedas();
+            if (billingReady) {
+                await recuperarComprasPendientes(mostrarAlerta);
+            }
+        } finally {
+            syncInFlight = null;
+        }
+    })();
+
+    return syncInFlight;
+}
+
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+        sincronizarAlVolver(true);
+    }
+});
+
+if (Capacitor?.Plugins?.App?.addListener) {
+    Capacitor.Plugins.App.addListener("appStateChange", ({ isActive }) => {
+        if (isActive) {
+            sincronizarAlVolver(true);
+        }
+    });
+}
+
+// =========================
 // INICIO
 // =========================
 
@@ -303,6 +426,7 @@ async function iniciarTienda() {
 
     billingReady = true;
     await cargarProductos();
+    await recuperarComprasPendientes(true);
 }
 
 iniciarTienda();
