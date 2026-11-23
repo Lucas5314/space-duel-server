@@ -4,7 +4,7 @@
 
 const COIN_PACKS = {
 
-    "600": {
+    "601": {
         coins: 600
     },
 

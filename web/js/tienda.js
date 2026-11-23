@@ -18,14 +18,12 @@ console.log("🔥 TIENDA.JS CARGADO");
 const clickSound = new Audio("assets/audio/click.m4a");
 clickSound.volume = 0.4;
 
-
 // =========================
 // DATOS Y SESIÓN
 // =========================
 
 const API_URL = "https://space-duel-server-1.onrender.com";
 
-// Obtenemos el objeto de jugador de forma segura desde el localStorage
 const savedPlayer = JSON.parse(localStorage.getItem("player"));
 const playerId = savedPlayer ? Number(savedPlayer.id) : null;
 
@@ -33,7 +31,6 @@ if (!playerId) {
     console.warn("⚠️ No hay sesión activa, redirigiendo a createplayer...");
     location.href = "createplayer.html";
 }
-
 
 // =========================
 // PRODUCTOS
@@ -43,11 +40,9 @@ const PRODUCT_IDS = [
     "600"
 ];
 
-// Todos los productos entregan monedas, así que son consumibles para poder recomprarlos
 const CONSUMABLE_IDS = new Set([
     "600"
 ]);
-
 
 // =========================
 // ELEMENTOS
@@ -56,10 +51,17 @@ const CONSUMABLE_IDS = new Set([
 const coinsAmount = document.getElementById("coinsAmount");
 const buyButtons = document.querySelectorAll(".buyButton");
 let billingReady = false;
+let purchaseInProgress = false;
 const availableProductIds = new Set();
 
 const backBtn = document.getElementById("backBtn");
 
+function refreshBuyButtonsState() {
+    buyButtons.forEach(button => {
+        const prodId = button.dataset.product;
+        button.disabled = purchaseInProgress || !billingReady || !availableProductIds.has(prodId);
+    });
+}
 
 // =========================
 // CARGAR MONEDAS
@@ -79,7 +81,6 @@ async function cargarMonedas() {
         if (data.success) {
             if (coinsAmount) coinsAmount.textContent = data.coins;
 
-            // Actualizamos la caché local para mantener sincronizado el perfil
             if (savedPlayer) {
                 savedPlayer.coins = data.coins;
                 localStorage.setItem("player", JSON.stringify(savedPlayer));
@@ -91,7 +92,6 @@ async function cargarMonedas() {
         console.log("Error conectando con servidor:", error);
     }
 }
-
 
 // =========================
 // COMPROBAR GOOGLE PLAY
@@ -117,7 +117,6 @@ async function comprobarGooglePlay() {
     }
 }
 
-
 // =========================
 // CARGAR PRODUCTOS
 // =========================
@@ -131,7 +130,7 @@ async function cargarProductos() {
             productType: PURCHASE_TYPE.INAPP
         });
 
-        console.log("🔥 Productos de Google Play:", products);
+        console.log("🔥 Productos de Google Play:", JSON.stringify(products));
 
         products.forEach(product => {
             availableProductIds.add(product.identifier);
@@ -142,14 +141,14 @@ async function cargarProductos() {
             if (product.priceString) {
                 button.textContent = product.priceString;
             }
-            button.disabled = false;
         });
+
+        refreshBuyButtonsState();
 
     } catch (error) {
         console.error("❌ Error cargando productos:", error);
     }
 }
-
 
 // =========================
 // COMPRAR MONEDAS
@@ -157,6 +156,8 @@ async function cargarProductos() {
 
 async function comprarMonedas(productId) {
     console.log("🔥🔥 CLICK COMPRAR:", productId);
+
+    if (purchaseInProgress) return;
 
     try {
         if (!billingReady || !availableProductIds.has(productId)) {
@@ -175,6 +176,9 @@ async function comprarMonedas(productId) {
             return;
         }
 
+        purchaseInProgress = true;
+        refreshBuyButtonsState();
+
         clickSound.currentTime = 0;
         clickSound.play().catch(() => {});
 
@@ -189,9 +193,9 @@ async function comprarMonedas(productId) {
             autoAcknowledgePurchases: false
         });
 
-        console.log("✅ TRANSACCIÓN RECIBIDA:", transaction);
+        console.log("✅ TRANSACCIÓN RECIBIDA:", JSON.stringify(transaction));
 
-        const purchaseToken = transaction.purchaseToken;
+        const purchaseToken = transaction?.purchaseToken || transaction?.token;
         if (!purchaseToken) {
             throw new Error("GOOGLE_PURCHASE_TOKEN_MISSING");
         }
@@ -211,13 +215,22 @@ async function comprarMonedas(productId) {
         });
 
         const data = await response.json();
-        console.log("🔥 Respuesta del servidor:", data);
+        console.log("🔥 Respuesta del servidor:", JSON.stringify(data));
 
         if (!response.ok || !data.success) {
             throw new Error(data.error || "PURCHASE_VALIDATION_FAILED");
         }
 
-        // Actualizar saldo visual y local
+        // Si el plugin expone consumePurchase, consumimos para liberar el SKU consumible
+        if (isConsumable && typeof NativePurchases.consumePurchase === "function") {
+            try {
+                await NativePurchases.consumePurchase({ purchaseToken });
+                console.log("✅ Compra consumida en Google Play.");
+            } catch (consumeErr) {
+                console.warn("⚠️ No se pudo consumir desde el cliente:", consumeErr);
+            }
+        }
+
         if (typeof data.coins === "number") {
             if (coinsAmount) coinsAmount.textContent = data.coins;
             if (savedPlayer) {
@@ -231,22 +244,20 @@ async function comprarMonedas(productId) {
         alert("¡Compra realizada correctamente!");
 
     } catch (error) {
-        console.error("❌ ERROR EN LA COMPRA:", error);
+        console.error("❌ ERROR EN LA COMPRA:", error?.message || error);
 
         if (error?.message === "USER_CANCELED") {
             console.log("Compra cancelada.");
             return;
         }
 
-        alert("No se pudo completar la compra.");
+        alert(`No se pudo completar la compra (${error?.message || "ERROR"}).`);
 
     } finally {
-        buyButtons.forEach(button => {
-            button.disabled = !billingReady || !availableProductIds.has(button.dataset.product);
-        });
+        purchaseInProgress = false;
+        refreshBuyButtonsState();
     }
 }
-
 
 // =========================
 // BOTONES DE COMPRA
@@ -261,7 +272,6 @@ buyButtons.forEach(button => {
     });
 });
 
-
 // =========================
 // VOLVER
 // =========================
@@ -273,7 +283,6 @@ if (backBtn) {
         location.href = "profile.html";
     });
 }
-
 
 // =========================
 // INICIO
