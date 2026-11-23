@@ -1,6 +1,6 @@
 const { google } = require("googleapis");
 
-const PACKAGE_NAME = process.env.GOOGLE_PLAY_PACKAGE_NAME;
+const PACKAGE_NAME = process.env.GOOGLE_PLAY_PACKAGE_NAME || "com.lucas.spacetip.duel";
 
 const auth = new google.auth.GoogleAuth({
     credentials: {
